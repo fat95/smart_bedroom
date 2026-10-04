@@ -2,7 +2,7 @@
 """Vẽ hình minh họa cho báo cáo (mục 2.3 – 2.5 của phiếu chấm).
 
 Chạy sau khi đã có dataset/ và đã chạy preprocess.py:
-    python src/visualize.py --data dataset --features features --out figures
+    python src/visualize.py --data dataset --features features --out figures    
 
 Hình tạo ra:
   fig1_pipeline.png          waveform thô -> tiền nhấn -> năng lượng/ZCR + VAD -> tín hiệu sau xử lý
