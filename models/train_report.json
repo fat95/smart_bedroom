@@ -1,0 +1,121 @@
+{
+  "chosen": "SVM-RBF C=100 gamma=0.003",
+  "val_acc": 0.8571428571428571,
+  "all": [
+    {
+      "family": "SVM",
+      "name": "SVM-RBF C=1 gamma=scale",
+      "params": {
+        "C": "1",
+        "gamma": "scale"
+      },
+      "val_acc": 0.7714285714285715,
+      "fit_s": 0.010265350341796875
+    },
+    {
+      "family": "SVM",
+      "name": "SVM-RBF C=1 gamma=0.003",
+      "params": {
+        "C": "1",
+        "gamma": "0.003"
+      },
+      "val_acc": 0.5428571428571428,
+      "fit_s": 0.0039632320404052734
+    },
+    {
+      "family": "SVM",
+      "name": "SVM-RBF C=1 gamma=0.01",
+      "params": {
+        "C": "1",
+        "gamma": "0.01"
+      },
+      "val_acc": 0.7428571428571429,
+      "fit_s": 0.012872457504272461
+    },
+    {
+      "family": "SVM",
+      "name": "SVM-RBF C=10 gamma=scale",
+      "params": {
+        "C": "10",
+        "gamma": "scale"
+      },
+      "val_acc": 0.7428571428571429,
+      "fit_s": 0.011531829833984375
+    },
+    {
+      "family": "SVM",
+      "name": "SVM-RBF C=10 gamma=0.003",
+      "params": {
+        "C": "10",
+        "gamma": "0.003"
+      },
+      "val_acc": 0.7714285714285715,
+      "fit_s": 0.00356292724609375
+    },
+    {
+      "family": "SVM",
+      "name": "SVM-RBF C=10 gamma=0.01",
+      "params": {
+        "C": "10",
+        "gamma": "0.01"
+      },
+      "val_acc": 0.7428571428571429,
+      "fit_s": 0.0037925243377685547
+    },
+    {
+      "family": "SVM",
+      "name": "SVM-RBF C=100 gamma=scale",
+      "params": {
+        "C": "100",
+        "gamma": "scale"
+      },
+      "val_acc": 0.7428571428571429,
+      "fit_s": 0.0041484832763671875
+    },
+    {
+      "family": "SVM",
+      "name": "SVM-RBF C=100 gamma=0.003",
+      "params": {
+        "C": "100",
+        "gamma": "0.003"
+      },
+      "val_acc": 0.8571428571428571,
+      "fit_s": 0.003282308578491211
+    },
+    {
+      "family": "SVM",
+      "name": "SVM-RBF C=100 gamma=0.01",
+      "params": {
+        "C": "100",
+        "gamma": "0.01"
+      },
+      "val_acc": 0.7428571428571429,
+      "fit_s": 0.0066378116607666016
+    },
+    {
+      "family": "kNN",
+      "name": "kNN k=3",
+      "params": {
+        "k": "3"
+      },
+      "val_acc": 0.7142857142857143,
+      "fit_s": 0.04046940803527832
+    },
+    {
+      "family": "kNN",
+      "name": "kNN k=5",
+      "params": {
+        "k": "5"
+      },
+      "val_acc": 0.7428571428571429,
+      "fit_s": 0.009011507034301758
+    },
+    {
+      "family": "RandomForest",
+      "name": "Random Forest 300 cây",
+      "params": {},
+      "val_acc": 0.8285714285714286,
+      "fit_s": 0.38480424880981445
+    }
+  ]
+}
