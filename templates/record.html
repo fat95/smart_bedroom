@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Thu âm lệnh – Smart Bedroom</title>
+<style>
+:root{--bg:#eef1f4;--panel:#fff;--ink:#14202b;--mute:#5d6b78;--line:#d3dae1;--blue:#1f5fbf;--red:#d6342c;--green:#2e7d5b}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Segoe UI",system-ui,sans-serif}
+header{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between;padding:16px 24px;background:var(--panel);border-bottom:1px solid var(--line)}
+h1{margin:0;font-size:20px;font-weight:650}
+label{font-size:14px;color:var(--mute)}
+input{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:6px;width:180px}
+main{display:grid;grid-template-columns:minmax(260px,320px) 1fr;gap:20px;padding:20px 24px;max-width:1000px;margin:0 auto}
+@media(max-width:760px){main{grid-template-columns:1fr}}
+.list{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px;align-self:start}
+.cmd{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:none;border:0;border-radius:6px;padding:10px 12px;cursor:pointer}
+.cmd:hover{background:#f3f6f9}
+.cmd[aria-pressed=true]{background:#e4edfa;outline:2px solid var(--blue)}
+.cmd .row{display:flex;justify-content:space-between;gap:8px}
+.cmd .n{color:var(--mute);font-variant-numeric:tabular-nums}
+.cmd.done .n{color:var(--green);font-weight:600}
+.bar{height:4px;background:var(--line);border-radius:2px;margin-top:6px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--blue)}
+.cmd.done .bar i{background:var(--green)}
+.stage{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px}
+.say{font-size:34px;font-weight:650;margin:0 0 4px}
+.hint{color:var(--mute);margin:0 0 20px}
+.meter{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin-bottom:6px}
+.meter i{display:block;height:100%;width:0;background:var(--green)}
+.rec-bar{height:4px;background:var(--line);margin-bottom:16px}
+.rec-bar i{display:block;height:100%;width:0;background:var(--red)}
+canvas{width:100%;height:110px;background:#f6f8fa;border:1px solid var(--line);border-radius:6px;display:block}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+button.act{font:inherit;font-weight:600;padding:12px 20px;border-radius:6px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
+button.act:disabled{opacity:.45;cursor:not-allowed}
+#rec{background:var(--red);border-color:var(--red);color:#fff;min-width:160px}
+#save{background:var(--blue);border-color:var(--blue);color:#fff}
+button:focus-visible,input:focus-visible{outline:3px solid #7aa7ea;outline-offset:2px}
+#status{min-height:24px;margin:14px 0 0;color:var(--mute)}
+#status.err{color:var(--red)}
+#status.ok{color:var(--green)}
+.total{margin-top:10px;color:var(--mute);font-size:14px;padding:0 6px}
+</style>
+</head>
+<body>
+<header>
+  <h1>Thu âm lệnh điều khiển phòng ngủ</h1>
+  <div><label for="speaker">Tên người nói (không dấu, vd: vi)</label><br><input id="speaker" maxlength="20" autocomplete="off"></div>
+</header>
+<main>
+  <div>
+    <div class="list" id="list"></div>
+    <div class="total" id="total"></div>
+  </div>
+  <section class="stage">
+    <p class="say" id="say"></p>
+    <p class="hint" id="hint">Nhấn Thu âm (hoặc phím Space), rồi nói lệnh ngay. Mỗi lần thu đúng 2 giây.</p>
+    <div class="meter" aria-hidden="true"><i id="meter"></i></div>
+    <div class="rec-bar" aria-hidden="true"><i id="progress"></i></div>
+    <canvas id="wave" aria-label="Dạng sóng bản thu"></canvas>
+    <div class="actions">
+      <button class="act" id="rec">Thu âm</button>
+      <button class="act" id="play" disabled>Nghe lại</button>
+      <button class="act" id="save" disabled>Lưu mẫu</button>
+    </div>
+    <p id="status" role="status" aria-live="polite"></p>
+  </section>
+</main>
+<script>
+const COMMANDS=[
+  {id:'bat_dieu_hoa',text:'Bật điều hòa'},{id:'tat_dieu_hoa',text:'Tắt điều hòa'},
+  {id:'bat_den_tran',text:'Bật đèn trần'},{id:'tat_den_tran',text:'Tắt đèn trần'},
+  {id:'mo_rem',text:'Mở rèm'},{id:'bat_tivi',text:'Bật tivi'},
+  {id:'noise',text:'(Không nói gì)',hint:'Lớp noise: giữ im lặng, chỉ thu tiếng nền của phòng. Có thể nói chuyện khác hoặc gõ phím để đa dạng.'}
+];
+const TARGET=12, DURATION=2, SR=16000;
+const $=s=>document.querySelector(s);
+const counts={}; let cur=0, busy=false, pending=null;
+let ctx, stream, source, proc, analyser;
+
+const slug=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/gi,'d').toLowerCase().replace(/[^a-z0-9]/g,'');
+const speaker=()=>slug($('#speaker').value);
+function status(msg,cls=''){const e=$('#status');e.textContent=msg;e.className=cls}
+
+function renderList(){
+  $('#list').innerHTML='';
+  COMMANDS.forEach((c,i)=>{
+    const n=counts[c.id]||0, b=document.createElement('button');
+    b.className='cmd'+(n>=TARGET?' done':''); b.setAttribute('aria-pressed',i===cur);
+    b.innerHTML=`<span class="row"><span>${c.text}</span><span class="n">${n}/${TARGET}</span></span><div class="bar"><i style="width:${Math.min(100,n/TARGET*100)}%"></i></div>`;
+    b.onclick=()=>select(i); $('#list').appendChild(b);
+  });
+  const tot=COMMANDS.reduce((s,c)=>s+(counts[c.id]||0),0);
+  $('#total').textContent=`Tổng: ${tot}/${COMMANDS.length*TARGET} mẫu của bạn`;
+}
+function select(i){
+  cur=i; clearPending();
+  $('#say').textContent=COMMANDS[i].text;
+  $('#hint').textContent=COMMANDS[i].hint||'Nhấn Thu âm (hoặc phím Space), rồi nói lệnh ngay. Mỗi lần thu đúng 2 giây.';
+  renderList();
+}
+function clearPending(){pending=null;$('#play').disabled=true;$('#save').disabled=true;drawWave(null);$('#progress').style.width='0'}
+
+async function loadCounts(){
+  const sp=speaker(); Object.keys(counts).forEach(k=>delete counts[k]);
+  if(sp.length>=2){try{Object.assign(counts,await (await fetch('/sample-counts?speaker='+sp)).json())}catch(e){}}
+  renderList();
+}
+
+async function ensureMic(){
+  if(stream)return;
+  stream=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
+  ctx=new AudioContext(); source=ctx.createMediaStreamSource(stream);
+  analyser=ctx.createAnalyser(); analyser.fftSize=1024; source.connect(analyser);
+  proc=ctx.createScriptProcessor(4096,1,1);
+  const buf=new Float32Array(analyser.fftSize);
+  (function loop(){analyser.getFloatTimeDomainData(buf);let s=0;for(const v of buf)s+=v*v;
+    $('#meter').style.width=Math.min(100,Math.sqrt(s/buf.length)*400)+'%';requestAnimationFrame(loop)})();
+}
+
+async function record(){
+  if(busy)return;
+  if(speaker().length<2){status('Nhập tên người nói (2–20 ký tự, không dấu) trước khi thu.','err');$('#speaker').focus();return}
+  try{await ensureMic()}catch(e){status('Không mở được micro. Hãy cho phép micro và mở trang bằng localhost hoặc HTTPS.','err');return}
+  await ctx.resume(); clearPending(); busy=true; $('#rec').disabled=true; status('Đang thu… hãy nói lệnh.');
+  const need=Math.round(DURATION*ctx.sampleRate), chunks=[]; let got=0, done=false;
+  const stop=()=>{ if(done)return; done=true; proc.onaudioprocess=null; try{source.disconnect(proc);proc.disconnect()}catch(e){}; finish(chunks) };
+  // Dừng khi đã đủ số mẫu (không dùng đồng hồ) để không mất phần cuối do độ trễ khởi động của micro
+  proc.onaudioprocess=e=>{
+    if(done)return;
+    const d=new Float32Array(e.inputBuffer.getChannelData(0)); chunks.push(d); got+=d.length;
+    $('#progress').style.width=Math.min(100,got/need*100)+'%';
+    if(got>=need)setTimeout(stop,0);
+  };
+  source.connect(proc); proc.connect(ctx.destination);
+  setTimeout(stop,(DURATION+4)*1000); // dự phòng nếu micro không phát dữ liệu
+}
+
+async function finish(chunks){
+  const n=Math.round(DURATION*ctx.sampleRate), raw=new Float32Array(n); let o=0;
+  for(const c of chunks){if(o>=n)break;raw.set(c.subarray(0,Math.min(c.length,n-o)),o);o+=c.length}
+  const off=new OfflineAudioContext(1,DURATION*SR,SR), ab=off.createBuffer(1,n,ctx.sampleRate); ab.copyToChannel(raw,0);
+  const src=off.createBufferSource(); src.buffer=ab; src.connect(off.destination); src.start();
+  const data=(await off.startRendering()).getChannelData(0);
+  let peak=0; for(const v of data)peak=Math.max(peak,Math.abs(v));
+  pending={blob:encodeWav(data),peak}; drawWave(data);
+  busy=false; $('#rec').disabled=false; $('#play').disabled=false;
+  const isNoise=COMMANDS[cur].id==='noise';
+  if(!isNoise&&peak<0.02){status('Âm quá nhỏ hoặc không có tiếng. Hãy nói to hơn rồi thu lại.','err')}
+  else{$('#save').disabled=false;status(peak>0.98?'Âm bị vỡ (quá to). Nên thu lại, hoặc lưu nếu chấp nhận.':'Nghe lại rồi nhấn Lưu mẫu (Enter), hoặc Thu âm để làm lại.')}
+}
+
+function encodeWav(f){
+  const b=new ArrayBuffer(44+f.length*2), v=new DataView(b), w=(o,s)=>[...s].forEach((c,i)=>v.setUint8(o+i,c.charCodeAt(0)));
+  w(0,'RIFF');v.setUint32(4,36+f.length*2,true);w(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);
+  v.setUint32(24,SR,true);v.setUint32(28,SR*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,f.length*2,true);
+  f.forEach((s,i)=>v.setInt16(44+i*2,Math.max(-1,Math.min(1,s))*0x7fff,true));
+  return new Blob([b],{type:'audio/wav'});
+}
+
+function drawWave(d){
+  const cv=$('#wave'), r=devicePixelRatio||1; cv.width=cv.clientWidth*r; cv.height=cv.clientHeight*r;
+  const g=cv.getContext('2d'); g.clearRect(0,0,cv.width,cv.height); if(!d)return;
+  g.strokeStyle='#1f5fbf'; g.beginPath(); const step=d.length/cv.width, mid=cv.height/2;
+  for(let x=0;x<cv.width;x++){let mn=1,mx=-1;for(let i=Math.floor(x*step);i<(x+1)*step&&i<d.length;i++){mn=Math.min(mn,d[i]);mx=Math.max(mx,d[i])}
+    g.moveTo(x,mid-mx*mid);g.lineTo(x,mid-mn*mid)}
+  g.stroke();
+}
+
+async function save(){
+  if(!pending||$('#save').disabled)return;
+  const c=COMMANDS[cur], fd=new FormData(); fd.append('audio',pending.blob,'s.wav'); fd.append('command',c.id); fd.append('speaker',speaker());
+  $('#save').disabled=true;
+  try{
+    const r=await fetch('/save-sample',{method:'POST',body:fd}), j=await r.json();
+    if(!r.ok)throw new Error(j.error||'Lỗi server');
+    counts[c.id]=j.count; clearPending(); status(`Đã lưu ${j.file} (${j.count}/${TARGET}).`,'ok');
+    if(j.count>=TARGET&&cur<COMMANDS.length-1)select(cur+1); else renderList();
+  }catch(e){$('#save').disabled=false;status('Lưu thất bại: '+e.message,'err')}
+}
+
+$('#rec').onclick=record; $('#save').onclick=save;
+$('#play').onclick=()=>{if(pending)new Audio(URL.createObjectURL(pending.blob)).play()};
+$('#speaker').value=localStorage.getItem('speaker')||'';
+$('#speaker').addEventListener('change',()=>{try{localStorage.setItem('speaker',speaker())}catch(e){};loadCounts()});
+document.addEventListener('keydown',e=>{
+  if(e.target.tagName==='INPUT')return;
+  if(e.code==='Space'){e.preventDefault();record()} else if(e.key==='Enter'&&e.target.tagName!=='BUTTON'){save()}
+});
+select(0); loadCounts();
+</script>
+</body>
+</html>

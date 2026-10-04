@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Smart Bedroom - Ultimate Presentation Edition</title>
+    <style>
+        body { margin: 0; background: #0f172a; color: #f8fafc; font-family: 'Segoe UI', Tahoma, sans-serif; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+        
+        /* 1. KHU VỰC WIDGETS */
+        .visualizer-grid {
+            flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); grid-template-rows: repeat(2, 1fr); gap: 15px; padding: 15px; background: #020617;
+        }
+        .widget {
+            background: #1e293b; border-radius: 16px; border: 1px solid #334155; display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; transition: 0.4s ease;
+        }
+        .widget-title { position: absolute; top: 12px; left: 15px; font-size: 11px; color: #cbd5e1; font-weight: bold; letter-spacing: 1px; z-index: 10;}
+        .icon-box { font-size: 50px; transition: all 0.3s; z-index: 5; }
+
+        /* Điều hòa */
+        #ac-temp-display { font-size: 22px; font-weight: bold; margin-top: 5px; color: white; opacity: 0; transition: 0.3s; z-index: 5;}
+        #ac-status { font-size: 12px; margin-top: 2px; opacity: 0; font-weight: bold; z-index: 5;}
+        
+        /* Đèn */
+        .lamp-icon { color: #475569; transition: 0.3s; }
+        
+        /* Giường - Nâng phần đầu */
+        .css-bed { position: relative; width: 110px; height: 50px; display: flex; align-items: flex-end; z-index: 5;}
+        .bed-base { position: absolute; bottom: 0; left: 0; width: 100%; height: 16px; background: #475569; border-radius: 4px; }
+        .bed-foot { position: absolute; bottom: 16px; right: 0; width: 60%; height: 16px; background: #cbd5e1; border-radius: 6px 6px 0 0; }
+        .bed-head { position: absolute; bottom: 16px; left: 0; width: 40%; height: 16px; background: #94a3b8; border-radius: 6px 0 0 0; transform-origin: bottom right; transition: transform 0.4s ease; }
+        .bed-pillow { position: absolute; top: -10px; left: 8px; width: 25px; height: 10px; background: #fff; border-radius: 8px; }
+
+        /* Rèm cửa & Cửa sổ ngày/đêm */
+        .window-frame {
+            width: 160px; height: 95px; border: 5px solid #334155; border-radius: 8px; position: relative; overflow: hidden; display: flex; justify-content: space-between;
+            background: linear-gradient(to bottom, #0f172a, #1e3a8a);
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.8); transition: background 0.5s;
+        }
+        .sky-object { position: absolute; top: 12px; right: 20px; font-size: 22px; transition: 0.5s; }
+        .curtain { 
+            width: 50%; height: 100%; transition: width 0.5s ease;
+            background: repeating-linear-gradient(to right, #64748b, #64748b 8px, #475569 8px, #475569 16px);
+            box-shadow: 0 0 10px rgba(0,0,0,0.5); z-index: 2;
+        }
+        .curtain.left { border-right: 2px solid #334155; }
+        .curtain.right { border-left: 2px solid #334155; }
+
+        /* Tivi Thông Minh - Căn giữa hoàn hảo */
+        .tv-frame { width: 170px; height: 95px; background: #000; border: 4px solid #1e293b; border-radius: 8px; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+        .tv-screen { width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; text-align: center; transition: background 0.3s; }
+        .tv-logo { font-size: 16px; font-weight: bold; letter-spacing: 1px; text-shadow: 0 2px 4px rgba(0,0,0,0.8); }
+
+        /* 2. THANH THÔNG TIN MÔI TRƯỜNG (DƯỚI WIDGETS) */
+        .environment-bar {
+            background: #1e293b; border-top: 1px solid #334155; border-bottom: 1px solid #334155;
+            padding: 8px 20px; display: flex; justify-content: space-around; align-items: center; font-size: 13px; color: #94a3b8;
+        }
+        .env-item span { color: #f8fafc; font-weight: bold; }
+        .time-warp-btn { background: #3b82f6; color: white; border: none; padding: 4px 10px; border-radius: 4px; cursor: pointer; font-size: 12px; font-weight: bold; }
+
+        /* 3. BẢNG ĐIỀU KHIỂN */
+        .dashboard { height: 260px; background: #1e293b; display: flex; flex-direction: column; padding: 12px 25px; box-sizing: border-box; }
+        .device-tabs { display: flex; gap: 8px; justify-content: center; margin-bottom: 15px; overflow-x: auto; padding-bottom: 4px;}
+        .tab-btn { background: #334155; color: #cbd5e1; border: none; padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: 0.2s; font-weight: bold; font-size: 12px;}
+        .tab-btn.active, .tab-btn:hover { background: #3b82f6; color: white; }
+
+        .control-panels { flex: 1; display: flex; justify-content: center; align-items: center; }
+        .panel { display: none; width: 100%; max-width: 500px; text-align: center; }
+        .panel.active { display: block; }
+        
+        .panel h3 { margin: 0 0 8px 0; color: #94a3b8; font-size: 12px; letter-spacing: 1px;}
+        .value-display { font-size: 24px; font-weight: bold; color: #fff; margin-bottom: 10px; }
+
+        .slider-group { margin-bottom: 10px; text-align: left;}
+        .slider-group label { font-size: 12px; color: #cbd5e1; display: flex; justify-content: space-between; margin-bottom: 3px;}
+        input[type="range"] { width: 100%; height: 6px; background: #475569; border-radius: 4px; outline: none; -webkit-appearance: none; cursor: pointer; }
+        input[type="range"]::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; background: #3b82f6; border-radius: 50%; border: 2px solid #fff; }
+
+        .tv-controls { display: flex; justify-content: center; gap: 10px; margin-bottom: 10px; }
+        .btn-circle { width: 38px; height: 38px; border-radius: 50%; border: none; background: #475569; color: white; font-size: 14px; cursor: pointer; font-weight: bold; transition: 0.2s; }
+        .btn-circle:hover { background: #64748b; }
+        .btn-power { background: #ef4444; } .btn-power.on { background: #10b981; }
+
+        .voice-section { text-align: center; margin-top: 5px; }
+        .mic-btn { background: linear-gradient(135deg, #ef4444 0%, #f43f5e 100%); color: white; border: none; padding: 10px 30px; border-radius: 20px; font-size: 15px; font-weight: bold; cursor: pointer; box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4); }
+        .mic-btn:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+
+    <!-- 1. KHU VỰC WIDGETS -->
+    <div class="visualizer-grid">
+        <div class="widget" id="widget-ac">
+            <div class="widget-title">ĐIỀU HÒA</div>
+            <div class="icon-box" id="icon-ac">❄️</div>
+            <div id="ac-temp-display">--°C</div>
+            <div id="ac-status">TẮT</div>
+        </div>
+
+        <div class="widget" id="widget-light-main">
+            <div class="widget-title">ĐÈN TRẦN</div>
+            <div class="icon-box lamp-icon" id="icon-light-main">💡</div>
+        </div>
+
+        <div class="widget" id="widget-light-night">
+            <div class="widget-title">ĐÈN NGỦ</div>
+            <div class="icon-box lamp-icon" id="icon-light-night">🌙</div>
+        </div>
+
+        <div class="widget" id="widget-bed">
+            <div class="widget-title">GIƯỜNG THÔNG MINH</div>
+            <div class="css-bed">
+                <div class="bed-base"></div>
+                <div class="bed-foot"></div>
+                <div class="bed-head" id="css-bed-head">
+                    <div class="bed-pillow"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="widget" id="widget-curtain">
+            <div class="widget-title">RÈM CỬA SỔ</div>
+            <div class="window-frame" id="window-bg">
+                <div class="sky-object" id="sky-icon">☀️</div>
+                <div class="curtain left" id="curtain-left"></div>
+                <div class="curtain right" id="curtain-right"></div>
+            </div>
+        </div>
+
+        <div class="widget" id="widget-tv">
+            <div class="widget-title">TIVI THÔNG MINH</div>
+            <div class="tv-frame">
+                <div class="tv-screen" id="tv-screen">
+                    <div class="tv-logo" id="tv-text"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 2. THANH THÔNG TIN MÔI TRƯỜNG & TUA NHANH THỜI GIAN -->
+    <div class="environment-bar">
+        <div class="env-item">📅 Ngày: <span id="env-date">--/--/----</span></div>
+        <div class="env-item">⏰ Thời gian: <span id="env-time">--:--:--</span></div>
+        <div class="env-item">🌡️ Ngoài trời: <span>32°C (Nắng)</span></div>
+        <div class="env-item"><button class="time-warp-btn" onclick="toggleTimeWarp()">⚡ Tua nhanh: TẮT</button></div>
+    </div>
+
+    <!-- 3. BẢNG ĐIỀU KHIỂN -->
+    <div class="dashboard">
+        <div class="device-tabs">
+            <button class="tab-btn active" onclick="switchTab('ac', this)">❄️ Điều hòa</button>
+            <button class="tab-btn" onclick="switchTab('light-main', this)">💡 Đèn trần</button>
+            <button class="tab-btn" onclick="switchTab('light-night', this)">🌙 Đèn ngủ</button>
+            <button class="tab-btn" onclick="switchTab('bed', this)">🛏️ Giường</button>
+            <button class="tab-btn" onclick="switchTab('curtain', this)">🪟 Rèm</button>
+            <button class="tab-btn" onclick="switchTab('tv', this)">📺 Tivi</button>
+        </div>
+
+        <div class="control-panels">
+            <div id="panel-ac" class="panel active">
+                <button class="btn-circle btn-power" id="btn-ac" onclick="toggleAC()" style="margin-bottom:10px; width: 90px; border-radius: 15px;">ON/OFF</button>
+                <div class="slider-group">
+                    <label>Nhiệt độ <span id="val-ac">24 °C</span></label>
+                    <input type="range" id="slider-ac" min="16" max="30" value="24" oninput="updateDevice('ac')">
+                </div>
+            </div>
+
+            <div id="panel-light-main" class="panel">
+                <div class="slider-group">
+                    <label>Độ sáng Đèn trần <span id="val-light-main">0 %</span></label>
+                    <input type="range" id="slider-light-main" min="0" max="100" value="0" oninput="updateDevice('light-main')">
+                </div>
+                <div class="slider-group">
+                    <label>Màu sắc <span>Trắng ↔ Vàng</span></label>
+                    <input type="range" id="slider-color-light-main" min="0" max="100" value="50" oninput="updateDevice('light-main')">
+                </div>
+            </div>
+
+            <div id="panel-light-night" class="panel">
+                <div class="slider-group">
+                    <label>Độ sáng Đèn ngủ <span id="val-light-night">0 %</span></label>
+                    <input type="range" id="slider-light-night" min="0" max="100" value="0" oninput="updateDevice('light-night')">
+                </div>
+                <div class="slider-group">
+                    <label>Màu sắc <span>Trắng ↔ Cam ấm</span></label>
+                    <input type="range" id="slider-color-light-night" min="0" max="100" value="80" oninput="updateDevice('light-night')">
+                </div>
+            </div>
+
+            <div id="panel-bed" class="panel">
+                <div class="slider-group">
+                    <label>Góc nâng đầu giường <span id="val-bed">0 °</span></label>
+                    <input type="range" id="slider-bed" min="0" max="60" value="0" oninput="updateDevice('bed')">
+                </div>
+            </div>
+
+            <div id="panel-curtain" class="panel">
+                <div class="slider-group">
+                    <label>Độ mở rèm <span id="val-curtain">0 % (Đóng kín)</span></label>
+                    <input type="range" id="slider-curtain" min="0" max="100" value="0" oninput="updateDevice('curtain')">
+                </div>
+            </div>
+
+            <div id="panel-tv" class="panel">
+                <div class="tv-controls">
+                    <button class="btn-circle btn-power" id="btn-tv" onclick="toggleTV()">⏻</button>
+                    <button class="btn-circle" onclick="changeChannel(-1)">◀</button>
+                    <button class="btn-circle" onclick="changeChannel(1)">▶</button>
+                </div>
+                <div class="slider-group">
+                    <label>Độ sáng màn hình <span id="val-tv-bright">100 %</span></label>
+                    <input type="range" id="slider-tv-bright" min="0" max="100" value="100" oninput="updateTVDisplay()">
+                </div>
+            </div>
+        </div>
+
+        <div class="voice-section">
+            <button class="mic-btn" id="mic-btn" onclick="startVoiceCommand()">🎙️ Nhấn để Ra lệnh (2 giây)</button>
+            <span id="voice-status" style="margin-left:12px;font-size:13px;color:#cbd5e1;"></span>
+            <button style="margin-left:12px;background:none;border:1px solid #475569;color:#94a3b8;border-radius:12px;padding:4px 10px;font-size:12px;cursor:pointer;" onclick="document.getElementById('voice-file').click()">📁 Dùng file WAV dự phòng</button>
+            <input type="file" id="voice-file" accept=".wav,audio/wav" hidden onchange="sendVoiceFile(this)">
+        </div>
+    </div>
+
+    <script>
+        function switchTab(deviceId, btnElement) {
+            document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById('panel-' + deviceId).classList.add('active');
+            btnElement.classList.add('active');
+        }
+
+        // HỆ THỐNG THỜI GIAN & NGÀY THÁNG (HỖ TRỢ TUA NHANH CHO BÁO CÁO)
+        let simulatedTime = new Date();
+        let isTimeWarpActive = false;
+
+        function updateEnvironmentClock() {
+            if (isTimeWarpActive) {
+                // Tua nhanh thời gian (mỗi nhịp cộng thêm 15 phút để test nhanh ngày/đêm)
+                simulatedTime.setMinutes(simulatedTime.getMinutes() + 15);
+            } else {
+                simulatedTime = new Date(); // Lấy thời gian thực laptop
+            }
+
+            const hours = simulatedTime.getHours();
+            const minutes = String(simulatedTime.getMinutes()).padStart(2, '0');
+            const seconds = String(simulatedTime.getSeconds()).padStart(2, '0');
+            const dateStr = String(simulatedTime.getDate()).padStart(2, '0') + '/' + 
+                            String(simulatedTime.getMonth() + 1).padStart(2, '0') + '/' + 
+                            simulatedTime.getFullYear();
+
+            document.getElementById('env-date').innerText = dateStr;
+            document.getElementById('env-time').innerText = `${hours}:${minutes}:${seconds}`;
+
+            // Tự động chuyển Đổi Khung Cảnh Trời Sáng / Trời Tối bên ngoài cửa sổ
+            const windowBg = document.getElementById('window-bg');
+            const skyIcon = document.getElementById('sky-icon');
+            if (hours >= 6 && hours < 18) {
+                // Ban ngày
+                windowBg.style.background = "linear-gradient(to bottom, #38bdf8, #bae6fd)";
+                skyIcon.innerText = "☀️";
+            } else {
+                // Ban đêm
+                windowBg.style.background = "linear-gradient(to bottom, #0f172a, #1e3a8a)";
+                skyIcon.innerText = "🌙";
+            }
+        }
+        setInterval(updateEnvironmentClock, 1000); // Chạy mỗi giây
+
+        function toggleTimeWarp() {
+            isTimeWarpActive = !isTimeWarpActive;
+            const btn = document.querySelector('.time-warp-btn');
+            btn.innerText = isTimeWarpActive ? "⚡ Tua nhanh: ĐANG BẬT (x60)" : "⚡ Tua nhanh: TẮT";
+            btn.style.background = isTimeWarpActive ? "#ef4444" : "#3b82f6";
+        }
+
+        // BIẾN HỆ THỐNG THIẾT BỊ
+        let acOn = false;
+        let tvOn = false;
+        
+        // DANH SÁCH KÊNH TIVI (GIỮ KÊNH CŨ + THÊM KÊNH TUỔI THƠ)
+        let tvChannels = [
+            { name: "CARTOON NETWORK", color: "#00aeef" },
+            { name: "DISNEY CHANNEL", color: "#1d4ed8" },
+            { name: "HTV3", color: "#ea580c" },
+            { name: "VTV2", color: "#15803d" },
+            { name: "VIEON", color: "#00a859" },
+            { name: "GALAXY PLAY", color: "#f37021" },
+            { name: "THVL", color: "#e3000f" },
+            { name: "VTV3", color: "#4a148c" },
+            { name: "NETFLIX", color: "#e50914" }
+        ];
+        let currentChannel = 0;
+
+        function toggleAC() {
+            acOn = !acOn;
+            document.getElementById('btn-ac').classList.toggle('on', acOn);
+            updateDevice('ac');
+        }
+
+        function toggleTV() {
+            tvOn = !tvOn;
+            document.getElementById('btn-tv').classList.toggle('on', tvOn);
+            updateTVDisplay();
+        }
+        function changeChannel(dir) {
+            if(!tvOn) return;
+            currentChannel = (currentChannel + dir + tvChannels.length) % tvChannels.length;
+            updateTVDisplay();
+        }
+        function updateTVDisplay() {
+            const screen = document.getElementById('tv-screen');
+            const text = document.getElementById('tv-text');
+            const bright = document.getElementById('slider-tv-bright').value;
+            document.getElementById('val-tv-bright').innerText = bright + ' %';
+            
+            const ch = tvChannels[currentChannel];
+
+            // NẾU TIVI BẬT VÀ ĐỘ SÁNG > 0 THÌ HIỂN THỊ, NẾU BẰNG 0 TẮT HẲN
+            if (tvOn && bright > 0) {
+                const darkness = 1 - (bright / 100); 
+                screen.style.background = `linear-gradient(rgba(0,0,0,${darkness}), rgba(0,0,0,${darkness})), ${ch.color}`;
+                text.innerText = ch.name;
+                text.style.color = 'white';
+            } else {
+                screen.style.background = 'rgba(0,0,0,1)';
+                text.innerText = "";
+            }
+        }
+
+        function updateDevice(device) {
+            if (device === 'ac') {
+                const temp = parseInt(document.getElementById('slider-ac').value);
+                document.getElementById('val-ac').innerText = temp + ' °C';
+                const widget = document.getElementById('widget-ac');
+                const display = document.getElementById('ac-temp-display');
+                const status = document.getElementById('ac-status');
+                
+                if (acOn) {
+                    display.innerText = temp + ' °C';
+                    display.style.opacity = 1; status.style.opacity = 1;
+                    if (temp < 22) {
+                        widget.style.background = 'radial-gradient(circle, #1e3a8a 0%, #1e293b 80%)'; 
+                        status.innerText = "COLD"; status.style.color = '#60a5fa';
+                    } else if (temp <= 26) {
+                        widget.style.background = 'radial-gradient(circle, #064e3b 0%, #1e293b 80%)'; 
+                        status.innerText = "COOL"; status.style.color = '#34d399';
+                    } else {
+                        widget.style.background = 'radial-gradient(circle, #7f1d1d 0%, #1e293b 80%)'; 
+                        status.innerText = "WARM"; status.style.color = '#f87171';
+                    }
+                } else {
+                    widget.style.background = '#1e293b';
+                    display.style.opacity = 0; status.style.opacity = 0;
+                }
+            } 
+            else if (device.startsWith('light')) {
+                const bright = document.getElementById('slider-' + device).value;
+                const colorTone = document.getElementById('slider-color-' + device).value; 
+                document.getElementById('val-' + device).innerText = bright + ' %';
+                
+                const widget = document.getElementById('widget-' + device);
+                const icon = document.getElementById('icon-' + device);
+                
+                // ĐÃ SỬA LỖI: KHI VỀ 0% SẼ TẮT HẲN HOÀN TOÀN KHÔNG CÒN DƯ SÁNG
+                if (bright > 0) {
+                    const r = 255;
+                    const g = Math.floor(255 - (50 * (colorTone/100)));
+                    const b = Math.floor(255 - (180 * (colorTone/100)));
+                    const rgb = `${r}, ${g}, ${b}`;
+                    widget.style.background = `radial-gradient(circle, rgba(${rgb}, ${bright/100}) 0%, #1e293b ${60 + bright/2}%)`;
+                    icon.style.color = `rgb(${rgb})`;
+                    icon.style.filter = `drop-shadow(0 0 ${bright/4}px rgb(${rgb}))`;
+                } else {
+                    widget.style.background = '#1e293b';
+                    icon.style.color = '#475569';
+                    icon.style.filter = 'none';
+                }
+            }
+            else if (device === 'bed') {
+                const val = document.getElementById('slider-bed').value;
+                document.getElementById('val-bed').innerText = val + ' °';
+                // CHỈ NÂNG PHẦN ĐẦU GIƯỜNG LÊN THEO ĐÚNG YÊU CẦU
+                document.getElementById('css-bed-head').style.transform = `rotate(${val}deg)`;
+            }
+            else if (device === 'curtain') {
+                const val = document.getElementById('slider-curtain').value;
+                document.getElementById('val-curtain').innerText = val + ' %';
+                const coverPercent = (100 - val) / 2; 
+                document.getElementById('curtain-left').style.width = coverPercent + '%';
+                document.getElementById('curtain-right').style.width = coverPercent + '%';
+            }
+        }
+
+        // ===== ĐIỀU KHIỂN BẰNG GIỌNG NÓI: thu 2 s -> WAV 16 kHz -> Flask /process-audio =====
+        const VOICE_SR = 16000, VOICE_SEC = 2;
+        let voiceBusy = false;
+
+        function setVoiceStatus(msg, color) {
+            const el = document.getElementById('voice-status');
+            el.innerText = msg; el.style.color = color || '#cbd5e1';
+        }
+
+        function encodeWav(f) {
+            const b = new ArrayBuffer(44 + f.length * 2), v = new DataView(b);
+            const w = (o, s) => [...s].forEach((c, i) => v.setUint8(o + i, c.charCodeAt(0)));
+            w(0, 'RIFF'); v.setUint32(4, 36 + f.length * 2, true); w(8, 'WAVEfmt '); v.setUint32(16, 16, true);
+            v.setUint16(20, 1, true); v.setUint16(22, 1, true); v.setUint32(24, VOICE_SR, true);
+            v.setUint32(28, VOICE_SR * 2, true); v.setUint16(32, 2, true); v.setUint16(34, 16, true);
+            w(36, 'data'); v.setUint32(40, f.length * 2, true);
+            f.forEach((s, i) => v.setInt16(44 + i * 2, Math.max(-1, Math.min(1, s)) * 0x7fff, true));
+            return new Blob([b], { type: 'audio/wav' });
+        }
+
+        async function startVoiceCommand() {
+            if (voiceBusy) return;
+            let stream;
+            try {
+                stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1, echoCancellation: false, noiseSuppression: false, autoGainControl: false } });
+            } catch (e) {
+                setVoiceStatus('Không mở được micro (cần mở bằng localhost/HTTPS và cho phép micro).', '#f87171'); return;
+            }
+            voiceBusy = true; document.getElementById('mic-btn').disabled = true;
+            const ctx = new AudioContext(), src = ctx.createMediaStreamSource(stream), proc = ctx.createScriptProcessor(4096, 1, 1);
+            const chunks = [], need = Math.round(VOICE_SEC * ctx.sampleRate);
+            setVoiceStatus('🔴 Đang nghe... hãy nói lệnh', '#fbbf24');
+            // Dừng khi đã đủ số mẫu (không dùng đồng hồ) để không mất phần cuối do độ trễ khởi động của micro
+            await new Promise(res => {
+                let got = 0;
+                proc.onaudioprocess = e => {
+                    const d = new Float32Array(e.inputBuffer.getChannelData(0)); chunks.push(d); got += d.length;
+                    if (got >= need) { proc.onaudioprocess = null; res(); }
+                };
+                src.connect(proc); proc.connect(ctx.destination);
+                setTimeout(res, (VOICE_SEC + 4) * 1000);
+            });
+            proc.disconnect(); src.disconnect(); stream.getTracks().forEach(t => t.stop());
+            const sr = ctx.sampleRate; await ctx.close();
+            try {
+                const n = Math.round(VOICE_SEC * sr), raw = new Float32Array(n); let o = 0;
+                for (const c of chunks) { if (o >= n) break; raw.set(c.subarray(0, Math.min(c.length, n - o)), o); o += c.length; }
+                const off = new OfflineAudioContext(1, VOICE_SEC * VOICE_SR, VOICE_SR);
+                const ab = off.createBuffer(1, n, sr); ab.copyToChannel(raw, 0);
+                const s = off.createBufferSource(); s.buffer = ab; s.connect(off.destination); s.start();
+                const data = (await off.startRendering()).getChannelData(0);
+                await sendVoice(encodeWav(data));
+            } finally {
+                voiceBusy = false; document.getElementById('mic-btn').disabled = false;
+            }
+        }
+
+        async function sendVoiceFile(input) {
+            const f = input.files[0]; input.value = '';
+            if (f) await sendVoice(f);
+        }
+
+        async function sendVoice(blob) {
+            setVoiceStatus('⏳ Đang nhận dạng...', '#fbbf24');
+            const fd = new FormData(); fd.append('audio_data', blob, 'command.wav');
+            try {
+                const r = await fetch('/process-audio', { method: 'POST', body: fd });
+                const j = await r.json();
+                if (!r.ok) { setVoiceStatus('Lỗi: ' + (j.error || r.status), '#f87171'); return; }
+                const pct = Math.round(j.confidence * 100);
+                if (j.status === 'ok') {
+                    applyVoiceAction(j.action);
+                    setVoiceStatus(`✓ "${j.text}" (${pct}%, ${j.latency_ms} ms)`, '#34d399');
+                } else {
+                    const why = { no_speech: 'không thấy tiếng nói', noise: 'chỉ là tiếng nền', low_confidence: 'chưa chắc chắn' }[j.reason] || j.reason;
+                    setVoiceStatus(`✗ Không nhận ra lệnh: ${why} (${pct}%)`, '#f87171');
+                }
+            } catch (e) {
+                setVoiceStatus('Không kết nối được server Flask.', '#f87171');
+            }
+        }
+
+        function applyVoiceAction(a) {
+            const tab = document.querySelector(`.tab-btn[onclick*="'${a.device}'"]`);
+            if (tab) switchTab(a.device, tab);
+            if (a.device === 'ac') { if ((a.action === 'on') !== acOn) toggleAC(); }
+            else if (a.device === 'tv') { if ((a.action === 'on') !== tvOn) toggleTV(); }
+            else if (a.device === 'light-main') { document.getElementById('slider-light-main').value = a.action === 'on' ? a.value : 0; updateDevice('light-main'); }
+            else if (a.device === 'curtain') { document.getElementById('slider-curtain').value = a.value; updateDevice('curtain'); }
+        }
+    </script>
+</body>
+</html>
