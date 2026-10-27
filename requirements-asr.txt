@@ -1,0 +1,8 @@
+# Thư viện cho phần A (PhoWhisper). C nhớ thêm các dòng này vào requirements.txt chính.
+torch
+transformers
+accelerate
+rapidfuzz
+soundfile
+librosa
+pandas
