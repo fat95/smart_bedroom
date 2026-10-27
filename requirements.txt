@@ -6,3 +6,4 @@ librosa
 scikit-learn
 joblib
 matplotlib
+requests>=2.28.0
