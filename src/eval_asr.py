@@ -152,6 +152,9 @@ def summarize(rows: list[dict], lat: list[float]) -> dict:
         "acc_value": _rate([r["ok_value"] for r in rows if r["ok_value"] is not None]),
         "n_value": sum(r["ok_value"] is not None for r in rows),
         "acc_exact": _rate([r["ok_exact"] for r in rows]),
+        # thực thi sai = hệ thống ĐÃ chấp nhận một lệnh (reason rỗng) nhưng lệnh đó sai; nguy hiểm hơn việc từ chối nhầm
+        "wrong_exec": _rate([r["reason"] is None and not r["ok_exact"] for r in rows]),
+        "rejected_cmd": _rate([r["reason"] is not None for r in rows if r["device"]]),
         "n_noise": len(rows) - len(cmd_rows),
         "noise_rejected": _rate([r["pred_device"] is None for r in rows if not r["device"]]),
         "latency_ms_mean": round(statistics.mean(lat), 1) if lat else None,
@@ -262,8 +265,8 @@ def _label_of(r: dict) -> str:
 
 
 def write_summary(reports: dict, out: Path, simple: bool, baseline: dict | None) -> None:
-    cols = ["model", "n", "acc_exact", "latency_ms_mean"] if simple else \
-        ["model", "n", "wer", "cer", "acc_device", "acc_action", "acc_value", "acc_exact", "latency_ms_mean"]
+    cols = ["model", "n", "acc_exact", "wrong_exec", "latency_ms_mean"] if simple else \
+        ["model", "n", "wer", "cer", "acc_device", "acc_action", "acc_value", "acc_exact", "wrong_exec", "latency_ms_mean"]
     rows = [{"model": m, **{c: r.get(c) for c in cols[1:]}} for m, r in reports.items()]
     if simple and baseline:
         rows.append({"model": "baseline MFCC+SVM/RF", "n": baseline["n"], "acc_exact": baseline["acc"],
@@ -271,7 +274,7 @@ def write_summary(reports: dict, out: Path, simple: bool, baseline: dict | None)
     with open(out / "summary.csv", "w", encoding="utf-8-sig", newline="") as f:
         w = csv.DictWriter(f, fieldnames=cols); w.writeheader(); w.writerows(rows)
     head = {"model": "Mô hình", "n": "Số mẫu", "wer": "WER", "cer": "CER", "acc_device": "Đúng thiết bị", "acc_action": "Đúng hành động",
-            "acc_value": "Đúng giá trị", "acc_exact": "Đúng cả lệnh" if not simple else "Đúng lệnh", "latency_ms_mean": "Độ trễ TB (ms)"}
+            "acc_value": "Đúng giá trị", "acc_exact": "Đúng cả lệnh" if not simple else "Đúng lệnh", "wrong_exec": "Thực thi sai", "latency_ms_mean": "Độ trễ TB (ms)"}
     lines = ["| " + " | ".join(head[c] for c in cols) + " |", "|" + "---|" * len(cols)]
     for r in rows:
         cells = [str(r[c]) if c in ("model", "n") else (f"{r[c]:.1f}" if c == "latency_ms_mean" and r[c] is not None else pct(r[c]))

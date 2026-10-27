@@ -74,6 +74,31 @@ CASES = [
     ("tắt đèn chần", "light-main", "off", None, OK),
     ("đặt điều hòa hai mươi sáu độ c", "ac", "set", 26, OK),
     ("Bật Tivi!", "tv", "on", None, OK),
+    ("bậc ti vi.", "tv", "on", None, OK),            # PhoWhisper-base nghe "bật" thành "bậc" (gặp thật khi chạy mô hình)
+    ("tắc đèn trần", "light-main", "off", None, OK),
+    ("bậc điều hòa", "ac", "on", None, OK),
+    # lỗi thật từ PhoWhisper-base: "bật" nghe thành "bọn" (= "bốn" ở đầu câu). Không được hiểu thành "đặt ... 4"
+    ("bọn đèn chân.", "light-main", "on", None, OK),
+    ("bọn tivi.", "tv", "on", None, OK),
+    ("bốn mươi tivi", "tv", None, None, "unknown_command"),     # số thật ở đầu câu thì không phải "bật"
+    ("bọn tivi.", "tv", "on", None, OK),              # "bật" bị nghe thành "bọn" (gặp thật)
+    ("bọn đèn chân.", "light-main", "on", None, OK),
+    ("bốn độ điều hòa", "ac", "set", 4, OK),           # "bốn" thật ở đầu câu vẫn là số, không bị coi là "bật"
+    ("bốn mươi độ điều hòa", "ac", "set", 40, OK),
+    # --- lỗi ASR thật đã gặp: PhoWhisper nghe "bật" thành "bậc"
+    ("bậc ti vi.", "tv", "on", None, OK),
+    ("bậc điều hòa", "ac", "on", None, OK),
+    # lỗi thật từ PhoWhisper-base: "bật" nghe thành "bọn" (= "bốn" ở đầu câu). Không được hiểu thành "đặt ... 4"
+    ("bọn đèn chân.", "light-main", "on", None, OK),
+    ("bọn tivi.", "tv", "on", None, OK),
+    ("bốn mươi tivi", "tv", None, None, "unknown_command"),     # số thật ở đầu câu thì không phải "bật"
+    ("bọn tivi.", "tv", "on", None, OK),              # "bật" bị nghe thành "bọn" (gặp thật)
+    ("bọn đèn chân.", "light-main", "on", None, OK),
+    ("bốn độ điều hòa", "ac", "set", 4, OK),           # "bốn" thật ở đầu câu vẫn là số, không bị coi là "bật"
+    ("bốn mươi độ điều hòa", "ac", "set", 40, OK),
+    ("bậc đèn trần", "light-main", "on", None, OK),
+    ("tắc tivi", "tv", "off", None, OK),
+    ("tắc đèn trần", "light-main", "off", None, OK),
     # --- từ chối
     ("bật", None, None, None, "ambiguous_device"),          # có động từ nhưng thiếu từ khóa thiết bị
     ("tăng lên mười", None, None, None, "ambiguous_device"),
@@ -88,7 +113,7 @@ CASES = [
     ("tăng điều hòa", "ac", "up", None, "missing_value"),
     ("đặt đèn trần", "light-main", "set", None, "missing_value"),
     ("chuyển tivi kênh", "tv", "channel", None, "missing_value"),
-    ("chuyển kênh đèn trần năm", "light-main", "set", 5, OK),   # "kênh" bị bỏ qua với thiết bị không có kênh
+    ("chuyển kênh đèn trần năm", "light-main", None, None, "unknown_command"),   # số trần không đơn vị: từ chối, không đoán
     ("bật giường", "bed", None, None, "unknown_command"),    # giường không có hành động bật/tắt
 ]
 

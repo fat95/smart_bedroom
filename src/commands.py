@@ -52,15 +52,16 @@ def strip_accents(s: str) -> str:
 
 
 def normalize(text: str) -> list[str]:
-    """Văn bản -> danh sách token không dấu, chữ thường. "50%" -> bỏ (đã hiểu qua giá trị)."""
+    """Văn bản -> danh sách token không dấu, chữ thường. "phần trăm" và "%" thành token đơn vị "pt"."""
     s = strip_accents(text).lower()
-    s = s.replace("%", " ").replace("°", " do ")
+    s = s.replace("%", " pt ").replace("°", " do ")
     s = re.sub(r"[^a-z0-9\s]", " ", s)
     s = re.sub(r"(?<=\d)(?=[a-z])|(?<=[a-z])(?=\d)", " ", s)   # "26c" -> "26 c"
     toks = s.split()
     out, i = [], 0
     while i < len(toks):                                          # "phan tram" -> bỏ, để "tram" không bị đọc là 100
         if toks[i] == "phan" and i + 1 < len(toks) and toks[i + 1] == "tram":
+            out.append("pt")                                      # đơn vị phần trăm
             i += 2
             continue
         out.append(toks[i])
@@ -162,9 +163,11 @@ def find_devices(tokens: list[str]) -> dict[str, tuple[float, int, int]]:
 
 
 # từ động từ (không dấu) -> ý định chung
+# Lưu ý: "bat" (bật) và "tat" (tắt) chỉ lệch 1 chữ cái nên KHÔNG nới khớp mờ chung cho từ ngắn, vì sẽ bật nhầm khi người
+# dùng nói tắt. Thay vào đó liệt kê đúng các kiểu ASR nghe sai đã gặp: PhoWhisper hay nghe "bật" thành "bậc" (t/c cuối từ).
 VERBS = {
-    "on": ["bat", "mo", "khoi dong"],
-    "off": ["tat", "ngat", "ngung"],
+    "on": ["bat", "bac", "mo", "khoi dong"],
+    "off": ["tat", "tac", "ngat", "ngung"],
     "up": ["tang", "nang", "them"],
     "down": ["giam", "ha", "bot"],
     "set": ["dat", "chinh", "cai", "de"],
@@ -173,15 +176,31 @@ VERBS = {
 MODES = {"mode_cool": ["lam lanh", "lanh"], "mode_fan": ["quat"], "mode_dry": ["hut am", "hut"]}
 
 
+def _verb_variants(toks: list[str]) -> list[list[str]]:
+    """ASR hay nghe lẫn phụ âm cuối -c/-t ("bật" -> "bậc", "tắt" -> "tắc"): thử thêm bản đổi -c thành -t cho từ 3 ký tự trở lên.
+    Chỉ dùng khi dò động từ, không áp cho từ khóa thiết bị hay số."""
+    out = [toks]
+    if len(toks) == 1 and len(toks[0]) >= 3 and toks[0].endswith("c"):
+        out.append([toks[0][:-1] + "t"])
+    return out
+
+
 def find_intents(tokens: list[str], skip: set[int]) -> list[tuple[int, str, float]]:
     """Mọi động từ tìm thấy: [(vị trí, ý định, điểm)] theo thứ tự xuất hiện trong câu."""
     hits = []
     for intent, words in VERBS.items():
         for w in words:
+            n = len(w.split())
             for i in range(len(tokens)):
-                m = _match_phrase(tokens[i:i + len(w.split())], w, set()) if i not in skip else None
-                if m:
-                    hits.append((i, intent, m[0]))
+                if i in skip:
+                    continue
+                best = None
+                for cand in _verb_variants(tokens[i:i + n]):
+                    m = _match_phrase(cand, w, set())
+                    if m and (best is None or m[0] > best):
+                        best = m[0]
+                if best is not None:
+                    hits.append((i, intent, best))
     hits.sort()
     return hits
 
@@ -215,6 +234,12 @@ def parse_command(text: str) -> dict:
     skip = {k for (_, a, b) in devs.values() for k in range(a, b)}
     intents = find_intents(tokens, skip)
     num, span = find_number(tokens, skip)
+    # PhoWhisper-base hay nghe "bật" thành "bọn" (gặp thật ở 2/36 file test). "bon" cũng là số 4 ("bốn"), nên chỉ coi là "bật" khi:
+    # nó là từ ĐẦU câu, đứng một mình (không phải "bốn mươi..."), không có động từ nào khác và sau nó không phải "độ".
+    if (len(devs) == 1 and not intents and tokens[0] == "bon" and 0 not in skip
+            and (len(tokens) < 2 or tokens[1] != "do") and find_number(tokens, skip)[1] == (0, 1)):
+        intents = [(0, "on", 70.0)]
+        num, span = None, None
     has_action_cue = bool(intents) or num is not None or flat
 
     if len(devs) != 1:
@@ -241,8 +266,8 @@ def parse_command(text: str) -> dict:
             act, act_score = "channel", channel[0][2] / 100.0
         elif usable:
             act, act_score = usable[0][1], usable[0][2] / 100.0
-        elif num is not None:                                  # không có động từ nhưng có số: "điều hòa 26 độ"
-            act = "set"
+        elif num is not None and ({"do", "pt"} & set(tokens)):  # không có động từ nhưng có số + đơn vị: "điều hòa 26 độ"
+            act = "set"                                         # số trần không đơn vị (vd "bọn" nghe thành "bốn") thì từ chối, không đoán
         if act is None:
             return _result(raw, device=dev, reason="unknown_command", score=dev_score * 0.5)
 

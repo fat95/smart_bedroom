@@ -93,6 +93,7 @@ class TestPipeline(unittest.TestCase):
         rows, rep = E.evaluate_items(items, lambda p: heard[p], warmup=0)
         self.assertAlmostEqual(rep["noise_rejected"], 1 / 2, places=3)
         self.assertAlmostEqual(rep["acc_exact"], 2 / 3, places=3)
+        self.assertAlmostEqual(rep["wrong_exec"], 1 / 3, places=3)       # c: nhiễu bị thực thi thành "tắt đèn trần"
         out = self.t / "o2"
         E.write_outputs("fake", rows, rep, out, simple=True)
         self.assertTrue((out / "confusion_fake_simple.png").exists())
