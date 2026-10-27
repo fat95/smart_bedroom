@@ -1,0 +1,5 @@
+id,text,device,action,value
+001,bật điều hòa hai mươi lăm độ,điều hòa,bật,25
+002,tắt tivi,tivi,tắt,None
+003,giảm độ sáng đèn trần xuống năm mươi,đèn trần,giảm,50
+004,nâng giường lên ba mươi độ,giường,nâng,30
