@@ -1,195 +1,389 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="vi">
 <head>
-<meta charset="UTF-8">
+<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Thu âm lệnh – Smart Bedroom</title>
+<title>Thu âm dữ liệu - Smart Bedroom</title>
 <style>
-:root{--bg:#eef1f4;--panel:#fff;--ink:#14202b;--mute:#5d6b78;--line:#d3dae1;--blue:#1f5fbf;--red:#d6342c;--green:#2e7d5b}
+:root{--bg:#f6f7f9;--card:#fff;--ink:#1c2430;--muted:#667085;--line:#e3e7ee;--accent:#2f6fed;--accent-ink:#fff;--ok:#1a9b5b;--warn:#c47a00;--bad:#d64545;--soft:#eef3ff}
+@media (prefers-color-scheme:dark){:root{--bg:#12161c;--card:#1a2029;--ink:#e8ecf2;--muted:#98a2b3;--line:#2a323e;--accent:#6b9bff;--accent-ink:#0b1220;--ok:#3ccf8a;--warn:#f0b042;--bad:#ff7a7a;--soft:#222c3d}}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 "Segoe UI",system-ui,sans-serif}
-header{display:flex;flex-wrap:wrap;gap:12px 24px;align-items:center;justify-content:space-between;padding:16px 24px;background:var(--panel);border-bottom:1px solid var(--line)}
-h1{margin:0;font-size:20px;font-weight:650}
-label{font-size:14px;color:var(--mute)}
-input{font:inherit;padding:8px 10px;border:1px solid var(--line);border-radius:6px;width:180px}
-main{display:grid;grid-template-columns:minmax(260px,320px) 1fr;gap:20px;padding:20px 24px;max-width:1000px;margin:0 auto}
-@media(max-width:760px){main{grid-template-columns:1fr}}
-.list{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:6px;align-self:start}
-.cmd{display:block;width:100%;text-align:left;font:inherit;color:inherit;background:none;border:0;border-radius:6px;padding:10px 12px;cursor:pointer}
-.cmd:hover{background:#f3f6f9}
-.cmd[aria-pressed=true]{background:#e4edfa;outline:2px solid var(--blue)}
-.cmd .row{display:flex;justify-content:space-between;gap:8px}
-.cmd .n{color:var(--mute);font-variant-numeric:tabular-nums}
-.cmd.done .n{color:var(--green);font-weight:600}
-.bar{height:4px;background:var(--line);border-radius:2px;margin-top:6px;overflow:hidden}
-.bar i{display:block;height:100%;width:0;background:var(--blue)}
-.cmd.done .bar i{background:var(--green)}
-.stage{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px}
-.say{font-size:34px;font-weight:650;margin:0 0 4px}
-.hint{color:var(--mute);margin:0 0 20px}
-.meter{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin-bottom:6px}
-.meter i{display:block;height:100%;width:0;background:var(--green)}
-.rec-bar{height:4px;background:var(--line);margin-bottom:16px}
-.rec-bar i{display:block;height:100%;width:0;background:var(--red)}
-canvas{width:100%;height:110px;background:#f6f8fa;border:1px solid var(--line);border-radius:6px;display:block}
-.actions{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
-button.act{font:inherit;font-weight:600;padding:12px 20px;border-radius:6px;border:1px solid var(--line);background:#fff;color:var(--ink);cursor:pointer}
-button.act:disabled{opacity:.45;cursor:not-allowed}
-#rec{background:var(--red);border-color:var(--red);color:#fff;min-width:160px}
-#save{background:var(--blue);border-color:var(--blue);color:#fff}
-button:focus-visible,input:focus-visible{outline:3px solid #7aa7ea;outline-offset:2px}
-#status{min-height:24px;margin:14px 0 0;color:var(--mute)}
-#status.err{color:var(--red)}
-#status.ok{color:var(--green)}
-.total{margin-top:10px;color:var(--mute);font-size:14px;padding:0 6px}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif}
+.wrap{max-width:1080px;margin:0 auto;padding:20px 16px 60px}
+h1{font-size:20px;margin:0 0 4px}
+.sub{color:var(--muted);margin:0 0 16px}
+.grid{display:grid;grid-template-columns:320px 1fr;gap:16px}
+@media(max-width:860px){.grid{grid-template-columns:1fr}}
+.card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:14px}
+.card h2{font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
+label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
+input[type=text],input[type=number]{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--ink);font:inherit}
+.row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.tabs{display:flex;gap:6px;margin-bottom:10px}
+.tab{flex:1;padding:8px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--ink);cursor:pointer;font:inherit}
+.tab.on{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+button.btn{padding:10px 16px;border-radius:9px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:inherit;cursor:pointer}
+button.btn.primary{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);font-weight:600}
+button.btn.ok{background:var(--ok);color:#fff;border-color:var(--ok);font-weight:600}
+button.btn:disabled{opacity:.45;cursor:not-allowed}
+.hint{font-size:12.5px;color:var(--muted)}
+.chip{display:inline-block;font-size:12px;padding:2px 8px;border-radius:99px;background:var(--soft);color:var(--accent)}
+.chip.stranger{background:#fff1e0;color:#a35b00}
+.items{max-height:420px;overflow:auto;margin-top:8px;border-top:1px solid var(--line)}
+.item{display:flex;justify-content:space-between;gap:8px;width:100%;text-align:left;padding:9px 6px;border:0;border-bottom:1px solid var(--line);background:transparent;color:var(--ink);font:inherit;cursor:pointer}
+.item.on{background:var(--soft)}
+.item small{color:var(--muted);display:block}
+.cnt{white-space:nowrap;font-variant-numeric:tabular-nums;color:var(--muted)}
+.cnt.done{color:var(--ok);font-weight:600}
+.prompt{text-align:center;padding:18px 8px 8px}
+.prompt .say{font-size:30px;font-weight:700;line-height:1.25}
+.prompt .meta{color:var(--muted);margin-top:6px;min-height:22px}
+.stage{height:46px;display:flex;align-items:center;justify-content:center;font-size:22px;font-weight:700}
+.bar{height:10px;border-radius:99px;background:var(--line);overflow:hidden;margin:6px 0}
+.bar>i{display:block;height:100%;width:0;background:var(--accent)}
+.meter>i{background:var(--ok);transition:width .06s}
+canvas{width:100%;height:110px;background:var(--soft);border-radius:8px;display:block}
+.msg{min-height:22px;margin:8px 0}
+.msg.bad{color:var(--bad)}.msg.warn{color:var(--warn)}.msg.ok{color:var(--ok)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:6px 4px;border-bottom:1px solid var(--line)}
+th{color:var(--muted);font-weight:600}
+.recent{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:5px 0;border-bottom:1px solid var(--line);font-size:13px}
+.kbd{font:12px ui-monospace,Consolas,monospace;border:1px solid var(--line);border-radius:5px;padding:0 5px}
 </style>
 </head>
 <body>
-<header>
-  <h1>Thu âm lệnh điều khiển phòng ngủ</h1>
-  <div><label for="speaker">Tên người nói (không dấu, vd: vi)</label><br><input id="speaker" maxlength="20" autocomplete="off"></div>
-</header>
-<main>
-  <div>
-    <div class="list" id="list"></div>
-    <div class="total" id="total"></div>
-  </div>
-  <section class="stage">
-    <p class="say" id="say"></p>
-    <p class="hint" id="hint">Nhấn Thu âm (hoặc phím Space), rồi nói lệnh ngay. Mỗi lần thu đúng 2 giây.</p>
-    <div class="meter" aria-hidden="true"><i id="meter"></i></div>
-    <div class="rec-bar" aria-hidden="true"><i id="progress"></i></div>
-    <canvas id="wave" aria-label="Dạng sóng bản thu"></canvas>
-    <div class="actions">
-      <button class="act" id="rec">Thu âm</button>
-      <button class="act" id="play" disabled>Nghe lại</button>
-      <button class="act" id="save" disabled>Lưu mẫu</button>
+<div class="wrap">
+  <h1>Thu âm dữ liệu</h1>
+  <p class="sub">Mỗi bản thu dài <b id="secs">4</b> giây, WAV mono 16 kHz. Cần mở trang bằng <b>localhost</b> hoặc https để dùng được micro.</p>
+
+  <div class="grid">
+    <div>
+      <div class="card">
+        <h2>Người nói</h2>
+        <label for="spk">Tên (chữ thường không dấu, không có dấu gạch dưới)</label>
+        <input id="spk" type="text" placeholder="ví dụ: vinh, phat, la1" autocomplete="off" maxlength="16">
+        <div class="row" style="margin-top:8px">
+          <span id="spkInfo" class="hint">Chưa nhập tên.</span>
+        </div>
+        <div class="row" style="margin-top:8px">
+          <label style="margin:0"><input type="checkbox" id="asStranger"> Đây là người lạ (tự đặt tên la1, la2... hoặc tên trong strangers.txt)</label>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px">
+        <h2>Chế độ thu</h2>
+        <div class="tabs">
+          <button class="tab on" data-mode="cmd">Lệnh đơn giản</button>
+          <button class="tab" data-mode="sentence">Câu có tham số</button>
+        </div>
+        <div class="hint" id="modeHint"></div>
+        <label for="target">Mục tiêu số mẫu cho mỗi mục</label>
+        <input id="target" type="number" min="1" max="60" value="12">
+        <div class="row" style="margin-top:10px">
+          <label style="margin:0"><input type="checkbox" id="auto" checked> Tự chuyển sang mục chưa đủ</label>
+        </div>
+        <div class="items" id="items"></div>
+      </div>
     </div>
-    <p id="status" role="status" aria-live="polite"></p>
-  </section>
-</main>
+
+    <div>
+      <div class="card">
+        <div class="prompt">
+          <div class="say" id="say">Chọn một mục</div>
+          <div class="meta" id="meta"></div>
+        </div>
+        <div class="stage" id="stage"></div>
+        <div class="bar"><i id="prog"></i></div>
+        <div class="hint">Mức micro</div>
+        <div class="bar meter"><i id="meter"></i></div>
+        <div class="msg" id="msg"></div>
+        <div class="row">
+          <button class="btn" id="mic">Bật micro</button>
+          <button class="btn primary" id="rec" disabled>Thu (Space)</button>
+          <button class="btn ok" id="save" disabled>Lưu (Enter)</button>
+          <button class="btn" id="redo" disabled>Bỏ, thu lại (Esc)</button>
+        </div>
+        <div style="margin-top:12px">
+          <canvas id="wave" width="900" height="110"></canvas>
+          <audio id="player" controls style="width:100%;margin-top:8px" hidden></audio>
+        </div>
+      </div>
+
+      <div class="card" style="margin-top:16px">
+        <h2>Vừa lưu</h2>
+        <div id="recent" class="hint">Chưa có bản thu nào trong phiên này.</div>
+      </div>
+
+      <div class="card" style="margin-top:16px">
+        <h2>Tiến độ theo người</h2>
+        <table>
+          <thead><tr><th>Người</th><th>Lệnh đơn giản</th><th>Câu có tham số</th><th></th></tr></thead>
+          <tbody id="summary"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
 <script>
-const COMMANDS=[
-  {id:'bat_dieu_hoa',text:'Bật điều hòa'},{id:'tat_dieu_hoa',text:'Tắt điều hòa'},
-  {id:'bat_den_tran',text:'Bật đèn trần'},{id:'tat_den_tran',text:'Tắt đèn trần'},
-  {id:'mo_rem',text:'Mở rèm'},{id:'bat_tivi',text:'Bật tivi'},
-  {id:'noise',text:'(Không nói gì)',hint:'Lớp noise: giữ im lặng, chỉ thu tiếng nền của phòng. Có thể nói chuyện khác hoặc gõ phím để đa dạng.'}
-];
-const TARGET=12, DURATION=2, SR=16000;
-const $=s=>document.querySelector(s);
-const counts={}; let cur=0, busy=false, pending=null;
-let ctx, stream, source, proc, analyser;
+const $ = s => document.querySelector(s);
+let CFG = null, mode = 'cmd', current = null, counts = {};
+let ctx = null, stream = null, recording = false, chunks = [], got = 0, need = 0, take = null;
+let recent = [];
 
-const slug=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/gi,'d').toLowerCase().replace(/[^a-z0-9]/g,'');
-const speaker=()=>slug($('#speaker').value);
-function status(msg,cls=''){const e=$('#status');e.textContent=msg;e.className=cls}
+/* ---------- tên người ---------- */
+function normName(s){
+  return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/g,'d').replace(/Đ/g,'d')
+          .toLowerCase().replace(/[^a-z0-9]/g,'').slice(0,16);
+}
+const isStranger = n => /^la\d*$/.test(n) || !!(CFG && CFG.strangers && CFG.strangers.includes(n));
+function speaker(){ return normName($('#spk').value); }
+function updateSpeakerInfo(){
+  const n = speaker();
+  const el = $('#spkInfo');
+  if(!n){ el.textContent = 'Chưa nhập tên.'; return; }
+  if(!/^[a-z][a-z0-9]{1,15}$/.test(n)){ el.textContent = 'Tên phải bắt đầu bằng chữ cái, 2-16 ký tự.'; return; }
+  el.innerHTML = 'Sẽ lưu với tên: <b>'+n+'</b> '+(isStranger(n)?'<span class="chip stranger">người lạ</span>':'<span class="chip">người đăng ký</span>');
+}
+$('#spk').addEventListener('input', ()=>{
+  const raw = $('#spk').value, n = normName(raw);
+  if(raw !== n) $('#spk').value = n;
+  $('#asStranger').checked = isStranger(n);
+  localStorage.setItem('rec_speaker', n);
+  updateSpeakerInfo(); applyDefaultTarget(); loadCounts();
+});
+$('#asStranger').addEventListener('change', async ()=>{
+  if($('#asStranger').checked){
+    const s = (await (await fetch('/record/summary')).json()).speakers.map(x=>x.speaker).filter(isStranger);
+    let k = 1; while(s.includes('la'+k)) k++;
+    $('#spk').value = 'la'+k;
+  } else if(isStranger($('#spk').value)) $('#spk').value = '';
+  $('#spk').dispatchEvent(new Event('input'));
+});
+function applyDefaultTarget(){
+  const st = isStranger(speaker());
+  $('#target').value = mode==='cmd' ? (st ? 4 : 12) : 2;
+  renderItems();
+}
+$('#target').addEventListener('input', renderItems);
 
-function renderList(){
-  $('#list').innerHTML='';
-  COMMANDS.forEach((c,i)=>{
-    const n=counts[c.id]||0, b=document.createElement('button');
-    b.className='cmd'+(n>=TARGET?' done':''); b.setAttribute('aria-pressed',i===cur);
-    b.innerHTML=`<span class="row"><span>${c.text}</span><span class="n">${n}/${TARGET}</span></span><div class="bar"><i style="width:${Math.min(100,n/TARGET*100)}%"></i></div>`;
-    b.onclick=()=>select(i); $('#list').appendChild(b);
+/* ---------- danh sách mục ---------- */
+const items = () => mode==='cmd' ? CFG.commands : CFG.sentences;
+function label(it){ return mode==='cmd' ? it.text : it.text; }
+function renderItems(){
+  if(!CFG) return;
+  const tg = +$('#target').value || 1, box = $('#items');
+  box.innerHTML = '';
+  items().forEach(it=>{
+    const c = counts[it.id] || 0;
+    const b = document.createElement('button');
+    b.className = 'item' + (current && current.id===it.id ? ' on' : '');
+    const sub = mode==='sentence' ? '<small>'+it.id+' · '+[it.device,it.action,it.value].filter(Boolean).join(' · ')+'</small>' : '<small>'+it.id+'</small>';
+    b.innerHTML = '<span>'+label(it)+sub+'</span><span class="cnt'+(c>=tg?' done':'')+'">'+c+'/'+tg+'</span>';
+    b.onclick = ()=>select(it.id);
+    box.appendChild(b);
   });
-  const tot=COMMANDS.reduce((s,c)=>s+(counts[c.id]||0),0);
-  $('#total').textContent=`Tổng: ${tot}/${COMMANDS.length*TARGET} mẫu của bạn`;
 }
-function select(i){
-  cur=i; clearPending();
-  $('#say').textContent=COMMANDS[i].text;
-  $('#hint').textContent=COMMANDS[i].hint||'Nhấn Thu âm (hoặc phím Space), rồi nói lệnh ngay. Mỗi lần thu đúng 2 giây.';
-  renderList();
+function select(id){
+  current = items().find(x=>x.id===id) || null;
+  discard(true);
+  renderItems();
+  if(!current){ $('#say').textContent='Chọn một mục'; $('#meta').textContent=''; return; }
+  $('#say').textContent = current.id==='noise' && mode==='cmd' ? 'Giữ im lặng' : '“'+current.text+'”';
+  const n = (counts[current.id]||0)+1;
+  $('#meta').textContent = (current.id==='noise' && mode==='cmd' ? 'Không nói gì, chỉ thu tiếng ồn nền. ' : 'Nói tự nhiên như khi ra lệnh thật. ') + 'Lần thứ '+n+' của mục này.';
+  updateButtons();
 }
-function clearPending(){pending=null;$('#play').disabled=true;$('#save').disabled=true;drawWave(null);$('#progress').style.width='0'}
-
 async function loadCounts(){
-  const sp=speaker(); Object.keys(counts).forEach(k=>delete counts[k]);
-  if(sp.length>=2){try{Object.assign(counts,await (await fetch('/sample-counts?speaker='+sp)).json())}catch(e){}}
-  renderList();
+  const n = speaker();
+  if(!/^[a-z][a-z0-9]{1,15}$/.test(n)){ counts = {}; renderItems(); return; }
+  const r = await fetch('/sample-counts?mode='+mode+'&speaker='+n);
+  counts = (await r.json()).counts || {};
+  renderItems();
+  if(current) select(current.id);
 }
+async function loadSummary(){
+  const r = await (await fetch('/record/summary')).json();
+  const tb = $('#summary'); tb.innerHTML = '';
+  r.speakers.forEach(s=>{
+    const tr = document.createElement('tr');
+    tr.innerHTML = '<td><b>'+s.speaker+'</b></td><td>'+s.dataset+'</td><td>'+s.testset+'</td><td>'+(s.stranger?'<span class="chip stranger">người lạ</span>':'')+'</td>';
+    tb.appendChild(tr);
+  });
+  if(!r.speakers.length) tb.innerHTML = '<tr><td colspan="4" class="hint">Chưa có dữ liệu.</td></tr>';
+}
+document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click', ()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on')); t.classList.add('on');
+  mode = t.dataset.mode; current = null;
+  $('#modeHint').textContent = mode==='cmd'
+    ? 'Lệnh ngắn dùng để huấn luyện (thư mục dataset/<lệnh>/). Lớp "noise" là tiếng ồn nền.'
+    : 'Câu có tham số, chỉ dùng để kiểm thử (testset/audio/). Người lạ đọc cùng bộ câu với người đăng ký.';
+  applyDefaultTarget(); loadCounts(); select(null);
+}));
 
+/* ---------- micro ---------- */
 async function ensureMic(){
-  if(stream)return;
-  stream=await navigator.mediaDevices.getUserMedia({audio:{channelCount:1,echoCancellation:false,noiseSuppression:false,autoGainControl:false}});
-  ctx=new AudioContext(); source=ctx.createMediaStreamSource(stream);
-  analyser=ctx.createAnalyser(); analyser.fftSize=1024; source.connect(analyser);
-  proc=ctx.createScriptProcessor(4096,1,1);
-  const buf=new Float32Array(analyser.fftSize);
-  (function loop(){analyser.getFloatTimeDomainData(buf);let s=0;for(const v of buf)s+=v*v;
-    $('#meter').style.width=Math.min(100,Math.sqrt(s/buf.length)*400)+'%';requestAnimationFrame(loop)})();
-}
-
-async function record(){
-  if(busy)return;
-  if(speaker().length<2){status('Nhập tên người nói (2–20 ký tự, không dấu) trước khi thu.','err');$('#speaker').focus();return}
-  try{await ensureMic()}catch(e){status('Không mở được micro. Hãy cho phép micro và mở trang bằng localhost hoặc HTTPS.','err');return}
-  await ctx.resume(); clearPending(); busy=true; $('#rec').disabled=true; status('Đang thu… hãy nói lệnh.');
-  const need=Math.round(DURATION*ctx.sampleRate), chunks=[]; let got=0, done=false;
-  const stop=()=>{ if(done)return; done=true; proc.onaudioprocess=null; try{source.disconnect(proc);proc.disconnect()}catch(e){}; finish(chunks) };
-  // Dừng khi đã đủ số mẫu (không dùng đồng hồ) để không mất phần cuối do độ trễ khởi động của micro
-  proc.onaudioprocess=e=>{
-    if(done)return;
-    const d=new Float32Array(e.inputBuffer.getChannelData(0)); chunks.push(d); got+=d.length;
-    $('#progress').style.width=Math.min(100,got/need*100)+'%';
-    if(got>=need)setTimeout(stop,0);
+  if(ctx) { if(ctx.state==='suspended') await ctx.resume(); return; }
+  stream = await navigator.mediaDevices.getUserMedia({audio:{channelCount:1, echoCancellation:false, noiseSuppression:false, autoGainControl:false}});
+  ctx = new (window.AudioContext||window.webkitAudioContext)();
+  const src = ctx.createMediaStreamSource(stream);
+  const proc = ctx.createScriptProcessor(4096,1,1);
+  const mute = ctx.createGain(); mute.gain.value = 0;
+  proc.onaudioprocess = e=>{
+    const d = e.inputBuffer.getChannelData(0);
+    let s = 0; for(let i=0;i<d.length;i++) s += d[i]*d[i];
+    const rms = Math.sqrt(s/d.length);
+    $('#meter').style.width = Math.min(100, rms*400)+'%';
+    if(recording){
+      chunks.push(new Float32Array(d)); got += d.length;
+      $('#prog').style.width = Math.min(100, got/need*100)+'%';
+      if(got >= need) finishTake();
+    }
   };
-  source.connect(proc); proc.connect(ctx.destination);
-  setTimeout(stop,(DURATION+4)*1000); // dự phòng nếu micro không phát dữ liệu
+  src.connect(proc); proc.connect(mute); mute.connect(ctx.destination);
 }
+$('#mic').onclick = async ()=>{
+  try{ await ensureMic(); $('#mic').textContent='Micro đang bật'; $('#mic').disabled = true; setMsg('Micro đã bật. Thanh "Mức micro" nên lên khoảng 70-80% khi nói.', 'ok'); updateButtons(); }
+  catch(e){ setMsg('Không mở được micro: '+e.message+'. Hãy cấp quyền và mở bằng localhost hoặc https.', 'bad'); }
+};
 
-async function finish(chunks){
-  const n=Math.round(DURATION*ctx.sampleRate), raw=new Float32Array(n); let o=0;
-  for(const c of chunks){if(o>=n)break;raw.set(c.subarray(0,Math.min(c.length,n-o)),o);o+=c.length}
-  const off=new OfflineAudioContext(1,DURATION*SR,SR), ab=off.createBuffer(1,n,ctx.sampleRate); ab.copyToChannel(raw,0);
-  const src=off.createBufferSource(); src.buffer=ab; src.connect(off.destination); src.start();
-  const data=(await off.startRendering()).getChannelData(0);
-  let peak=0; for(const v of data)peak=Math.max(peak,Math.abs(v));
-  pending={blob:encodeWav(data),peak}; drawWave(data);
-  busy=false; $('#rec').disabled=false; $('#play').disabled=false;
-  const isNoise=COMMANDS[cur].id==='noise';
-  if(!isNoise&&peak<0.02){status('Âm quá nhỏ hoặc không có tiếng. Hãy nói to hơn rồi thu lại.','err')}
-  else{$('#save').disabled=false;status(peak>0.98?'Âm bị vỡ (quá to). Nên thu lại, hoặc lưu nếu chấp nhận.':'Nghe lại rồi nhấn Lưu mẫu (Enter), hoặc Thu âm để làm lại.')}
+/* ---------- thu ---------- */
+const sleep = ms => new Promise(r=>setTimeout(r,ms));
+async function startTake(){
+  if(!current || !ctx || recording) return;
+  if(!/^[a-z][a-z0-9]{1,15}$/.test(speaker())){ setMsg('Hãy nhập tên người nói hợp lệ trước.', 'bad'); return; }
+  discard(true); setBusy(true);
+  const st = $('#stage');
+  for(const t of ['3','2','1']){ st.textContent = t; await sleep(650); }
+  st.textContent = 'NÓI!';
+  chunks = []; got = 0; need = Math.round(ctx.sampleRate*CFG.seconds); $('#prog').style.width='0%';
+  recording = true;
 }
-
-function encodeWav(f){
-  const b=new ArrayBuffer(44+f.length*2), v=new DataView(b), w=(o,s)=>[...s].forEach((c,i)=>v.setUint8(o+i,c.charCodeAt(0)));
-  w(0,'RIFF');v.setUint32(4,36+f.length*2,true);w(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);
-  v.setUint32(24,SR,true);v.setUint32(28,SR*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);w(36,'data');v.setUint32(40,f.length*2,true);
-  f.forEach((s,i)=>v.setInt16(44+i*2,Math.max(-1,Math.min(1,s))*0x7fff,true));
-  return new Blob([b],{type:'audio/wav'});
+async function finishTake(){
+  recording = false;
+  const all = new Float32Array(need); let o = 0;
+  for(const c of chunks){ const k = Math.min(c.length, need-o); all.set(c.subarray(0,k), o); o += k; if(o>=need) break; }
+  const buf = ctx.createBuffer(1, need, ctx.sampleRate); buf.copyToChannel(all, 0);
+  const off = new OfflineAudioContext(1, CFG.sr*CFG.seconds, CFG.sr);
+  const s = off.createBufferSource(); s.buffer = buf; s.connect(off.destination); s.start();
+  const out = (await off.startRendering()).getChannelData(0);
+  take = {samples: out, wav: toWav(out, CFG.sr), stats: analyze(out)};
+  $('#stage').textContent = 'Xong';
+  drawWave(out); showPlayer(); reportTake();
+  setBusy(false); updateButtons();
 }
-
-function drawWave(d){
-  const cv=$('#wave'), r=devicePixelRatio||1; cv.width=cv.clientWidth*r; cv.height=cv.clientHeight*r;
-  const g=cv.getContext('2d'); g.clearRect(0,0,cv.width,cv.height); if(!d)return;
-  g.strokeStyle='#1f5fbf'; g.beginPath(); const step=d.length/cv.width, mid=cv.height/2;
-  for(let x=0;x<cv.width;x++){let mn=1,mx=-1;for(let i=Math.floor(x*step);i<(x+1)*step&&i<d.length;i++){mn=Math.min(mn,d[i]);mx=Math.max(mx,d[i])}
-    g.moveTo(x,mid-mx*mid);g.lineTo(x,mid-mn*mid)}
+function analyze(x){
+  let pk=0, s=0; for(let i=0;i<x.length;i++){ const a=Math.abs(x[i]); if(a>pk) pk=a; s+=x[i]*x[i]; }
+  let last = -1; for(let i=x.length-1;i>=0;i--){ if(Math.abs(x[i])>1e-4){ last=i; break; } }
+  return {peak:pk, rms:Math.sqrt(s/x.length), tail:(x.length-1-last)/CFG.sr};
+}
+function reportTake(){
+  const st = take.stats, noise = (mode==='cmd' && current.id==='noise');
+  const info = 'Đỉnh '+st.peak.toFixed(2)+', RMS '+st.rms.toFixed(3);
+  if(!noise && st.rms < CFG.minRms) return setMsg('Âm quá nhỏ ('+info+'). Tăng âm lượng micro hoặc nói gần hơn rồi thu lại.', 'bad');
+  if(!noise && st.tail > CFG.maxTailZero) return setMsg('Bản thu bị hụt đuôi. Hãy thu lại.', 'bad');
+  if(st.peak >= 0.99) return setMsg('Âm bị méo ('+info+'). Giảm âm lượng micro, nên thu lại.', 'warn');
+  if(!noise && st.rms < 0.02) return setMsg('Âm hơi nhỏ ('+info+'). Vẫn lưu được, nhưng nên nói gần micro hơn.', 'warn');
+  setMsg('Bản thu ổn ('+info+'). Nghe lại rồi bấm Lưu.', 'ok');
+}
+function drawWave(x){
+  const c = $('#wave'), g = c.getContext('2d'), W = c.width, H = c.height;
+  g.clearRect(0,0,W,H); g.strokeStyle = getComputedStyle(document.body).color; g.globalAlpha = .75;
+  g.beginPath();
+  const step = Math.ceil(x.length/W);
+  for(let i=0;i<W;i++){
+    let mn=1, mx=-1; for(let j=0;j<step;j++){ const v=x[i*step+j]||0; if(v<mn) mn=v; if(v>mx) mx=v; }
+    g.moveTo(i, (1-mx)*H/2); g.lineTo(i, (1-mn)*H/2);
+  }
   g.stroke();
 }
-
-async function save(){
-  if(!pending||$('#save').disabled)return;
-  const c=COMMANDS[cur], fd=new FormData(); fd.append('audio',pending.blob,'s.wav'); fd.append('command',c.id); fd.append('speaker',speaker());
-  $('#save').disabled=true;
-  try{
-    const r=await fetch('/save-sample',{method:'POST',body:fd}), j=await r.json();
-    if(!r.ok)throw new Error(j.error||'Lỗi server');
-    counts[c.id]=j.count; clearPending(); status(`Đã lưu ${j.file} (${j.count}/${TARGET}).`,'ok');
-    if(j.count>=TARGET&&cur<COMMANDS.length-1)select(cur+1); else renderList();
-  }catch(e){$('#save').disabled=false;status('Lưu thất bại: '+e.message,'err')}
+function showPlayer(){
+  const p = $('#player'); p.hidden = false;
+  if(p.src) URL.revokeObjectURL(p.src);
+  p.src = URL.createObjectURL(new Blob([take.wav], {type:'audio/wav'}));
+}
+function toWav(f32, sr){
+  const n = f32.length, buf = new ArrayBuffer(44+n*2), v = new DataView(buf);
+  const w = (o,s)=>{ for(let i=0;i<s.length;i++) v.setUint8(o+i, s.charCodeAt(i)); };
+  w(0,'RIFF'); v.setUint32(4,36+n*2,true); w(8,'WAVE'); w(12,'fmt '); v.setUint32(16,16,true);
+  v.setUint16(20,1,true); v.setUint16(22,1,true); v.setUint32(24,sr,true); v.setUint32(28,sr*2,true);
+  v.setUint16(32,2,true); v.setUint16(34,16,true); w(36,'data'); v.setUint32(40,n*2,true);
+  for(let i=0;i<n;i++){ const s=Math.max(-1,Math.min(1,f32[i])); v.setInt16(44+i*2, s<0?s*32768:s*32767, true); }
+  return buf;
+}
+function discard(silent){
+  take = null; recording = false;
+  $('#player').hidden = true; $('#stage').textContent=''; $('#prog').style.width='0%';
+  const c = $('#wave'); c.getContext('2d').clearRect(0,0,c.width,c.height);
+  if(!silent) setMsg('', ''); updateButtons();
 }
 
-$('#rec').onclick=record; $('#save').onclick=save;
-$('#play').onclick=()=>{if(pending)new Audio(URL.createObjectURL(pending.blob)).play()};
-$('#speaker').value=localStorage.getItem('speaker')||'';
-$('#speaker').addEventListener('change',()=>{try{localStorage.setItem('speaker',speaker())}catch(e){};loadCounts()});
-document.addEventListener('keydown',e=>{
-  if(e.target.tagName==='INPUT')return;
-  if(e.code==='Space'){e.preventDefault();record()} else if(e.key==='Enter'&&e.target.tagName!=='BUTTON'){save()}
+/* ---------- lưu ---------- */
+async function saveTake(){
+  if(!take || !current) return;
+  const noise = (mode==='cmd' && current.id==='noise');
+  if(!noise && (take.stats.rms < CFG.minRms || take.stats.tail > CFG.maxTailZero)){ setMsg('Bản thu này không đạt, hãy thu lại.', 'bad'); return; }
+  $('#save').disabled = true;
+  const url = '/save-sample?mode='+mode+'&speaker='+speaker()+'&label='+encodeURIComponent(current.id);
+  let r;
+  try{ r = await (await fetch(url, {method:'POST', headers:{'Content-Type':'audio/wav'}, body: take.wav})).json(); }
+  catch(e){ setMsg('Lỗi kết nối tới server: '+e.message, 'bad'); updateButtons(); return; }
+  if(!r.ok){ setMsg(r.error || 'Lưu thất bại.', 'bad'); updateButtons(); return; }
+  counts[current.id] = r.count;
+  recent.unshift({name:r.filename}); recent = recent.slice(0,6); renderRecent();
+  setMsg('Đã lưu '+r.filename+(r.warnings.length?'. Lưu ý: '+r.warnings.join(' '):''), r.warnings.length?'warn':'ok');
+  discard(true); loadSummary();
+  const tg = +$('#target').value || 1;
+  if($('#auto').checked && (counts[current.id]||0) >= tg){
+    const next = items().find(x=>(counts[x.id]||0) < tg);
+    if(next){ select(next.id); return; }
+    setMsg('Đã đủ mục tiêu ở mọi mục. Cảm ơn!', 'ok');
+  }
+  select(current.id);
+}
+function renderRecent(){
+  const box = $('#recent'); box.innerHTML = '';
+  recent.forEach((r,i)=>{
+    const d = document.createElement('div'); d.className='recent';
+    d.innerHTML = '<span>'+r.name+'</span>';
+    const b = document.createElement('button'); b.className='btn'; b.textContent='Xóa'; b.style.padding='3px 10px';
+    b.onclick = async ()=>{
+      const x = await (await fetch('/delete-sample',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({filename:r.name})})).json();
+      if(x.ok){ recent = recent.filter(y=>y.name!==r.name); renderRecent(); await loadCounts(); loadSummary(); setMsg('Đã xóa '+r.name, 'ok'); }
+      else setMsg(x.error||'Không xóa được.', 'bad');
+    };
+    d.appendChild(b); box.appendChild(d);
+  });
+  if(!recent.length) box.textContent = 'Chưa có bản thu nào trong phiên này.';
+}
+
+/* ---------- giao diện ---------- */
+function setMsg(t, k){ const m = $('#msg'); m.textContent = t; m.className = 'msg '+(k||''); }
+function setBusy(b){ $('#rec').disabled = b || !ctx || !current; if(b) { $('#save').disabled = true; $('#redo').disabled = true; } }
+function updateButtons(){
+  $('#rec').disabled = !ctx || !current || recording;
+  $('#save').disabled = !take;
+  $('#redo').disabled = !take;
+}
+$('#rec').onclick = startTake; $('#save').onclick = saveTake; $('#redo').onclick = ()=>discard(false);
+document.addEventListener('keydown', e=>{
+  if(['INPUT','TEXTAREA'].includes(document.activeElement.tagName) && document.activeElement.type!=='checkbox') return;
+  if(e.code==='Space'){ e.preventDefault(); if(!$('#rec').disabled) startTake(); }
+  else if(e.code==='Enter'){ if(!$('#save').disabled) saveTake(); }
+  else if(e.code==='Escape'){ if(!$('#redo').disabled) discard(false); }
 });
-select(0); loadCounts();
+
+/* ---------- khởi động ---------- */
+(async function init(){
+  CFG = await (await fetch('/record/config')).json();
+  $('#secs').textContent = CFG.seconds;
+  $('#modeHint').textContent = 'Lệnh ngắn dùng để huấn luyện (thư mục dataset/<lệnh>/). Lớp "noise" là tiếng ồn nền.';
+  const saved = localStorage.getItem('rec_speaker') || '';
+  $('#spk').value = saved; $('#asStranger').checked = isStranger(saved);
+  updateSpeakerInfo(); applyDefaultTarget(); await loadCounts(); loadSummary();
+  if(CFG.commands.length) select(CFG.commands[0].id);
+})();
 </script>
 </body>
 </html>
