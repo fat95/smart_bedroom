@@ -85,6 +85,21 @@ class TestPipeline(unittest.TestCase):
         for f in ["results_fake.csv", "report_fake.json", "confusion_fake_device.png", "confusion_fake_action.csv", "summary.md"]:
             self.assertTrue((out / f).exists(), f)
 
+    def test_load_simple_follows_renamed_files(self):
+        d = self.t / "dataset" / "bat_tivi"
+        d.mkdir(parents=True)
+        _write_wav(d / "vinh_bat_tivi_003.wav")                  # tên mới của nhánh phan-B
+        (self.t / "manifest.csv").write_text(
+            "file,command,speaker,split\r\ndataset\\bat_tivi\\vinh_003.wav,bat_tivi,vinh,test\r\n", encoding="utf-8")
+        old_root = E.ROOT
+        E.ROOT = self.t
+        try:
+            items = E.load_simple(self.t / "manifest.csv", "test")
+        finally:
+            E.ROOT = old_root
+        self.assertEqual(len(items), 1)
+        self.assertTrue(items[0]["path"].endswith("vinh_bat_tivi_003.wav"))
+
     def test_simple_mode_noise_rejection(self):
         items = [dict(path="a.wav", speaker="x", sid="bat_tivi", rep="", ref_text="bật tivi", device="tv", action="on", value=None),
                  dict(path="b.wav", speaker="x", sid="noise", rep="", ref_text="", device=None, action=None, value=None),

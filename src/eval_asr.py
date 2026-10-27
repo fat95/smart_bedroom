@@ -108,7 +108,12 @@ def load_simple(manifest: Path, split: str) -> list[dict]:
                 continue
             dev, act = SIMPLE_LABELS[row["command"]]
             rel = Path(row["file"].replace("\\", "/"))
-            items.append(dict(path=str(ROOT / rel), speaker=row["speaker"], sid=row["command"], rep="",
+            path = ROOT / rel
+            if not path.exists():                  # nhánh phan-B đổi tên file: phat_001.wav -> phat_bat_tivi_001.wav
+                alt = path.with_name(f"{row['speaker']}_{row['command']}_{path.stem.split('_')[-1]}.wav")
+                if alt.exists():
+                    path = alt
+            items.append(dict(path=str(path), speaker=row["speaker"], sid=row["command"], rep="",
                               ref_text=SIMPLE_TEXT.get(row["command"], ""), device=dev, action=act, value=None))
     return items
 
