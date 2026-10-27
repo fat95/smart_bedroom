@@ -284,6 +284,10 @@ def parse_command(text: str) -> dict:
 
 
 # ------------------------------------------------------------------ chuẩn hóa cho WER/CER
+TONE_PLACEMENT = {"oà": "òa", "oá": "óa", "oả": "ỏa", "oã": "õa", "oạ": "ọa", "oè": "òe", "oé": "óe", "oẻ": "ỏe", "oẽ": "õe", "oẹ": "ọe",
+                  "uỳ": "ùy", "uý": "úy", "uỷ": "ủy", "uỹ": "ũy", "uỵ": "ụy"}
+
+
 def normalize_for_wer(text: str) -> list[str]:
     """Token cho WER/CER: chữ thường, giữ dấu tiếng Việt, bỏ dấu câu, số đọc bằng chữ -> chữ số.
 
@@ -291,6 +295,8 @@ def normalize_for_wer(text: str) -> list[str]:
     hay chữ đều không bị tính là sai.
     """
     s = unicodedata.normalize("NFC", (text or "").lower()).replace("%", " phần trăm ").replace("°", " độ ")
+    for old_style, new_style in TONE_PLACEMENT.items():           # "hoà" và "hòa" là cùng một chữ, chỉ khác chỗ đặt dấu
+        s = s.replace(old_style, new_style)
     s = re.sub(r"[^\w\s]", " ", s)
     s = re.sub(r"(?<=\d)(?=[^\W\d_])|(?<=[^\W\d_])(?=\d)", " ", s)
     toks = s.split()

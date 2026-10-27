@@ -166,6 +166,10 @@ class TestNormalizeForWer(unittest.TestCase):
     def test_percent(self):
         self.assertEqual(C.normalize_for_wer("đặt đèn trần 50%"), C.normalize_for_wer("đặt đèn trần năm mươi phần trăm"))
 
+    def test_tone_mark_placement(self):
+        self.assertEqual(C.normalize_for_wer("bật điều hoà"), C.normalize_for_wer("bật điều hòa"))
+        self.assertEqual(C.normalize_for_wer("hóa"), C.normalize_for_wer("hoá"))
+
     def test_accents_kept(self):
         self.assertNotEqual(C.normalize_for_wer("bật"), C.normalize_for_wer("bắt"))
 
