@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Thu âm lệnh – Smart Bedroom</title>
+<title>Thu âm lệnh – Smart Bedroom (Phần C)</title>
 <style>
 :root{--bg:#eef1f4;--panel:#fff;--ink:#14202b;--mute:#5d6b78;--line:#d3dae1;--blue:#1f5fbf;--red:#d6342c;--green:#2e7d5b}
 *{box-sizing:border-box}
@@ -26,7 +26,8 @@ main{display:grid;grid-template-columns:minmax(260px,320px) 1fr;gap:20px;padding
 .cmd.done .bar i{background:var(--green)}
 .stage{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px}
 .say{font-size:34px;font-weight:650;margin:0 0 4px}
-.hint{color:var(--mute);margin:0 0 20px}
+.hint{color:var(--mute);margin:0 0 10px}
+.script-box{background:#f8fafc; border-left: 4px solid var(--blue); padding: 10px 15px; margin-bottom: 20px; font-size: 15px; color: #334155; border-radius: 4px;}
 .meter{height:8px;background:var(--line);border-radius:4px;overflow:hidden;margin-bottom:6px}
 .meter i{display:block;height:100%;width:0;background:var(--green)}
 .rec-bar{height:4px;background:var(--line);margin-bottom:16px}
@@ -46,8 +47,8 @@ button:focus-visible,input:focus-visible{outline:3px solid #7aa7ea;outline-offse
 </head>
 <body>
 <header>
-  <h1>Thu âm lệnh điều khiển phòng ngủ</h1>
-  <div><label for="speaker">Tên người nói (không dấu, vd: vi)</label><br><input id="speaker" maxlength="20" autocomplete="off"></div>
+  <h1>Thu âm lệnh điều khiển (4 giây) - Kịch bản Người C</h1>
+  <div><label for="speaker">Tên người nói (vd: vi, duy, la_1)</label><br><input id="speaker" maxlength="20" autocomplete="off"></div>
 </header>
 <main>
   <div>
@@ -56,12 +57,15 @@ button:focus-visible,input:focus-visible{outline:3px solid #7aa7ea;outline-offse
   </div>
   <section class="stage">
     <p class="say" id="say"></p>
-    <p class="hint" id="hint">Nhấn Thu âm (hoặc phím Space), rồi nói lệnh ngay. Mỗi lần thu đúng 2 giây.</p>
+    <p class="hint" id="hint">Nhấn Thu âm (hoặc phím Space), rồi đọc to và rõ 1 trong các câu mẫu bên dưới. Mỗi lần thu đúng 4 giây.</p>
+    <div class="script-box" id="script-box">
+      <!-- Các câu đọc mẫu sẽ được hiển thị ở đây -->
+    </div>
     <div class="meter" aria-hidden="true"><i id="meter"></i></div>
     <div class="rec-bar" aria-hidden="true"><i id="progress"></i></div>
     <canvas id="wave" aria-label="Dạng sóng bản thu"></canvas>
     <div class="actions">
-      <button class="act" id="rec">Thu âm</button>
+      <button class="act" id="rec">Thu âm (4s)</button>
       <button class="act" id="play" disabled>Nghe lại</button>
       <button class="act" id="save" disabled>Lưu mẫu</button>
     </div>
@@ -69,18 +73,48 @@ button:focus-visible,input:focus-visible{outline:3px solid #7aa7ea;outline-offse
   </section>
 </main>
 <script>
+// Cập nhật danh sách lệnh và bổ sung kịch bản test có tham số (từ sentences.csv)
 const COMMANDS=[
-  {id:'bat_dieu_hoa',text:'Bật điều hòa'},{id:'tat_dieu_hoa',text:'Tắt điều hòa'},
-  {id:'bat_den_tran',text:'Bật đèn trần'},{id:'tat_den_tran',text:'Tắt đèn trần'},
-  {id:'mo_rem',text:'Mở rèm'},{id:'bat_tivi',text:'Bật tivi'},
-  {id:'noise',text:'(Không nói gì)',hint:'Lớp noise: giữ im lặng, chỉ thu tiếng nền của phòng. Có thể nói chuyện khác hoặc gõ phím để đa dạng.'}
+  {
+      id:'bat_dieu_hoa',
+      text:'Bật điều hòa', 
+      scripts: ["bật điều hòa", "bật điều hòa mười sáu độ", "bật điều hòa hai mươi lăm độ", "bật điều hòa năm mươi độ"]
+  },
+  {
+      id:'tat_dieu_hoa',
+      text:'Tắt điều hòa',
+      scripts: ["tắt điều hòa"]
+  },
+  {
+      id:'bat_den_tran',
+      text:'Bật đèn trần',
+      scripts: ["bật đèn trần", "tăng độ sáng đèn trần lên một trăm", "giảm độ sáng đèn trần xuống năm mươi"]
+  },
+  {
+      id:'tat_den_tran',
+      text:'Tắt đèn trần',
+      scripts: ["tắt đèn trần", "giảm đèn trần xuống không"]
+  },
+  {
+      id:'bat_tivi',
+      text:'Bật tivi',
+      scripts: ["bật tivi", "mở tivi", "bật tivi kênh VTV3"]
+  },
+  {
+      id:'noise',
+      text:'(Không nói gì)',
+      hint:'Lớp noise: giữ im lặng, chỉ thu tiếng nền của phòng. Có thể nói chuyện khác hoặc gõ phím để đa dạng.',
+      scripts: ["(Không đọc gì cả, tạo tiếng ồn ngẫu nhiên hoặc im lặng)"]
+  }
 ];
-const TARGET=12, DURATION=2, SR=16000;
+
+// Nâng thời gian ghi âm lên 4 giây
+const TARGET=12, DURATION=4, SR=16000;
 const $=s=>document.querySelector(s);
 const counts={}; let cur=0, busy=false, pending=null;
 let ctx, stream, source, proc, analyser;
 
-const slug=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/gi,'d').toLowerCase().replace(/[^a-z0-9]/g,'');
+const slug=s=>s.normalize('NFD').replace(/[\u0300-\u036f]/g,'').replace(/đ/gi,'d').toLowerCase().replace(/[^a-z0-9_]/g,'');
 const speaker=()=>slug($('#speaker').value);
 function status(msg,cls=''){const e=$('#status');e.textContent=msg;e.className=cls}
 
@@ -95,10 +129,17 @@ function renderList(){
   const tot=COMMANDS.reduce((s,c)=>s+(counts[c.id]||0),0);
   $('#total').textContent=`Tổng: ${tot}/${COMMANDS.length*TARGET} mẫu của bạn`;
 }
+
 function select(i){
   cur=i; clearPending();
-  $('#say').textContent=COMMANDS[i].text;
-  $('#hint').textContent=COMMANDS[i].hint||'Nhấn Thu âm (hoặc phím Space), rồi nói lệnh ngay. Mỗi lần thu đúng 2 giây.';
+  const cmd = COMMANDS[i];
+  $('#say').textContent=cmd.text;
+  $('#hint').textContent=cmd.hint||'Nhấn Thu âm (hoặc phím Space), rồi đọc 1 câu mẫu bên dưới. Mỗi lần thu đúng 4 giây.';
+  
+  // Render danh sách câu mẫu
+  const scriptHtml = cmd.scripts.map(s => `• <b>${s}</b>`).join('<br>');
+  $('#script-box').innerHTML = `<i>Ví dụ câu lệnh để đọc:</i><br>${scriptHtml}`;
+  
   renderList();
 }
 function clearPending(){pending=null;$('#play').disabled=true;$('#save').disabled=true;drawWave(null);$('#progress').style.width='0'}
@@ -122,12 +163,12 @@ async function ensureMic(){
 
 async function record(){
   if(busy)return;
-  if(speaker().length<2){status('Nhập tên người nói (2–20 ký tự, không dấu) trước khi thu.','err');$('#speaker').focus();return}
-  try{await ensureMic()}catch(e){status('Không mở được micro. Hãy cho phép micro và mở trang bằng localhost hoặc HTTPS.','err');return}
+  if(speaker().length<2){status('Nhập tên người nói (2–20 ký tự, vd: la_1) trước khi thu.','err');$('#speaker').focus();return}
+  try{await ensureMic()}catch(e){status('Không mở được micro. Hãy cho phép micro.','err');return}
   await ctx.resume(); clearPending(); busy=true; $('#rec').disabled=true; status('Đang thu… hãy nói lệnh.');
   const need=Math.round(DURATION*ctx.sampleRate), chunks=[]; let got=0, done=false;
+  
   const stop=()=>{ if(done)return; done=true; proc.onaudioprocess=null; try{source.disconnect(proc);proc.disconnect()}catch(e){}; finish(chunks) };
-  // Dừng khi đã đủ số mẫu (không dùng đồng hồ) để không mất phần cuối do độ trễ khởi động của micro
   proc.onaudioprocess=e=>{
     if(done)return;
     const d=new Float32Array(e.inputBuffer.getChannelData(0)); chunks.push(d); got+=d.length;
@@ -135,7 +176,7 @@ async function record(){
     if(got>=need)setTimeout(stop,0);
   };
   source.connect(proc); proc.connect(ctx.destination);
-  setTimeout(stop,(DURATION+4)*1000); // dự phòng nếu micro không phát dữ liệu
+  setTimeout(stop,(DURATION+4)*1000);
 }
 
 async function finish(chunks){
