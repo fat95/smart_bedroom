@@ -97,3 +97,8 @@ def value_in_range(device: str, action: str, value) -> bool:
     if rng is None:
         return value is None
     return value is not None and rng[0] <= value <= rng[1]
+
+
+ENROLLED_SPEAKERS = ["speaker_1", "speaker_2", "speaker_3"] 
+STRANGERS = ["la_1", "la_2"]
+SPEAKER_VERIFICATION_THRESHOLD = 0.75
