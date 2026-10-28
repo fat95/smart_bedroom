@@ -14,7 +14,7 @@ Quan trọng khi ghép vào app.py:
   - decision.py phải kiểm tra `reason` TRƯỚC: nếu reason khác None thì không được thực thi lệnh
 
 Thử nhanh:
-    python src/asr.py dataset/bat_tivi/vinh_001.wav
+    python src/asr.py dataset/bat_tivi/vinh_bat_tivi_001.wav
     python src/asr.py file.wav --model phowhisper-small
 """
 from __future__ import annotations

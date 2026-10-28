@@ -24,7 +24,7 @@
 pip install -r requirements-asr.txt
 python -m unittest discover -s tests -v          # không cần mô hình
 python src/commands.py "đặt điều hòa hai mươi sáu độ"
-python src/asr.py dataset/bat_tivi/vinh_001.wav   # lần đầu tải mô hình
+python src/asr.py dataset/bat_tivi/vinh_bat_tivi_001.wav   # lần đầu tải mô hình
 ```
 Trong `app.py`: gọi `asr.warmup()` một lần khi khởi động rồi gọi `asr.recognize_command(wav_bytes)` mỗi request.
 

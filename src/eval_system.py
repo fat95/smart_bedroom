@@ -1,90 +1,117 @@
 """
-Script đánh giá toàn diện hệ thống Smart Bedroom (Người C).
-Yêu cầu: Phải chạy file app.py (Flask server) ở một terminal khác trước khi chạy script này.
-"""
+Đánh giá toàn hệ thống Smart Bedroom qua HTTP (câu 2.5).
+Chạy app.py ở terminal khác trước.
 
+    python src/eval_system.py                       # sạch
+    python src/eval_system.py --snr 20 10 5         # thêm nhiễu trắng (mô phỏng phòng ồn)
+    python src/eval_system.py --gain-db -10 -20     # giảm biên độ (mô phỏng xa micro)
+
+File: testset/audio/<người>_<mã câu>_<số lần>.wav, đáp án: testset/sentences.csv (id,text,device,action,value).
+Người lạ = tên la, la1, la2, ... (hoặc trong strangers.txt). Đáp án so với JSON của app (tiếng Việt).
+"""
+import argparse
 import csv
+import io
+import re
+import statistics
+import sys
 import time
-import requests
 from pathlib import Path
 
-# Cấu hình đường dẫn
-BASE_DIR = Path(__file__).resolve().parent.parent
-TESTSET_DIR = BASE_DIR / "testset"
-AUDIO_DIR = TESTSET_DIR / "audio"
-CSV_FILE = TESTSET_DIR / "sentences.csv"
-SERVER_URL = "http://127.0.0.1:5000/process-audio"
+import numpy as np
+import requests
+import soundfile as sf
 
-def run_evaluation():
+BASE = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(BASE / "src"))
+from adapter import to_decision_input  # noqa: E402
+
+AUDIO_DIR = BASE / "testset" / "audio"
+CSV_FILE = BASE / "testset" / "sentences.csv"
+URL = "http://127.0.0.1:5000/process-audio"
+STRANGER_RE = re.compile(r"^la\d*$", re.I)
+
+
+def stranger_names():
+    p = BASE / "strangers.txt"
+    if not p.exists():
+        return set()
+    return {l.split("#", 1)[0].strip().lower() for l in p.read_text(encoding="utf-8-sig").splitlines()
+            if l.split("#", 1)[0].strip()}
+
+
+def load_sentences():
+    out = {}
+    with open(CSV_FILE, encoding="utf-8-sig", newline="") as f:
+        for row in csv.DictReader(f):
+            v = (row.get("value") or "").strip()
+            exp = to_decision_input({"device": (row.get("device") or "").strip() or None,
+                                     "action": (row.get("action") or "").strip() or None,
+                                     "value": int(float(v)) if v else None, "reason": None})
+            out[row["id"].strip()] = exp
+    return out
+
+
+def wav_bytes(path, snr_db=None, gain_db=None, rng=None):
+    y, sr = sf.read(str(path), dtype="float32", always_2d=True)
+    y = y.mean(axis=1)
+    if gain_db is not None:
+        y = y * 10 ** (gain_db / 20)
+    if snr_db is not None:
+        p = float(np.mean(y ** 2)) + 1e-12
+        y = y + rng.standard_normal(len(y)).astype("float32") * np.sqrt(p / 10 ** (snr_db / 10))
+    buf = io.BytesIO()
+    sf.write(buf, np.clip(y, -1, 1), sr, format="WAV", subtype="PCM_16")
+    return buf.getvalue()
+
+
+def run(snr=None, gain=None):
+    sents, strangers = load_sentences(), stranger_names()
+    rng = np.random.default_rng(0)
+    enr, stg, lat, skipped = [], [], [], 0
+    for p in sorted(AUDIO_DIR.glob("*.wav")):
+        parts = p.stem.split("_")
+        if len(parts) < 3 or "_".join(parts[1:-1]) not in sents:
+            skipped += 1
+            continue
+        spk, exp = parts[0].lower(), sents["_".join(parts[1:-1])]
+        is_str = bool(STRANGER_RE.match(spk)) or spk in strangers
+        t0 = time.perf_counter()
+        try:
+            r = requests.post(URL, files={"audio_data": (p.name, wav_bytes(p, snr, gain, rng), "audio/wav")},
+                              timeout=60).json()
+        except requests.exceptions.ConnectionError:
+            sys.exit(f"Không kết nối được {URL}. Đã chạy 'python app.py' chưa?")
+        lat.append((time.perf_counter() - t0) * 1000)
+        ok = r.get("status") == "ok"
+        if is_str:
+            stg.append(not ok)                               # đúng = bị chặn
+        else:
+            enr.append(ok and all(r.get(k) == exp.get(k) for k in ("device", "action", "target", "value")))
+            if not enr[-1]:
+                print(f"  sai: {p.name}: mong đợi {exp} | nhận {r.get('status')} {r.get('reason')} "
+                      f"'{r.get('text')}' {r.get('device')}/{r.get('action')}/{r.get('target')}/{r.get('value')}")
+    pct = lambda x: "-" if not x else f"{100 * sum(x) / len(x):.1f}% ({sum(x)}/{len(x)})"
+    tag = "sạch" if snr is None and gain is None else (f"SNR {snr} dB" if snr is not None else f"gain {gain} dB")
+    print(f"[{tag}] người đăng ký thực thi đúng: {pct(enr)} | người lạ bị chặn: {pct(stg)} | "
+          f"trễ TB: {statistics.mean(lat):.0f} ms" if lat else f"[{tag}] không có mẫu nào")
+    if skipped:
+        print(f"  (bỏ qua {skipped} file không khớp mã câu)")
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--snr", type=float, nargs="*")
+    ap.add_argument("--gain-db", type=float, nargs="*")
+    a = ap.parse_args()
     if not CSV_FILE.exists():
-        print(f"❌ Không tìm thấy file {CSV_FILE}. Hãy đảm bảo bạn đã tạo dữ liệu test.")
-        return
+        sys.exit(f"Không thấy {CSV_FILE}")
+    run()
+    for s in a.snr or []:
+        run(snr=s)
+    for g in a.gain_db or []:
+        run(gain=g)
 
-    total_samples = 0
-    correct_recognition = 0
-    total_latency = 0
-    
-    print(f"{'ID':<5} | {'THIẾT BỊ KỲ VỌNG':<18} | {'DỰ ĐOÁN':<15} | {'TRẠNG THÁI':<12} | {'ĐỘ TRỄ (ms)'}")
-    print("-" * 75)
-
-    with open(CSV_FILE, mode='r', encoding='utf-8') as f:
-        reader = csv.DictReader(f)
-        for row in reader:
-            audio_id = row['id']
-            expected_device = row['device']
-            
-            # Tìm file audio (hỗ trợ cả người quen và người lạ, ví dụ: 001.wav, la_1_001.wav)
-            # Tạm định dạng file audio theo ID trong file csv
-            audio_path = AUDIO_DIR / f"{audio_id}.wav"
-            
-            if not audio_path.exists():
-                continue
-            
-            total_samples += 1
-            
-            with open(audio_path, 'rb') as audio_file:
-                files = {'audio_data': (f"{audio_id}.wav", audio_file, 'audio/wav')}
-                try:
-                    response = requests.post(SERVER_URL, files=files)
-                    result = response.json()
-                    
-                    pred_device = result.get('device', 'N/A')
-                    status = result.get('status', 'error')
-                    latency = result.get('latency_ms', 0)
-                    reason = result.get('reason', '')
-                    
-                    total_latency += latency
-                    
-                    # Kiểm tra tính đúng đắn: Lệnh hợp lệ và thiết bị nhận diện đúng
-                    is_correct = (status == 'ok' and pred_device == expected_device)
-                    
-                    # Nếu kịch bản là test từ chối (vd: file của người lạ), kỳ vọng status phải là 'rejected'
-                    if "la_" in audio_id and status == 'rejected':
-                        is_correct = True
-                        
-                    if is_correct:
-                        correct_recognition += 1
-                        
-                    display_status = status if status == 'ok' else f"từ chối ({reason})"
-                    print(f"{audio_id:<5} | {expected_device:<18} | {pred_device:<15} | {display_status:<12} | {latency}")
-                    
-                except requests.exceptions.ConnectionError:
-                    print(f"❌ Lỗi: Không thể kết nối đến {SERVER_URL}. Bạn đã chạy 'python app.py' chưa?")
-                    return
-                except Exception as e:
-                    print(f"{audio_id:<5} | Lỗi xử lý: {e}")
-
-    # In báo cáo tổng kết
-    if total_samples > 0:
-        accuracy = (correct_recognition / total_samples) * 100
-        avg_latency = total_latency / total_samples
-        print("-" * 75)
-        print("TỔNG KẾT ĐÁNH GIÁ HỆ THỐNG:")
-        print(f"- Tổng số mẫu test đã chạy : {total_samples}")
-        print(f"- Tỷ lệ chính xác (Accuracy): {accuracy:.2f}%")
-        print(f"- Độ trễ trung bình         : {avg_latency:.2f} ms")
-    else:
-        print("⚠️ Không có mẫu test nào được thực thi. Hãy kiểm tra lại thư mục testset/audio/")
 
 if __name__ == "__main__":
-    run_evaluation()
+    main()

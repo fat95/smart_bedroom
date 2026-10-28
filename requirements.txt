@@ -11,5 +11,4 @@ torch
 transformers
 accelerate
 rapidfuzz
-soundfile
 pandas
