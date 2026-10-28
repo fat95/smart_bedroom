@@ -87,7 +87,7 @@ def decide(command_data, speaker_data):
         if device not in POWER_DEVICES:
             return _reject("unknown_command", f"{device} không có lệnh bật/tắt.")
         return {"status": "ok", "device": device, "action": action, "target": None,
-                "value": value, "speaker": speaker_id}
+                "value": None, "speaker": speaker_id}
 
     # BƯỚC 4: Tăng / giảm / đặt: phải có thuộc tính hợp lệ cho thiết bị
     rule = ACTION_RULES.get((device, target), {}).get(action)
