@@ -1,4 +1,4 @@
-﻿id,text,device,action,value
+id,text,device,action,value
 s01,bật điều hòa,ac,on,
 s02,tắt điều hòa,ac,off,
 s03,bật đèn trần,light-main,on,
