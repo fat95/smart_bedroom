@@ -31,7 +31,8 @@ ASR_DEFAULT = "phowhisper-base"
 
 # ---------------------------------------------------------------- ngưỡng
 COMMAND_THRESHOLD = 0.75   # điểm khớp mờ tối thiểu (0..1) để chấp nhận một lệnh
-SPEAKER_THRESHOLD = 0.5    # B chọn lại bằng leave-one-speaker-out
+SPEAKER_THRESHOLD = 0.5    # KHÔNG DÙNG: ngưỡng người nói nằm trong models/speaker_model.joblib (train_speaker.py chọn).
+                           # Muốn ép tay thì đặt biến môi trường SPEAKER_THRESHOLD khi chạy app.
 
 # ---------------------------------------------------------------- thiết bị
 # id thiết bị khớp với index.html: ac, light-main, bed, tv.
@@ -59,8 +60,8 @@ DEVICES = {
         "actions": {
             "on":   {"range": None},
             "off":  {"range": None},
-            "up":   {"range": (0, 100)},
-            "down": {"range": (0, 100)},
+            "up":   {"range": (1, 100)},
+            "down": {"range": (1, 100)},
             "set":  {"range": (0, 100)},
         },
         "limits": (0, 100),
@@ -69,8 +70,8 @@ DEVICES = {
         "label": "Giường nâng đầu",
         "keywords": ["dau giuong", "giuong nang", "giuong"],
         "actions": {
-            "up":   {"range": (0, 60)},
-            "down": {"range": (0, 60)},
+            "up":   {"range": (1, 60)},
+            "down": {"range": (1, 60)},
             "set":  {"range": (0, 60)},         # 0 = nằm phẳng; dashboard hiện cho 0-60 độ
         },
         "limits": (0, 60),
@@ -82,8 +83,8 @@ DEVICES = {
             "on":      {"range": None},
             "off":     {"range": None},
             "channel": {"range": (1, 9)},
-            "up":      {"range": (0, 100)},     # âm lượng
-            "down":    {"range": (0, 100)},
+            "up":      {"range": (1, 100)},     # âm lượng
+            "down":    {"range": (1, 100)},
             "set":     {"range": (0, 100)},
         },
         "limits": (0, 100),
@@ -99,6 +100,6 @@ def value_in_range(device: str, action: str, value) -> bool:
     return value is not None and rng[0] <= value <= rng[1]
 
 
-ENROLLED_SPEAKERS = ["speaker_1", "speaker_2", "speaker_3"] 
-STRANGERS = ["la_1", "la_2"]
-SPEAKER_VERIFICATION_THRESHOLD = 0.75
+# Danh sách người đăng ký / người lạ KHÔNG khai báo ở đây:
+#   - người đăng ký = tên người trong dataset/ (speaker.py tự đọc từ tên file)
+#   - người lạ      = tên la, la1, la2, ... hoặc tên ghi trong strangers.txt

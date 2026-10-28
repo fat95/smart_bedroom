@@ -70,37 +70,64 @@ COMMANDS = [
     ("noise", "(giữ im lặng hoặc tiếng ồn nền)"),
 ]
 
-# Câu có tham số mặc định: id,text,device,action,value. Có thể sửa trực tiếp file CSV.
+# Câu có tham số mặc định: id,text,device,action,value.
+# device/action DÙNG ĐÚNG MÃ của config.DEVICES (ac, light-main, bed, tv; on/off/up/down/set/channel/mode_*)
+# để eval_asr.py và eval_system.py so khớp được với commands.py. Có thể sửa trực tiếp file CSV.
 DEFAULT_SENTENCES = [
-    ("c01", "tăng điều hòa hai độ", "ac", "temp_up", "2"),
-    ("c02", "giảm điều hòa ba độ", "ac", "temp_down", "3"),
-    ("c03", "đặt điều hòa hai mươi sáu độ", "ac", "temp_set", "26"),
-    ("c04", "đặt điều hòa hai mươi hai độ", "ac", "temp_set", "22"),
-    ("c05", "giảm điều hòa một độ", "ac", "temp_down", "1"),
-    ("c06", "tăng điều hòa năm độ", "ac", "temp_up", "5"),
-    ("c07", "đặt điều hòa mười sáu độ", "ac", "temp_set", "16"),
-    ("c08", "đặt điều hòa mười chín độ", "ac", "temp_set", "19"),
-    ("c09", "điều hòa chế độ làm lạnh", "ac", "mode_set", "cool"),
-    ("c10", "tăng đèn trần hai mươi phần trăm", "light", "brightness_up", "20"),
-    ("c11", "giảm đèn trần ba mươi phần trăm", "light", "brightness_down", "30"),
-    ("c12", "đặt đèn trần năm mươi phần trăm", "light", "brightness_set", "50"),
-    ("c13", "đặt đèn trần tám mươi phần trăm", "light", "brightness_set", "80"),
-    ("c14", "đặt đèn trần một trăm phần trăm", "light", "brightness_set", "100"),
-    ("c15", "nâng đầu giường mười độ", "bed", "bed_up", "10"),
-    ("c16", "hạ đầu giường mười lăm độ", "bed", "bed_down", "15"),
-    ("c17", "đặt đầu giường ba mươi độ", "bed", "bed_set", "30"),
-    ("c18", "hạ giường nằm phẳng", "bed", "bed_flat", "0"),
-    ("c19", "chuyển tivi kênh năm", "tv", "channel_set", "5"),
-    ("c20", "chuyển tivi kênh chín", "tv", "channel_set", "9"),
-    ("c21", "chuyển tivi kênh ba", "tv", "channel_set", "3"),
-    ("c22", "tăng âm lượng tivi mười", "tv", "volume_up", "10"),
-    ("c23", "giảm âm lượng tivi hai mươi", "tv", "volume_down", "20"),
-    ("c24", "đặt âm lượng tivi bốn mươi", "tv", "volume_set", "40"),
-    ("c25", "bật điều hòa", "ac", "power_on", ""),
-    ("c26", "tắt đèn trần", "light", "power_off", ""),
-    ("c27", "bật tivi", "tv", "power_on", ""),
-    ("c28", "tắt tivi", "tv", "power_off", ""),
+    ("c01", "tăng điều hòa hai độ", "ac", "up", "2"),
+    ("c02", "giảm điều hòa ba độ", "ac", "down", "3"),
+    ("c03", "đặt điều hòa hai mươi sáu độ", "ac", "set", "26"),
+    ("c04", "đặt điều hòa hai mươi hai độ", "ac", "set", "22"),
+    ("c05", "giảm điều hòa một độ", "ac", "down", "1"),
+    ("c06", "tăng điều hòa năm độ", "ac", "up", "5"),
+    ("c07", "đặt điều hòa mười sáu độ", "ac", "set", "16"),
+    ("c08", "đặt điều hòa mười chín độ", "ac", "set", "19"),
+    ("c09", "điều hòa chế độ làm lạnh", "ac", "mode_cool", ""),
+    ("c10", "tăng đèn trần hai mươi phần trăm", "light-main", "up", "20"),
+    ("c11", "giảm đèn trần ba mươi phần trăm", "light-main", "down", "30"),
+    ("c12", "đặt đèn trần năm mươi phần trăm", "light-main", "set", "50"),
+    ("c13", "đặt đèn trần tám mươi phần trăm", "light-main", "set", "80"),
+    ("c14", "đặt đèn trần một trăm phần trăm", "light-main", "set", "100"),
+    ("c15", "nâng đầu giường mười độ", "bed", "up", "10"),
+    ("c16", "hạ đầu giường mười lăm độ", "bed", "down", "15"),
+    ("c17", "đặt đầu giường ba mươi độ", "bed", "set", "30"),
+    ("c18", "hạ giường nằm phẳng", "bed", "set", "0"),
+    ("c19", "chuyển tivi kênh năm", "tv", "channel", "5"),
+    ("c20", "chuyển tivi kênh chín", "tv", "channel", "9"),
+    ("c21", "chuyển tivi kênh ba", "tv", "channel", "3"),
+    ("c22", "tăng âm lượng tivi mười", "tv", "up", "10"),
+    ("c23", "giảm âm lượng tivi hai mươi", "tv", "down", "20"),
+    ("c24", "đặt âm lượng tivi bốn mươi", "tv", "set", "40"),
+    ("c25", "bật điều hòa", "ac", "on", ""),
+    ("c26", "tắt đèn trần", "light-main", "off", ""),
+    ("c27", "bật tivi", "tv", "on", ""),
+    ("c28", "tắt tivi", "tv", "off", ""),
 ]
+
+# Mã cũ (bản đầu của file này) -> mã của config.DEVICES. Dùng để nâng cấp sentences.csv đã tạo từ trước.
+LEGACY_ACTION = {
+    "temp_up": "up", "temp_down": "down", "temp_set": "set",
+    "brightness_up": "up", "brightness_down": "down", "brightness_set": "set",
+    "bed_up": "up", "bed_down": "down", "bed_set": "set", "bed_flat": "set",
+    "channel_set": "channel", "volume_up": "up", "volume_down": "down", "volume_set": "set",
+    "power_on": "on", "power_off": "off",
+}
+LEGACY_MODE = {"cool": "mode_cool", "fan": "mode_fan", "dry": "mode_dry"}
+
+
+def upgrade_legacy(rows: list[dict]) -> tuple[list[dict], bool]:
+    """Đổi mã device/action cũ sang mã mới. Trả về (rows, có thay đổi không)."""
+    changed = False
+    for r in rows:
+        dev, act, val = r["device"], r["action"], r["value"]
+        if dev == "light":
+            r["device"], changed = "light-main", True
+        if act == "mode_set":
+            r["action"], r["value"], changed = LEGACY_MODE.get(val, "mode_cool"), "", True
+        elif act in LEGACY_ACTION:
+            r["action"], changed = LEGACY_ACTION[act], True
+    return rows, changed
+
 
 _LOCK = threading.Lock()
 
@@ -124,6 +151,14 @@ def load_sentences() -> list[dict]:
                             "device": (row.get("device") or "").strip(),
                             "action": (row.get("action") or "").strip(),
                             "value": (row.get("value") or "").strip()})
+    out, changed = upgrade_legacy(out)
+    if changed:                                    # file tạo từ bản cũ: sao lưu rồi ghi lại bằng mã mới
+        SENTENCES_CSV.replace(SENTENCES_CSV.with_suffix(".csv.bak"))
+        with open(SENTENCES_CSV, "w", encoding="utf-8-sig", newline="") as f:
+            w = csv.writer(f)
+            w.writerow(["id", "text", "device", "action", "value"])
+            w.writerows([(r["id"], r["text"], r["device"], r["action"], r["value"]) for r in out])
+        print("[record] đã nâng cấp testset/sentences.csv sang mã mới (bản cũ: sentences.csv.bak)")
     return out
 
 

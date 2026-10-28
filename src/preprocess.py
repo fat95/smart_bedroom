@@ -3,14 +3,14 @@
 
 Pipeline tự cài bằng NumPy/SciPy (không dùng librosa để tính MFCC):
   đọc WAV -> mono, 16 kHz -> VAD (năng lượng + ZCR) -> cắt đoạn tiếng nói
-  -> chuẩn hóa biên độ -> pad/cắt về 1,5 s -> tiền nhấn -> phân khung 25/10 ms
+  -> chuẩn hóa biên độ -> pad/cắt về FIX_SEC (4 s) -> tiền nhấn -> phân khung 25/10 ms
   -> cửa sổ Hamming -> |FFT|^2 -> bộ lọc Mel -> log -> DCT -> MFCC(13) + delta + delta-delta
 
 Chạy (từ thư mục gốc dự án):
     python src/preprocess.py --data dataset --out features
 
 Đầu ra trong thư mục --out:
-    features.npz   X_seq (N,148,39), X_stat (N,78), y_cmd, y_spk, split, files
+    features.npz   X_seq (N,398,39), X_stat (N,78), y_cmd, y_spk, split, files
     manifest.csv   mỗi dòng một file: nhãn, người nói, split, sr gốc, thời lượng, ...
 Hàm process_signal() cũng dùng lại được trong app.py khi suy luận.
 """
@@ -32,7 +32,8 @@ HOP_LEN = int(0.010 * SR)     # 160 mẫu = 10 ms
 N_FFT = 512
 N_MELS = 26
 N_MFCC = 13
-FIX_LEN = int(1.5 * SR)       # độ dài cố định sau xử lý
+FIX_SEC = 4.0                 # đầu vào của app là 4 s; chỉnh về 1.5 nếu chỉ cần lệnh đơn giản (VAD đã cắt còn ~1 s)
+FIX_LEN = int(FIX_SEC * SR)   # độ dài cố định sau xử lý (4 s -> 398 khung)
 MARGIN = int(0.05 * SR)       # chừa 50 ms hai đầu đoạn tiếng nói
 PAD_FRAMES = 8                # mở rộng vùng tiếng nói 80 ms mỗi phía (bắt phụ âm yếu)
 TARGET_RMS = 0.05              # chuẩn hóa RMS của đoạn tiếng nói (bền hơn chuẩn hóa đỉnh khi có tiếng 'tạch')

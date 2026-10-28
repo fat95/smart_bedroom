@@ -19,21 +19,40 @@ Dữ liệu vào:
 Lý do từ chối: unauthorized_speaker, ambiguous_device, unknown_command, invalid_value.
 """
 
-# Thiết bị -> thuộc tính -> hành động -> khoảng hợp lệ.
-#   (lo, hi)           : số trong khoảng
-#   ("lạnh", "quạt")   : giá trị phải thuộc tập này
+# Bảng luật được SINH TỪ config.DEVICES (nguồn duy nhất cho khoảng giá trị), dịch sang tiếng Việt
+# bằng các bảng trong adapter.py vì index.html và JSON trả về dùng tiếng Việt.
+#   ACTION_RULES[(thiết bị, thuộc tính)][hành động] = (lo, hi) | tập giá trị rời rạc
 # "tăng"/"giảm" là mức thay đổi, "đặt" là giá trị tuyệt đối.
-ACTION_RULES = {
-    ("điều hòa", "nhiệt độ"): {"tăng": (1, 5), "giảm": (1, 5), "đặt": (16, 30)},
-    ("điều hòa", "chế độ"): {"đặt": ("lạnh", "quạt", "hút ẩm")},
-    ("đèn trần", "độ sáng"): {"tăng": (1, 100), "giảm": (1, 100), "đặt": (0, 100)},
-    ("giường", "góc"): {"tăng": (1, 60), "giảm": (1, 60), "đặt": (0, 60)},
-    ("tivi", "kênh"): {"đặt": (1, 9)},
-    ("tivi", "âm lượng"): {"tăng": (1, 100), "giảm": (1, 100), "đặt": (0, 100)},
-}
-DEVICES = {device for device, _ in ACTION_RULES}
+import sys
+from pathlib import Path
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
+import config  # noqa: E402
+from adapter import ACT_VI, DEV_VI, MODE, TARGET  # noqa: E402
+
+
+def _build_rules():
+    rules, power = {}, set()
+    for dev, spec in config.DEVICES.items():
+        vi, modes = DEV_VI[dev], []
+        for act, a in spec["actions"].items():
+            if act in ("up", "down", "set"):
+                rules.setdefault((vi, TARGET[dev]), {})[ACT_VI[act]] = a["range"]
+            elif act == "channel":
+                rules.setdefault((vi, "kênh"), {})["đặt"] = a["range"]
+            elif act in MODE:
+                modes.append(MODE[act])
+            elif act in ("on", "off"):
+                power.add(vi)
+        if modes:
+            rules.setdefault((vi, "chế độ"), {})["đặt"] = tuple(modes)
+    return rules, power
+
+
+ACTION_RULES, POWER_DEVICES = _build_rules()
+DEVICES = {device for device, _ in ACTION_RULES} | POWER_DEVICES
 POWER_ACTIONS = {"bật", "tắt"}
-POWER_DEVICES = {"điều hòa", "đèn trần", "tivi"}  # giường không có nút bật/tắt
 
 
 def _reject(reason, message):

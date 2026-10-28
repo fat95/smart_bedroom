@@ -2,16 +2,18 @@
 """
 eval_ablation.py - Ablation cho câu 1.4: hệ thống CÓ và KHÔNG có xác thực người nói.
 
-Chạy:  python src/eval_ablation.py [--asr-results models/asr_results.csv]
+Chạy:  python src/eval_ablation.py [--asr-model phowhisper-small] [--asr-results file1.csv file2.csv]
 
 Hai cấu hình:
   A   : chỉ nhận dạng lệnh (PhoWhisper). Lệnh nhận đúng là được thực thi, bất kể ai nói.
   A+B : nhận dạng lệnh + xác thực người nói. Chỉ thực thi khi lệnh đúng VÀ là người đăng ký.
 
-Cần biết lệnh của mỗi file có được nhận dạng đúng không. A xuất file CSV có 2 cột:
-    file,command_ok          (file = tên file .wav, command_ok = 1 nếu nhận đúng, 0 nếu sai)
-Nếu chưa có file đó, script giả định ASR đúng 100% (chỉ đo riêng tác dụng của xác thực);
-khi A có kết quả thật thì chạy lại để số liệu phản ánh cả lỗi nhận dạng.
+Cần biết lệnh của mỗi file có được nhận dạng đúng không. Script đọc thẳng results_<mô hình>.csv do
+eval_asr.py ghi (cột `path` và `ok_exact`), mặc định models/asr_eval*/results_<--asr-model>.csv
+(nên chạy eval_asr.py với --out khác nhau cho testset và --simple để hai lần chạy không ghi đè nhau).
+Khớp file theo 2 thành phần cuối của đường dẫn (thư mục/tên file) nên không đụng nhau giữa các lệnh.
+Nếu chưa có file nào, script giả định ASR đúng 100% (chỉ đo riêng tác dụng của xác thực).
+Ba cấu hình: A (chỉ ASR), B (chỉ xác thực người nói), A+B.
 
 Hai chỉ số chính:
   - Người lạ được thực thi (càng thấp càng tốt)   = rủi ro bảo mật
@@ -21,8 +23,9 @@ from __future__ import annotations
 
 import argparse
 import csv
+import glob
 import json
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 
 import matplotlib
 matplotlib.use("Agg")
@@ -33,20 +36,31 @@ from eval_speaker import build_pools
 from speaker import FIG_DIR, MODEL_PATH, ROOT, UNKNOWN, load_bundle, score_with
 
 
-def load_asr_results(path: Path):
-    if not path.exists():
-        return None
+def key_of(path) -> str:
+    """.../bat_tivi/vinh_001.wav -> 'bat_tivi/vinh_001.wav' (2 thành phần cuối, chịu được đường dẫn Windows)."""
+    return "/".join(PurePosixPath(str(path).replace("\\", "/")).parts[-2:])
+
+
+def load_asr_results(paths):
+    """Đọc một hay nhiều results_<mô hình>.csv của eval_asr.py (cột path, ok_exact). Không có file nào -> None."""
     out = {}
-    with open(path, encoding="utf-8-sig", newline="") as f:
-        for row in csv.DictReader(f):
-            out[Path(row["file"]).name] = str(row["command_ok"]).strip().lower() in ("1", "true", "yes")
-    return out
+    for p in paths:
+        if not Path(p).exists():
+            continue
+        with open(p, encoding="utf-8-sig", newline="") as f:
+            for row in csv.DictReader(f):
+                ok = row.get("ok_exact", row.get("command_ok", ""))
+                out[key_of(row.get("path", row.get("file", "")))] = str(ok).strip().lower() in ("1", "true", "yes")
+    return out or None
 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--asr-results", default=str(MODEL_PATH.parent / "asr_results.csv"))
+    ap.add_argument("--asr-model", default="phowhisper-small")
+    ap.add_argument("--asr-results", nargs="*", default=None,
+                    help="một hay nhiều results_*.csv của eval_asr.py (mặc định: models/asr_eval*/results_<model>.csv)")
     args = ap.parse_args()
+    paths = args.asr_results or sorted(glob.glob(str(MODEL_PATH.parent / "asr_eval*" / f"results_{args.asr_model}.csv")))
 
     bundle = load_bundle()
     X, recs, pool = build_pools(bundle)
@@ -54,20 +68,21 @@ def main():
     if is_enr.all() or not is_enr.any():
         print("  ! Cần có cả người đăng ký lẫn người lạ trong dữ liệu để làm ablation.")
 
-    asr = load_asr_results(Path(args.asr_results))
+    asr = load_asr_results(paths)
+    print("  đọc kết quả ASR từ:", ", ".join(Path(p).name for p in paths) if asr else "(không có)")
     if asr is None:
         print("  ! Chưa có file kết quả ASR của A -> giả định nhận dạng lệnh đúng 100%.")
         cmd_ok = np.ones(len(recs), dtype=bool)
     else:
-        present = np.array([Path(r["path"]).name in asr for r in recs])
+        present = np.array([key_of(r["path"]) in asr for r in recs])
         if not present.any():
-            raise SystemExit("Không file nào trong kết quả ASR khớp với dữ liệu. Kiểm tra cột 'file'.")
+            raise SystemExit("Không file nào trong kết quả ASR khớp với dữ liệu. Kiểm tra cột 'path' của results_*.csv.")
         if not present.all():
             print(f"  (chỉ dùng {int(present.sum())}/{len(recs)} file có trong kết quả ASR của A)")
         X, pool = X[present], pool[present]
         recs = [r for r, ok in zip(recs, present) if ok]
         is_enr = is_enr[present]
-        cmd_ok = np.array([asr[Path(r["path"]).name] for r in recs])
+        cmd_ok = np.array([asr[key_of(r["path"])] for r in recs])
 
     report = {"asr_assumed_perfect": asr is None, "n_enrolled": int(is_enr.sum()),
               "n_stranger": int((~is_enr).sum()), "configs": {}}
@@ -75,7 +90,7 @@ def main():
     for m, model in bundle["models"].items():
         names, sc = score_with(model, X, m)
         verified = (names != UNKNOWN) & (sc >= bundle["thresholds"][m])
-        for cfg, accept in (("A (chỉ ASR)", cmd_ok), (f"A+B ({m})", cmd_ok & verified)):
+        for cfg, accept in (("A (chỉ ASR)", cmd_ok), (f"B ({m}, chỉ xác thực)", verified), (f"A+B ({m})", cmd_ok & verified)):
             res = {"enrolled_executed": float(np.mean(accept[is_enr])) if is_enr.any() else None,
                    "stranger_executed": float(np.mean(accept[~is_enr])) if (~is_enr).any() else None}
             if cfg.startswith("A+B"):
