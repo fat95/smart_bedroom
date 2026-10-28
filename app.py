@@ -41,15 +41,17 @@ app.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024  # 4 s WAV chỉ khoảng 128
 app.register_blueprint(record_bp)
 
 # ---- nạp mô hình MỘT lần khi khởi động ----
+spk_bundle = None
 try:
-    spk_bundle = load_speaker_bundle()
-    print("Mô hình người nói:", ", ".join(spk_bundle["speakers"]),
-          f"| điểm: {spk_bundle['method']} | ngưỡng: {spk_bundle['thresholds'][spk_bundle['method']]:.3f}")
+    bundle = load_speaker_bundle()
+    print("Mô hình người nói:", ", ".join(bundle["speakers"]),
+          f"| điểm: {bundle['method']} | ngưỡng: {bundle['thresholds'][bundle['method']]:.3f}")
     verify_speaker(np.random.default_rng(0).standard_normal(pp.SR).astype("float32") * 0.1, sr=pp.SR)
+    spk_bundle = bundle
 except FileNotFoundError:
-    spk_bundle = None
     print("Mô hình người nói: CHƯA CÓ - hãy chạy src/train_speaker.py")
 except Exception as e:
+    spk_bundle = None
     print("Cảnh báo khi khởi động mô hình người nói:", e)
 
 asr_ready = False
