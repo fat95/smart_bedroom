@@ -6,12 +6,12 @@
   ],
   "samples_per_speaker": {
     "phat": 72,
-    "vi": 60
+    "vi": 72
   },
   "split_sizes": {
-    "train": 92,
-    "val": 20,
-    "test": 20
+    "train": 100,
+    "val": 22,
+    "test": 22
   },
   "grid": [
     {
@@ -125,9 +125,9 @@
     "margin": null
   },
   "thresholds": {
-    "proba": 0.9357419066207079,
-    "margin": 0.5423619151253384
+    "proba": 0.9295809489357915,
+    "margin": 0.5159349931476394
   },
   "chosen_method": "margin",
-  "seconds": 16.2
+  "seconds": 2.3
 }

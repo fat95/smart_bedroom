@@ -1,0 +1,86 @@
+{
+  "proba": {
+    "method": "proba",
+    "threshold": 0.9295809489357915,
+    "n_genuine": 143,
+    "n_stranger": 132,
+    "closed_set_accuracy": 0.993006993006993,
+    "FRR": 0.34265734265734266,
+    "FAR": 0.0,
+    "EER": 0.1346153846153846,
+    "EER_threshold": 0.876327386387184,
+    "EER_ci95": [
+      0.0944055944055944,
+      0.19259906759906759
+    ],
+    "by_pool": {
+      "enrolled_dataset_test": {
+        "n": 22,
+        "FRR": 0.045454545454545456,
+        "accuracy": 1.0
+      },
+      "enrolled_testset": {
+        "n": 121,
+        "FRR": 0.39669421487603307,
+        "accuracy": 0.9917355371900827
+      },
+      "stranger_dataset": {
+        "n": 72,
+        "FAR": 0.0
+      },
+      "stranger_testset": {
+        "n": 60,
+        "FAR": 0.0
+      }
+    },
+    "FAR_per_stranger": {
+      "vinh": 0.0
+    },
+    "FRR_per_enrolled": {
+      "phat": 0.4225352112676056,
+      "vi": 0.2638888888888889
+    }
+  },
+  "margin": {
+    "method": "margin",
+    "threshold": 0.5159349931476394,
+    "n_genuine": 143,
+    "n_stranger": 132,
+    "closed_set_accuracy": 0.993006993006993,
+    "FRR": 0.3916083916083916,
+    "FAR": 0.0,
+    "EER": 0.1346153846153846,
+    "EER_threshold": 0.3660769597987259,
+    "EER_ci95": [
+      0.08362470862470862,
+      0.1891025641025641
+    ],
+    "by_pool": {
+      "enrolled_dataset_test": {
+        "n": 22,
+        "FRR": 0.045454545454545456,
+        "accuracy": 1.0
+      },
+      "enrolled_testset": {
+        "n": 121,
+        "FRR": 0.45454545454545453,
+        "accuracy": 0.9917355371900827
+      },
+      "stranger_dataset": {
+        "n": 72,
+        "FAR": 0.0
+      },
+      "stranger_testset": {
+        "n": 60,
+        "FAR": 0.0
+      }
+    },
+    "FAR_per_stranger": {
+      "vinh": 0.0
+    },
+    "FRR_per_enrolled": {
+      "phat": 0.4084507042253521,
+      "vi": 0.375
+    }
+  }
+}
