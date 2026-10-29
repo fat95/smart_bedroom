@@ -36,6 +36,7 @@ CASES = [
     ("đặt điều hòa hai sáu độ", "ac", "set", 26, OK),
     ("chỉnh điều hòa hai mươi bốn độ", "ac", "set", 24, OK),
     ("điều hòa hai mươi hai độ", "ac", "set", 22, OK),
+    ("điều hòa hai mươi sáu độ", "ac", "set", 26, OK),
     ("giảm điều hòa hai độ", "ac", "down", 2, OK),
     ("tăng điều hòa ba độ", "ac", "up", 3, OK),
     ("giảm điều hòa 1 độ", "ac", "down", 1, OK),
@@ -47,6 +48,7 @@ CASES = [
     ("tăng đèn trần hai mươi phần trăm", "light-main", "up", 20, OK),
     ("giảm đèn trần mười phần trăm", "light-main", "down", 10, OK),
     ("đặt đèn trần năm mươi phần trăm", "light-main", "set", 50, OK),
+    ("đèn trần năm mươi phần trăm", "light-main", "set", 50, OK),
     ("đặt đèn trần 50%", "light-main", "set", 50, OK),
     ("đặt đèn trần một trăm phần trăm", "light-main", "set", 100, OK),
     ("đặt đèn trần 100 phần trăm", "light-main", "set", 100, OK),
@@ -57,6 +59,7 @@ CASES = [
     ("nâng đầu giường ba mươi độ", "bed", "up", 30, OK),
     ("hạ đầu giường mười lăm độ", "bed", "down", 15, OK),
     ("đặt giường bốn mươi lăm độ", "bed", "set", 45, OK),
+    ("giường ba mươi độ", "bed", "set", 30, OK),
     ("hạ giường nằm phẳng", "bed", "set", 0, OK),
     ("giường nằm phẳng", "bed", "set", 0, OK),
     # --- tivi kênh / âm lượng
@@ -115,6 +118,10 @@ CASES = [
     ("chuyển tivi kênh", "tv", "channel", None, "missing_value"),
     ("chuyển kênh đèn trần năm", "light-main", None, None, "unknown_command"),   # số trần không đơn vị: từ chối, không đoán
     ("bật giường", "bed", None, None, "unknown_command"),    # giường không có hành động bật/tắt
+    # ASR làm mất động từ hoặc chèn token lạ: không được đoán ngầm là set
+    ("tân điện trần hai mươi phần trăm", "light-main", None, None, "unknown_command"),
+    ("tăng đèn trận thế mười phần trăm", "light-main", None, None, "unknown_command"),
+    ("gãm đèn trần mười phần trăm", "light-main", None, None, "unknown_command"),
 ]
 
 

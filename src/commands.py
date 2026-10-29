@@ -175,6 +175,11 @@ VERBS = {
 }
 MODES = {"mode_cool": ["lam lanh", "lanh"], "mode_fan": ["quat"], "mode_dry": ["hut am", "hut"]}
 
+ALLOWED_FILLERS = {
+    "len", "xuong", "cho", "o", "la", "muc", "toi", "sang", "che", "do", "c", "doi",
+    "am", "luong", "kenh", "chan",
+}
+
 
 def _verb_variants(toks: list[str]) -> list[list[str]]:
     """ASR hay nghe lẫn phụ âm cuối -c/-t ("bật" -> "bậc", "tắt" -> "tắc"): thử thêm bản đổi -c thành -t cho từ 3 ký tự trở lên.
@@ -213,6 +218,35 @@ def find_mode(tokens: list[str], skip: set[int]) -> tuple[str, float, set[int]] 
             if m and (best is None or m[0] > best[1]):
                 best = (act, m[0], set(range(m[1], m[2])))
     return best
+
+
+def _intent_indices(tokens: list[str], skip: set[int], intents: list[tuple[int, str, float]]) -> set[int]:
+    """Các vị trí token đã được giải thích bởi một động từ nhận ra được."""
+    used = set()
+    for start, intent, _ in intents:
+        used.add(start)  # bao gồm cả biến thể đặc biệt như "bọn" -> "bật"
+        for phrase in VERBS[intent]:
+            n = len(phrase.split())
+            if start + n <= len(tokens) and not any(i in skip for i in range(start, start + n)):
+                if any(_match_phrase(variant, phrase, set()) for variant in _verb_variants(tokens[start:start + n])):
+                    used.update(range(start, start + n))
+                    break
+    return used
+
+
+def _unknown_tokens(tokens: list[str], skip: set[int], span: tuple[int, int] | None,
+                    intents: list[tuple[int, str, float]], mode_tokens: set[int] | None,
+                    flat: bool) -> list[str]:
+    """Trả về token chưa được giải thích trong một câu có đúng thiết bị."""
+    known = set(skip) | {i for i, tok in enumerate(tokens) if tok in {"do", "pt"} | ALLOWED_FILLERS}
+    if span:
+        known.update(range(*span))
+    known.update(_intent_indices(tokens, skip, intents))
+    if mode_tokens:
+        known.update(mode_tokens)
+    if flat:
+        known.update(i for i, tok in enumerate(tokens) if tok in {"nam", "phang"})
+    return [tok for i, tok in enumerate(tokens) if i not in known]
 
 
 # ------------------------------------------------------------------ hàm chính
@@ -267,9 +301,14 @@ def parse_command(text: str) -> dict:
         elif usable:
             act, act_score = usable[0][1], usable[0][2] / 100.0
         elif num is not None and ({"do", "pt"} & set(tokens)):  # không có động từ nhưng có số + đơn vị: "điều hòa 26 độ"
+            if _unknown_tokens(tokens, skip, span, intents, None, flat):
+                return _result(raw, device=dev, reason="unknown_command", score=dev_score * 0.5)
             act = "set"                                         # số trần không đơn vị (vd "bọn" nghe thành "bốn") thì từ chối, không đoán
         if act is None:
             return _result(raw, device=dev, reason="unknown_command", score=dev_score * 0.5)
+
+    if _unknown_tokens(tokens, skip, span, intents, mode[2] if mode else None, flat):
+        return _result(raw, device=dev, reason="unknown_command", score=dev_score * 0.5)
 
     if act not in allowed:
         return _result(raw, device=dev, reason="unknown_command", score=dev_score * 0.5)
