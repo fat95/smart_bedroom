@@ -236,7 +236,8 @@ def eval_baseline(items: list[dict], model_path: Path) -> dict | None:
         pred = str(bundle["classes"][int(np.argmax(bundle["model"].predict_proba(r["stat"][None, :])[0]))])
         lat.append((time.perf_counter() - t0) * 1000)
         ok.append(pred == it["sid"])
-    return {"n": len(ok), "acc": round(sum(ok) / len(ok), 4), "latency_ms_mean": round(statistics.mean(lat), 1)}
+    return {"name": str(bundle.get("name") or "baseline MFCC"), "n": len(ok),
+            "acc": round(sum(ok) / len(ok), 4), "latency_ms_mean": round(statistics.mean(lat), 1)}
 
 
 # ------------------------------------------------------------------ ghi kết quả
@@ -274,7 +275,7 @@ def write_summary(reports: dict, out: Path, simple: bool, baseline: dict | None)
         ["model", "n", "wer", "cer", "acc_device", "acc_action", "acc_value", "acc_exact", "wrong_exec", "latency_ms_mean"]
     rows = [{"model": m, **{c: r.get(c) for c in cols[1:]}} for m, r in reports.items()]
     if simple and baseline:
-        rows.append({"model": "baseline MFCC+SVM/RF", "n": baseline["n"], "acc_exact": baseline["acc"],
+        rows.append({"model": baseline.get("name", "baseline MFCC"), "n": baseline["n"], "acc_exact": baseline["acc"],
                      "latency_ms_mean": baseline["latency_ms_mean"]})
     with open(out / "summary.csv", "w", encoding="utf-8-sig", newline="") as f:
         w = csv.DictWriter(f, fieldnames=cols); w.writeheader(); w.writerows(rows)
@@ -282,7 +283,7 @@ def write_summary(reports: dict, out: Path, simple: bool, baseline: dict | None)
             "acc_value": "Đúng giá trị", "acc_exact": "Đúng cả lệnh" if not simple else "Đúng lệnh", "wrong_exec": "Thực thi sai", "latency_ms_mean": "Độ trễ TB (ms)"}
     lines = ["| " + " | ".join(head[c] for c in cols) + " |", "|" + "---|" * len(cols)]
     for r in rows:
-        cells = [str(r[c]) if c in ("model", "n") else (f"{r[c]:.1f}" if c == "latency_ms_mean" and r[c] is not None else pct(r[c]))
+        cells = [str(r.get(c)) if c in ("model", "n") else (f"{r.get(c):.1f}" if c == "latency_ms_mean" and r.get(c) is not None else pct(r.get(c)))
                  for c in cols]
         lines.append("| " + " | ".join(cells) + " |")
     (out / "summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")
@@ -301,6 +302,9 @@ def main():
     ap.add_argument("--baseline-model", default="models/command_model.joblib")
     ap.add_argument("--out", default="models/asr_eval")
     ap.add_argument("--limit", type=int, default=0, help="chỉ chạy N mẫu đầu (để thử nhanh)")
+    ap.add_argument("--decode", choices=["greedy", "nbest", "majority"], default="greedy",
+                    help="chiến lược giải mã PhoWhisper (mặc định giữ greedy cũ)")
+    ap.add_argument("--prompt", action="store_true", help="dùng initial prompt khi generate trực tiếp")
     a = ap.parse_args()
 
     items = load_simple(Path(a.manifest), a.split) if a.simple else load_testset(Path(a.sentences), Path(a.audio))
@@ -316,12 +320,15 @@ def main():
     for name in a.models:
         print(f"\n=== {name} ===")
         model = asr.get_asr(name)
-        rows, rep = evaluate_items(items, model.transcribe)
+        transcribe = lambda wav, m=model: m.transcribe(wav, decode=a.decode, prompt=a.prompt)
+        rows, rep = evaluate_items(items, transcribe)
         rep["model"] = name
         reports[name] = rep
         write_outputs(name, rows, rep, out, a.simple)
         print(f"WER {pct(rep['wer'])} | CER {pct(rep['cer'])} | thiết bị {pct(rep['acc_device'])} | hành động {pct(rep['acc_action'])} | "
               f"giá trị {pct(rep['acc_value'])} | đúng cả lệnh {pct(rep['acc_exact'])} | {rep['latency_ms_mean']} ms/câu")
+        if a.simple:
+            print(f"từ chối noise đúng {pct(rep['noise_rejected'])}")
     baseline = eval_baseline(items, Path(a.baseline_model)) if (a.simple and a.baseline) else None
     write_summary(reports, out, a.simple, baseline)
     print(f"\nĐã ghi kết quả vào {out}/")

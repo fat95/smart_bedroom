@@ -120,6 +120,20 @@ python src/train_speaker.py --feature-set plus
 python src/eval_speaker.py
 ```
 
+### Mô hình ASR mặc định
+
+Hệ thống dùng `phowhisper-small` làm ASR mặc định. Có thể chọn mô hình khác,
+ví dụ bản nhẹ hơn trên CPU, bằng biến môi trường `ASR_MODEL`:
+
+```powershell
+$env:ASR_MODEL = "phowhisper-base"
+python app.py
+```
+
+Các tên hợp lệ gồm `phowhisper-small`, `phowhisper-base`, `whisper-small`
+và `whisper-base`. Mặc định giải mã là greedy; initial prompt và n-best không
+được bật mặc định.
+
 ### Bước 4: Chạy ứng dụng Web (Smart Bedroom)
 Khởi động máy chủ Flask:
 ```bash

@@ -36,6 +36,7 @@ CASES = [
     ("đặt điều hòa hai sáu độ", "ac", "set", 26, OK),
     ("chỉnh điều hòa hai mươi bốn độ", "ac", "set", 24, OK),
     ("điều hòa hai mươi hai độ", "ac", "set", 22, OK),
+    ("điều hòa hai mươi sáu độ", "ac", "set", 26, OK),
     ("giảm điều hòa hai độ", "ac", "down", 2, OK),
     ("tăng điều hòa ba độ", "ac", "up", 3, OK),
     ("giảm điều hòa 1 độ", "ac", "down", 1, OK),
@@ -47,6 +48,7 @@ CASES = [
     ("tăng đèn trần hai mươi phần trăm", "light-main", "up", 20, OK),
     ("giảm đèn trần mười phần trăm", "light-main", "down", 10, OK),
     ("đặt đèn trần năm mươi phần trăm", "light-main", "set", 50, OK),
+    ("đèn trần năm mươi phần trăm", "light-main", "set", 50, OK),
     ("đặt đèn trần 50%", "light-main", "set", 50, OK),
     ("đặt đèn trần một trăm phần trăm", "light-main", "set", 100, OK),
     ("đặt đèn trần 100 phần trăm", "light-main", "set", 100, OK),
@@ -57,6 +59,7 @@ CASES = [
     ("nâng đầu giường ba mươi độ", "bed", "up", 30, OK),
     ("hạ đầu giường mười lăm độ", "bed", "down", 15, OK),
     ("đặt giường bốn mươi lăm độ", "bed", "set", 45, OK),
+    ("giường ba mươi độ", "bed", "set", 30, OK),
     ("hạ giường nằm phẳng", "bed", "set", 0, OK),
     ("giường nằm phẳng", "bed", "set", 0, OK),
     # --- tivi kênh / âm lượng
@@ -115,6 +118,24 @@ CASES = [
     ("chuyển tivi kênh", "tv", "channel", None, "missing_value"),
     ("chuyển kênh đèn trần năm", "light-main", None, None, "unknown_command"),   # số trần không đơn vị: từ chối, không đoán
     ("bật giường", "bed", None, None, "unknown_command"),    # giường không có hành động bật/tắt
+    # ASR làm mất động từ hoặc chèn token lạ: không được đoán ngầm là set
+    ("tân điện trần hai mươi phần trăm", "light-main", None, None, "unknown_command"),
+    ("tăng đèn trận thế mười phần trăm", "light-main", None, None, "unknown_command"),
+    ("gãm đèn trần mười phần trăm", "light-main", None, None, "unknown_command"),
+    # Từ đệm lịch sự được bỏ qua, nhưng phủ định vẫn phải bị từ chối.
+    ("hãy bật tivi", "tv", "on", None, OK),
+    ("bật tivi nhé", "tv", "on", None, OK),
+    ("bật điều hòa đi", "ac", "on", None, OK),
+    ("tắt tivi đi", "tv", "off", None, OK),
+    ("xin hãy bật điều hòa", "ac", "on", None, OK),
+    ("làm ơn tắt đèn trần", "light-main", "off", None, OK),
+    ("mở điều hòa nhé", "ac", "on", None, OK),
+    ("bật điều hòa giúp tôi", "ac", "on", None, OK),
+    ("bật tivi ơi", "tv", "on", None, OK),
+    ("ê bật tivi", "tv", "on", None, OK),
+    ("đừng bật tivi", "tv", None, None, "unknown_command"),
+    ("chưa tắt đèn trần", "light-main", None, None, "unknown_command"),
+    ("đặt điều hòa bởi tám độ", "ac", None, None, "unknown_command"),
 ]
 
 
@@ -172,6 +193,49 @@ class TestNormalizeForWer(unittest.TestCase):
 
     def test_accents_kept(self):
         self.assertNotEqual(C.normalize_for_wer("bật"), C.normalize_for_wer("bắt"))
+
+
+class TestAsrRecovery(unittest.TestCase):
+    def test_context_device_and_mode(self):
+        self.assertEqual((C.parse_command("điều mà chế độ quạt")["device"],
+                          C.parse_command("điều mà chế độ quạt")["action"]), ("ac", "mode_fan"))
+        self.assertEqual((C.parse_command("lạc lạnh điều hòa")["device"],
+                          C.parse_command("lạc lạnh điều hòa")["action"]), ("ac", "mode_cool"))
+
+    def test_context_number(self):
+        r = C.parse_command("kênh chính")
+        self.assertEqual((r["device"], r["action"], r["value"], r["reason"]), ("tv", "channel", 9, None))
+        r = C.parse_command("mời độ điều hòa")
+        self.assertEqual((r["device"], r["action"], r["value"], r["reason"]), ("ac", "set", 10, None))
+        r = C.parse_command("chuyển tivi cân nằm")
+        self.assertEqual((r["device"], r["action"], r["value"], r["reason"]), ("tv", "channel", 5, None))
+
+    def test_initial_verb_recovery_and_safety(self):
+        r = C.parse_command("bọc đèn trần")
+        self.assertEqual((r["device"], r["action"], r["reason"]), ("light-main", "on", None))
+        r = C.parse_command("bọt đèn trần")
+        self.assertEqual((r["device"], r["action"], r["reason"]), ("light-main", "on", None))
+        r = C.parse_command("đại điều hòa tám độ")
+        self.assertEqual((r["device"], r["action"], r["value"], r["reason"]), ("ac", "set", 8, None))
+        for text in ("đặt điều hòa bởi tám độ", "tân điện trần hai mươi phần trăm",
+                     "gãm đèn trần mười phần trăm", "đừng bật tivi", "chưa tắt đèn trần"):
+            with self.subTest(text=text):
+                self.assertIsNotNone(C.parse_command(text)["reason"])
+
+    def test_den_tran_asr_alias_is_narrow(self):
+        r = C.parse_command("tắt đèn chờn")
+        self.assertEqual((r["device"], r["action"], r["reason"]), ("light-main", "off", None))
+        r = C.parse_command("tắt đèn tay về")
+        self.assertIsNotNone(r["reason"])
+
+    def test_qua_is_fan_only_after_che_do(self):
+        r = C.parse_command("điều hòa chế độ quà")
+        self.assertEqual((r["device"], r["action"], r["reason"]), ("ac", "mode_fan", None))
+        for text in ("bật điều hòa qua", "điều hòa qua"):
+            with self.subTest(text=text):
+                r = C.parse_command(text)
+                self.assertEqual(r["reason"], "unknown_command")
+                self.assertNotEqual(r["action"], "mode_fan")
 
 
 if __name__ == "__main__":
