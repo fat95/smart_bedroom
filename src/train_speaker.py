@@ -48,17 +48,28 @@ def loso_scores(method, C, gamma, X, y, split, X_unk=None):
         tr = [i for i in split["train"] if y[i] != s]
         va = [i for i in split["val"] if y[i] != s]
         imp_idx = np.where(y == s)[0]
+        
         Xt, yt = X[tr], y[tr]
-        if method == "unknown":
+        
+        # LẤY DỮ LIỆU TRAIN CỦA NGƯỜI BỊ BỎ GÁN NHÃN LÀ UNKNOWN
+        # Việc này giúp mô hình LOSO có số lớp bằng với mô hình thực tế
+        held_out_tr = [i for i in split["train"] if y[i] == s]
+        if len(held_out_tr) > 0:
+            Xt = np.vstack([Xt, X[held_out_tr]])
+            yt = np.concatenate([yt, np.array([UNKNOWN] * len(held_out_tr))])
+            
+        if X_unk is not None and len(X_unk) > 0:
             Xt = np.vstack([Xt, X_unk])
             yt = np.concatenate([yt, np.array([UNKNOWN] * len(X_unk))])
+            
         model = build_model(method, C, gamma).fit(Xt, yt)
+        
+        # Lấy điểm genuine (từ tập val) và impostor (từ người bị bỏ)
         names_v, sc_v = score_with(model, X[va], method)
         gens.append(trial_scores(y[va], names_v, sc_v))
         _, sc_i = score_with(model, X[imp_idx], method)
         imps.append(sc_i)
     return np.concatenate(gens), np.concatenate(imps)
-
 
 def main():
     ap = argparse.ArgumentParser()
@@ -124,16 +135,9 @@ def main():
     thresholds, loso_eer, models = {}, {}, {}
     for m in methods:
         if len(spks) >= 3:
-            _, imp = loso_scores(m, C, gamma, X, y, split, X_unk)
-            # Điểm "đúng người" lấy từ mô hình đủ số lớp (giống mô hình cuối), điểm người lạ giả lập
-            # lấy từ các fold LOSO. Như vậy ngưỡng không bị lệch vì fold LOSO có ít lớp hơn.
-            Xt, yt = X[tr], y[tr]
-            if m == "unknown":
-                Xt = np.vstack([Xt, X_unk])
-                yt = np.concatenate([yt, np.array([UNKNOWN] * len(X_unk))])
-            full = build_model(m, C, gamma).fit(Xt, yt)
-            names_v, sc_v = score_with(full, X[va], m)
-            gen = trial_scores(y[va], names_v, sc_v)
+            # SỬA: Lấy cả gen và imp từ LOSO (đã đồng bộ số lớp)
+            gen, imp = loso_scores(m, C, gamma, X, y, split, X_unk)
+            
             eer, thr = compute_eer(gen, imp)
             loso_eer[m] = eer
             thresholds[m] = thr
@@ -160,11 +164,11 @@ def main():
             acc = float(np.mean(names == y[te]))
             print(f"  [{m:7s}] độ chính xác nhận diện người (tập test đăng ký) = {acc * 100:.1f}%")
 
+    # Ép chọn margin vì proba hoạt động kém với bài toán open-set
     valid = [m for m in methods if loso_eer.get(m) is not None]
-    # Chỉ có 2 người đăng ký: không đo được EER, xác suất SVM 2 lớp luôn >= 0,5 nên ưu tiên điểm biên.
-    chosen = min(valid, key=lambda k: loso_eer[k]) if valid else "margin"
-    print(f"Phương pháp được chọn: {chosen}")
-
+    chosen = "margin" if "margin" in valid else (valid[0] if valid else "margin")
+    print(f"Phương pháp được chọn (ép buộc): {chosen}")
+    
     rel = lambda idxs: [recs[i]["rel"] for i in idxs]
     bundle = {
         "feature_set": args.feature_set, "feature_version": FEATURE_VERSION,

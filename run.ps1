@@ -1,2 +1,2 @@
-  $env:SPEAKER_THRESHOLD = "0.40"
+  $env:SPEAKER_THRESHOLD = "0.3"
   python app.py

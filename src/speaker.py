@@ -259,16 +259,26 @@ def score_with(model, X, method: str):
         D = model.decision_function(X)
         if D.ndim == 1:                      # chỉ 2 lớp
             D = np.column_stack([-D, D])
+        # Nếu mô hình có lớp UNKNOWN, ta gạt lớp này ra khỏi cuộc đua margin
+        if UNKNOWN in model.classes_:
+            unk_idx = np.where(model.classes_ == UNKNOWN)[0][0]
+            D[:, unk_idx] = -np.inf
         idx = D.argmax(axis=1)
         return np.asarray(model.classes_)[idx], D.max(axis=1)
+        
     P = model.predict_proba(X)
     idx = P.argmax(axis=1)
     names = np.asarray(model.classes_)[idx]
-    sc = P.max(axis=1)
-    if method == "unknown":
-        sc = np.where(names == UNKNOWN, 0.0, sc)
+    
+    # Nếu mô hình có lớp UNKNOWN, điểm = 1 - P(UNKNOWN).
+    # Cách này giúp điểm số phản ánh đúng độ chắc chắn là người quen.
+    if UNKNOWN in model.classes_:
+        unk_idx = np.where(model.classes_ == UNKNOWN)[0][0]
+        sc = 1.0 - P[:, unk_idx]
+    else:
+        sc = P.max(axis=1)
+        
     return names, sc
-
 
 # ----------------------------------------------------------------------------
 # Chỉ số xác thực: FAR, FRR, EER

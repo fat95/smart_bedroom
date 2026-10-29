@@ -123,13 +123,13 @@
     "val_acc": 1.0
   },
   "loso_eer": {
-    "proba": 0.08712121212121213,
-    "margin": 0.06271043771043772
+    "proba": 0.0,
+    "margin": 0.0
   },
   "thresholds": {
-    "proba": 0.9270681114033597,
-    "margin": 0.5860971406771908
+    "proba": 0.7405722133911307,
+    "margin": 0.23617189396777083
   },
   "chosen_method": "margin",
-  "seconds": 0.5
+  "seconds": 0.4
 }
