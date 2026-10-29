@@ -173,7 +173,7 @@ VERBS = {
     "set": ["dat", "chinh", "cai", "de"],
     "channel": ["chuyen", "kenh"],
 }
-MODES = {"mode_cool": ["lam lanh", "lanh", "lac lanh"], "mode_fan": ["quat", "qua"], "mode_dry": ["hut am", "hut"]}
+MODES = {"mode_cool": ["lam lanh", "lanh", "lac lanh"], "mode_fan": ["quat"], "mode_dry": ["hut am", "hut"]}
 
 ALLOWED_FILLERS = {
     "len", "xuong", "cho", "o", "la", "muc", "toi", "sang", "che", "do", "c", "doi",
@@ -218,6 +218,13 @@ def find_mode(tokens: list[str], skip: set[int]) -> tuple[str, float, set[int]] 
             m = _match_phrase(tokens, w, skip)
             if m and (best is None or (m[0], m[2] - m[1]) > (best[1], len(best[2]))):
                 best = (act, m[0], set(range(m[1], m[2])))
+    # "qua" chỉ là lỗi ASR của "quạt" trong cụm "chế độ quà"; ở vị trí
+    # khác phải bị coi là token lạ để không biến câu chưa đủ ý thành mode_fan.
+    for i in range(2, len(tokens)):
+        if tokens[i] == "qua" and tokens[i - 2:i] == ["che", "do"] \
+                and not any(k in skip for k in (i - 2, i - 1, i)):
+            if best is None or (100.0, 1) > (best[1], len(best[2])):
+                best = ("mode_fan", 100.0, {i})
     return best
 
 
@@ -228,6 +235,7 @@ CONTEXT_NUMBER_ALIASES = {
 }
 SET_ACTION_ALIASES = {"dai", "dan", "doan", "dac"}  # đặt bị nghe sai ở đầu câu
 ON_ACTION_ALIASES = {"boc", "bot"}                          # bật -> bọc/bọt/bột
+TRAN_AFTER_DEN_ALIASES = {"chon", "chung", "chan", "tron", "trang"}
 
 
 def _infer_device_from_context(tokens: list[str]) -> tuple[str, tuple[int, int]] | None:
@@ -351,6 +359,10 @@ def parse_command(text: str) -> dict:
     # chứng của lệnh. Token được đánh dấu đã giải thích để unknown_tokens vẫn
     # là hàng rào chống đoán bừa.
     extra_known = set()
+    if dev == "light-main":
+        den_end = devs[dev][2]
+        if den_end < len(tokens) and tokens[den_end] in TRAN_AFTER_DEN_ALIASES:
+            extra_known.add(den_end)
     if dev == "tv" and "channel" in allowed and any(
             tok == "can" and i + 1 < len(tokens) and span and i + 1 == span[0]
             for i, tok in enumerate(tokens)):

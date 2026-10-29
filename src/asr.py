@@ -57,13 +57,13 @@ def load_audio(wav, sr: int | None = None) -> np.ndarray:
         y = y.mean(axis=1)
     if in_sr != SR:
         try:
-            import librosa
-            y = librosa.resample(y, orig_sr=in_sr, target_sr=SR)
-        except ImportError:
             from math import gcd
             from scipy.signal import resample_poly
             g = gcd(int(in_sr), SR)
             y = resample_poly(y, SR // g, int(in_sr) // g).astype("float32")
+        except ImportError:
+            import librosa
+            y = librosa.resample(y, orig_sr=in_sr, target_sr=SR)
     return np.ascontiguousarray(y, dtype="float32")
 
 
@@ -89,8 +89,77 @@ class ASR:
         # PhoWhisper chỉ có tiếng Việt nên không cần chỉ định ngôn ngữ; Whisper gốc thì phải ép tiếng Việt
         self.gen_kwargs = {} if "phowhisper" in self.hf_id.lower() else {"language": "vi", "task": "transcribe"}
 
-    def transcribe(self, wav) -> str:
+    PROMPT_TEXT = "bật tắt điều hòa, đèn trần, tivi, kênh, âm lượng, đầu giường, độ, phần trăm."
+
+    def _prompt_ids(self):
+        tokenizer = self.pipe.tokenizer
+        if not hasattr(tokenizer, "get_prompt_ids"):
+            return None
+        ids = tokenizer.get_prompt_ids(self.PROMPT_TEXT, return_tensors="pt")
+        return ids.to(self.pipe.model.device) if hasattr(ids, "to") else ids
+
+    def _decode_direct(self, y: np.ndarray, decode: str = "greedy", prompt: bool = False) -> list[str]:
+        """Decode trực tiếp để hỗ trợ beam/n-best; greedy vẫn đi qua pipeline cũ."""
+        import torch
+
+        fe = self.pipe.feature_extractor(y, sampling_rate=SR, return_tensors="pt")
+        model_device = self.pipe.model.device
+        model_dtype = next(self.pipe.model.parameters()).dtype
+        model_inputs = {}
+        for key, value in fe.items():
+            if not hasattr(value, "to"):
+                continue
+            value = value.to(model_device)
+            if torch.is_floating_point(value):
+                value = value.to(model_dtype)
+            model_inputs[key] = value
+        kwargs = dict(self.gen_kwargs)
+        if decode in {"nbest", "majority"}:
+            kwargs.update(num_beams=5, num_return_sequences=5, do_sample=False)
+        if prompt:
+            ids = self._prompt_ids()
+            if ids is not None:
+                kwargs["prompt_ids"] = ids
+        with torch.inference_mode():
+            sequences = self.pipe.model.generate(**model_inputs, **kwargs)
+        texts = self.pipe.tokenizer.batch_decode(sequences, skip_special_tokens=True)
+        return [self._strip_prompt_text(t).strip() for t in texts]
+
+    @classmethod
+    def _strip_prompt_text(cls, text: str) -> str:
+        """Xóa prompt nếu model chép nó ở đầu; không xóa các từ tương tự ở giữa lệnh."""
+        value = (text or "").strip()
+        prompt = cls.PROMPT_TEXT.strip()
+        if value.casefold().startswith(prompt.casefold()):
+            value = value[len(prompt):].lstrip(" ,.;:")
+        return value
+
+    def _select_nbest(self, texts: list[str], mode: str) -> str:
+        parsed = []
+        for rank, text in enumerate(texts):
+            result = to_command(text)
+            if result["reason"] is None and result["score"] >= config.COMMAND_THRESHOLD:
+                key = (result["device"], result["action"], result["value"])
+                parsed.append((rank, key, text))
+        if not parsed:
+            return ""
+        if mode == "majority":
+            from collections import Counter
+            counts = Counter(key for _, key, _ in parsed)
+            key, count = counts.most_common(1)[0]
+            if count <= len(parsed) / 2:
+                return ""
+            return next(text for _, candidate, text in parsed if candidate == key)
+        keys = {key for _, key, _ in parsed}
+        if len(keys) != 1:
+            return ""
+        return parsed[0][2]
+
+    def transcribe(self, wav, decode: str = "greedy", prompt: bool = False) -> str:
         y = load_audio(wav)
+        if decode in {"nbest", "majority"} or prompt:
+            texts = self._decode_direct(y, decode=decode, prompt=prompt)
+            return self._select_nbest(texts, decode) if decode in {"nbest", "majority"} else texts[0]
         out = self.pipe({"raw": y, "sampling_rate": SR}, generate_kwargs=self.gen_kwargs)
         return out["text"].strip()
 

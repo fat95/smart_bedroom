@@ -222,6 +222,21 @@ class TestAsrRecovery(unittest.TestCase):
             with self.subTest(text=text):
                 self.assertIsNotNone(C.parse_command(text)["reason"])
 
+    def test_den_tran_asr_alias_is_narrow(self):
+        r = C.parse_command("tắt đèn chờn")
+        self.assertEqual((r["device"], r["action"], r["reason"]), ("light-main", "off", None))
+        r = C.parse_command("tắt đèn tay về")
+        self.assertIsNotNone(r["reason"])
+
+    def test_qua_is_fan_only_after_che_do(self):
+        r = C.parse_command("điều hòa chế độ quà")
+        self.assertEqual((r["device"], r["action"], r["reason"]), ("ac", "mode_fan", None))
+        for text in ("bật điều hòa qua", "điều hòa qua"):
+            with self.subTest(text=text):
+                r = C.parse_command(text)
+                self.assertEqual(r["reason"], "unknown_command")
+                self.assertNotEqual(r["action"], "mode_fan")
+
 
 if __name__ == "__main__":
     unittest.main()

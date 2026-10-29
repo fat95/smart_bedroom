@@ -302,6 +302,9 @@ def main():
     ap.add_argument("--baseline-model", default="models/command_model.joblib")
     ap.add_argument("--out", default="models/asr_eval")
     ap.add_argument("--limit", type=int, default=0, help="chỉ chạy N mẫu đầu (để thử nhanh)")
+    ap.add_argument("--decode", choices=["greedy", "nbest", "majority"], default="greedy",
+                    help="chiến lược giải mã PhoWhisper (mặc định giữ greedy cũ)")
+    ap.add_argument("--prompt", action="store_true", help="dùng initial prompt khi generate trực tiếp")
     a = ap.parse_args()
 
     items = load_simple(Path(a.manifest), a.split) if a.simple else load_testset(Path(a.sentences), Path(a.audio))
@@ -317,12 +320,15 @@ def main():
     for name in a.models:
         print(f"\n=== {name} ===")
         model = asr.get_asr(name)
-        rows, rep = evaluate_items(items, model.transcribe)
+        transcribe = lambda wav, m=model: m.transcribe(wav, decode=a.decode, prompt=a.prompt)
+        rows, rep = evaluate_items(items, transcribe)
         rep["model"] = name
         reports[name] = rep
         write_outputs(name, rows, rep, out, a.simple)
         print(f"WER {pct(rep['wer'])} | CER {pct(rep['cer'])} | thiết bị {pct(rep['acc_device'])} | hành động {pct(rep['acc_action'])} | "
               f"giá trị {pct(rep['acc_value'])} | đúng cả lệnh {pct(rep['acc_exact'])} | {rep['latency_ms_mean']} ms/câu")
+        if a.simple:
+            print(f"từ chối noise đúng {pct(rep['noise_rejected'])}")
     baseline = eval_baseline(items, Path(a.baseline_model)) if (a.simple and a.baseline) else None
     write_summary(reports, out, a.simple, baseline)
     print(f"\nĐã ghi kết quả vào {out}/")
