@@ -121,7 +121,7 @@ CASES = [
     # ASR làm mất động từ hoặc chèn token lạ: không được đoán ngầm là set
     ("tân điện trần hai mươi phần trăm", "light-main", None, None, "unknown_command"),
     ("tăng đèn trận thế mười phần trăm", "light-main", None, None, "unknown_command"),
-    ("gãm đèn trần mười phần trăm", "light-main", None, None, "unknown_command"),
+    ("gãm đèn trần mười phần trăm", "light-main", "down", 10, OK),
     # Từ đệm lịch sự được bỏ qua, nhưng phủ định vẫn phải bị từ chối.
     ("hãy bật tivi", "tv", "on", None, OK),
     ("bật tivi nhé", "tv", "on", None, OK),
@@ -218,7 +218,7 @@ class TestAsrRecovery(unittest.TestCase):
         r = C.parse_command("đại điều hòa tám độ")
         self.assertEqual((r["device"], r["action"], r["value"], r["reason"]), ("ac", "set", 8, None))
         for text in ("đặt điều hòa bởi tám độ", "tân điện trần hai mươi phần trăm",
-                     "gãm đèn trần mười phần trăm", "đừng bật tivi", "chưa tắt đèn trần"):
+                     "đừng bật tivi", "chưa tắt đèn trần"):
             with self.subTest(text=text):
                 self.assertIsNotNone(C.parse_command(text)["reason"])
 
@@ -236,6 +236,24 @@ class TestAsrRecovery(unittest.TestCase):
                 r = C.parse_command(text)
                 self.assertEqual(r["reason"], "unknown_command")
                 self.assertNotEqual(r["action"], "mode_fan")
+
+    def test_safe_asr_context_aliases(self):
+        cases = [
+            ("đoạn đèn tràng tám mươi phần trăm", "light-main", "set", 80),
+            ("hé đầu giường mười lăm độ", "bed", "down", 15),
+            ("chuyển tivi kane hai", "tv", "channel", 2),
+            ("giảm đèn cần mười phần trăm", "light-main", "down", 10),
+            ("gãm đèn trần mười phần trăm", "light-main", "down", 10),
+        ]
+        for text, device, action, value in cases:
+            with self.subTest(text=text):
+                r = C.parse_command(text)
+                self.assertEqual((r["device"], r["action"], r["value"], r["reason"]),
+                                 (device, action, value, None))
+        r = C.parse_command("điều hòa kane hai")
+        self.assertEqual(r["reason"], "unknown_command")
+        r = C.parse_command("gãm đầu dừa mười độ")
+        self.assertEqual(r["reason"], "ambiguous_device")
 
 
 if __name__ == "__main__":

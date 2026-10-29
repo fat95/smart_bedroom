@@ -235,7 +235,7 @@ CONTEXT_NUMBER_ALIASES = {
 }
 SET_ACTION_ALIASES = {"dai", "dan", "doan", "dac"}  # đặt bị nghe sai ở đầu câu
 ON_ACTION_ALIASES = {"boc", "bot"}                          # bật -> bọc/bọt/bột
-TRAN_AFTER_DEN_ALIASES = {"chon", "chung", "chan", "tron", "trang"}
+TRAN_AFTER_DEN_ALIASES = {"chon", "chung", "chan", "can", "tron", "trang"}
 
 
 def _infer_device_from_context(tokens: list[str]) -> tuple[str, tuple[int, int]] | None:
@@ -367,9 +367,16 @@ def parse_command(text: str) -> dict:
             tok == "can" and i + 1 < len(tokens) and span and i + 1 == span[0]
             for i, tok in enumerate(tokens)):
         extra_known.update(i for i, tok in enumerate(tokens) if tok == "can")
-    if not intents and tokens and tokens[0] in SET_ACTION_ALIASES and num is not None \
+    if dev == "tv" and "channel" in allowed and "kane" in tokens \
+            and any(action == "channel" for _, action, _ in intents):
+        extra_known.update(i for i, tok in enumerate(tokens) if tok == "kane")
+    first_is_down_alias = bool(first_raw and first_raw[0] in {"hé", "hẹ", "gãm"})
+    if tokens and tokens[0] in SET_ACTION_ALIASES and num is not None \
             and bool({"do", "pt"} & set(tokens)) and "set" in allowed:
         intents = [(0, "set", 82.0)]
+        extra_known.add(0)
+    elif not intents and first_is_down_alias and (num is not None or flat) and "down" in allowed:
+        intents = [(0, "down", 82.0)]
         extra_known.add(0)
     elif not intents and on_alias and "on" in allowed \
             and num is None:
