@@ -195,5 +195,33 @@ class TestNormalizeForWer(unittest.TestCase):
         self.assertNotEqual(C.normalize_for_wer("bật"), C.normalize_for_wer("bắt"))
 
 
+class TestAsrRecovery(unittest.TestCase):
+    def test_context_device_and_mode(self):
+        self.assertEqual((C.parse_command("điều mà chế độ quạt")["device"],
+                          C.parse_command("điều mà chế độ quạt")["action"]), ("ac", "mode_fan"))
+        self.assertEqual((C.parse_command("lạc lạnh điều hòa")["device"],
+                          C.parse_command("lạc lạnh điều hòa")["action"]), ("ac", "mode_cool"))
+
+    def test_context_number(self):
+        r = C.parse_command("kênh chính")
+        self.assertEqual((r["device"], r["action"], r["value"], r["reason"]), ("tv", "channel", 9, None))
+        r = C.parse_command("mời độ điều hòa")
+        self.assertEqual((r["device"], r["action"], r["value"], r["reason"]), ("ac", "set", 10, None))
+        r = C.parse_command("chuyển tivi cân nằm")
+        self.assertEqual((r["device"], r["action"], r["value"], r["reason"]), ("tv", "channel", 5, None))
+
+    def test_initial_verb_recovery_and_safety(self):
+        r = C.parse_command("bọc đèn trần")
+        self.assertEqual((r["device"], r["action"], r["reason"]), ("light-main", "on", None))
+        r = C.parse_command("bọt đèn trần")
+        self.assertEqual((r["device"], r["action"], r["reason"]), ("light-main", "on", None))
+        r = C.parse_command("đại điều hòa tám độ")
+        self.assertEqual((r["device"], r["action"], r["value"], r["reason"]), ("ac", "set", 8, None))
+        for text in ("đặt điều hòa bởi tám độ", "tân điện trần hai mươi phần trăm",
+                     "gãm đèn trần mười phần trăm", "đừng bật tivi", "chưa tắt đèn trần"):
+            with self.subTest(text=text):
+                self.assertIsNotNone(C.parse_command(text)["reason"])
+
+
 if __name__ == "__main__":
     unittest.main()

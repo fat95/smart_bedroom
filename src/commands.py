@@ -173,7 +173,7 @@ VERBS = {
     "set": ["dat", "chinh", "cai", "de"],
     "channel": ["chuyen", "kenh"],
 }
-MODES = {"mode_cool": ["lam lanh", "lanh"], "mode_fan": ["quat"], "mode_dry": ["hut am", "hut"]}
+MODES = {"mode_cool": ["lam lanh", "lanh", "lac lanh"], "mode_fan": ["quat", "qua"], "mode_dry": ["hut am", "hut"]}
 
 ALLOWED_FILLERS = {
     "len", "xuong", "cho", "o", "la", "muc", "toi", "sang", "che", "do", "c", "doi",
@@ -216,9 +216,49 @@ def find_mode(tokens: list[str], skip: set[int]) -> tuple[str, float, set[int]] 
     for act, words in MODES.items():
         for w in words:
             m = _match_phrase(tokens, w, skip)
-            if m and (best is None or m[0] > best[1]):
+            if m and (best is None or (m[0], m[2] - m[1]) > (best[1], len(best[2]))):
                 best = (act, m[0], set(range(m[1], m[2])))
     return best
+
+
+# Một số lỗi ASR có tính chất ngữ âm nhưng không đủ an toàn để nới ngưỡng
+# fuzzy toàn cục. Các bảng này chỉ được dùng khi đã có ngữ cảnh rất hẹp.
+CONTEXT_NUMBER_ALIASES = {
+    "chinh": 9, "chin": 9, "moi": 10, "muoi": 10,
+}
+SET_ACTION_ALIASES = {"dai", "dan", "doan", "dac"}  # đặt bị nghe sai ở đầu câu
+ON_ACTION_ALIASES = {"boc", "bot"}                          # bật -> bọc/bọt/bột
+
+
+def _infer_device_from_context(tokens: list[str]) -> tuple[str, tuple[int, int]] | None:
+    """Suy thiết bị chỉ từ một cụm ngữ cảnh đặc trưng, không từ token lạ bất kỳ."""
+    candidates = []
+    for phrase, dev in (("dieu ma", "ac"), ("dieu he", "ac"), ("che do quat", "ac"),
+                        ("lam lanh", "ac"), ("lac lanh", "ac"), ("hut am", "ac"),
+                        ("kenh", "tv"), ("am luong", "tv"), ("nam phang", "bed"),
+                        ("dau giuong", "bed")):
+        words = phrase.split()
+        for i in range(len(tokens) - len(words) + 1):
+            if tokens[i:i + len(words)] == words:
+                candidates.append((dev, (i, i + len(words))))
+    devs = {dev for dev, _ in candidates}
+    if len(devs) == 1 and candidates:
+        return candidates[0]
+    return None
+
+
+def _context_number(tokens: list[str], skip: set[int]) -> tuple[int | None, tuple[int, int] | None]:
+    """Đọc vài lỗi số chỉ sau ``kênh`` hoặc ngay trước một đơn vị rõ ràng."""
+    for i, tok in enumerate(tokens):
+        if tok == "kenh" and i + 1 < len(tokens) and i + 1 not in skip:
+            val = CONTEXT_NUMBER_ALIASES.get(tokens[i + 1])
+            if val is not None:
+                return val, (i + 1, i + 2)
+        if tok in {"do", "pt"} and i > 0 and i - 1 not in skip:
+            val = CONTEXT_NUMBER_ALIASES.get(tokens[i - 1])
+            if val is not None:
+                return val, (i - 1, i)
+    return None, None
 
 
 def _intent_indices(tokens: list[str], skip: set[int], intents: list[tuple[int, str, float]]) -> set[int]:
@@ -237,7 +277,7 @@ def _intent_indices(tokens: list[str], skip: set[int], intents: list[tuple[int, 
 
 def _unknown_tokens(tokens: list[str], skip: set[int], span: tuple[int, int] | None,
                     intents: list[tuple[int, str, float]], mode_tokens: set[int] | None,
-                    flat: bool) -> list[str]:
+                    flat: bool, extra_known: set[int] | None = None) -> list[str]:
     """Trả về token chưa được giải thích trong một câu có đúng thiết bị."""
     known = set(skip) | {i for i, tok in enumerate(tokens) if tok in {"do", "pt"} | ALLOWED_FILLERS}
     if span:
@@ -247,6 +287,7 @@ def _unknown_tokens(tokens: list[str], skip: set[int], span: tuple[int, int] | N
         known.update(mode_tokens)
     if flat:
         known.update(i for i, tok in enumerate(tokens) if tok in {"nam", "phang"})
+    known.update(extra_known or set())
     return [tok for i, tok in enumerate(tokens) if i not in known]
 
 
@@ -267,8 +308,23 @@ def parse_command(text: str) -> dict:
     devs = find_devices(tokens)
     flat = "phang" in tokens                                   # "nằm phẳng"
     skip = {k for (_, a, b) in devs.values() for k in range(a, b)}
+    inferred = None
+    if not devs:
+        inferred = _infer_device_from_context(tokens)
+        if inferred:
+            idev, (ia, ib) = inferred
+            devs[idev] = (88.0, ia, ib)
+            skip.update(range(ia, ib))
     intents = find_intents(tokens, skip)
     num, span = find_number(tokens, skip)
+    if num is None:
+        num, span = _context_number(tokens, skip)
+    first_raw = re.sub(r"[^\w\s]", " ", raw.lower()).split()
+    on_alias = tokens and tokens[0] in ON_ACTION_ALIASES and (
+        tokens[0] == "boc" or (first_raw and first_raw[0] in {"bọt", "bột"})
+    )
+    if on_alias and num is None:
+        intents = [h for h in intents if h[1] != "down"]
     # PhoWhisper-base hay nghe "bật" thành "bọn" (gặp thật ở 2/36 file test). "bon" cũng là số 4 ("bốn"), nên chỉ coi là "bật" khi:
     # nó là từ ĐẦU câu, đứng một mình (không phải "bốn mươi..."), không có động từ nào khác và sau nó không phải "độ".
     if (len(devs) == 1 and not intents and tokens[0] == "bon" and 0 not in skip
@@ -284,6 +340,29 @@ def parse_command(text: str) -> dict:
     dev = next(iter(devs))
     dev_score = devs[dev][0] / 100.0
     allowed = config.DEVICES[dev]["actions"]
+
+    # Khi ``kênh`` đồng thời là tín hiệu duy nhất để suy ra tivi, nó đã nằm
+    # trong skip nên không đi qua find_intents; vẫn giữ quy tắc channel của TV.
+    if dev == "tv" and "channel" in allowed and "kenh" in tokens \
+            and not any(a == "channel" for _, a, _ in intents):
+        intents.append((tokens.index("kenh"), "channel", 90.0))
+
+    # Chỉ suy động từ bị nghe sai ở ĐẦU câu khi phần còn lại đã có đủ bằng
+    # chứng của lệnh. Token được đánh dấu đã giải thích để unknown_tokens vẫn
+    # là hàng rào chống đoán bừa.
+    extra_known = set()
+    if dev == "tv" and "channel" in allowed and any(
+            tok == "can" and i + 1 < len(tokens) and span and i + 1 == span[0]
+            for i, tok in enumerate(tokens)):
+        extra_known.update(i for i, tok in enumerate(tokens) if tok == "can")
+    if not intents and tokens and tokens[0] in SET_ACTION_ALIASES and num is not None \
+            and bool({"do", "pt"} & set(tokens)) and "set" in allowed:
+        intents = [(0, "set", 82.0)]
+        extra_known.add(0)
+    elif not intents and on_alias and "on" in allowed \
+            and num is None:
+        intents = [(0, "on", 82.0)]
+        extra_known.add(0)
 
     # 2) hành động
     act, act_score = None, 0.8                                 # hành động ngầm định (không có động từ) bị trừ điểm
@@ -302,13 +381,13 @@ def parse_command(text: str) -> dict:
         elif usable:
             act, act_score = usable[0][1], usable[0][2] / 100.0
         elif num is not None and ({"do", "pt"} & set(tokens)):  # không có động từ nhưng có số + đơn vị: "điều hòa 26 độ"
-            if _unknown_tokens(tokens, skip, span, intents, None, flat):
+            if _unknown_tokens(tokens, skip, span, intents, None, flat, extra_known):
                 return _result(raw, device=dev, reason="unknown_command", score=dev_score * 0.5)
             act = "set"                                         # số trần không đơn vị (vd "bọn" nghe thành "bốn") thì từ chối, không đoán
         if act is None:
             return _result(raw, device=dev, reason="unknown_command", score=dev_score * 0.5)
 
-    if _unknown_tokens(tokens, skip, span, intents, mode[2] if mode else None, flat):
+    if _unknown_tokens(tokens, skip, span, intents, mode[2] if mode else None, flat, extra_known):
         return _result(raw, device=dev, reason="unknown_command", score=dev_score * 0.5)
 
     if act not in allowed:
