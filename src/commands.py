@@ -178,6 +178,7 @@ MODES = {"mode_cool": ["lam lanh", "lanh"], "mode_fan": ["quat"], "mode_dry": ["
 ALLOWED_FILLERS = {
     "len", "xuong", "cho", "o", "la", "muc", "toi", "sang", "che", "do", "c", "doi",
     "am", "luong", "kenh", "chan",
+    "hay", "nhe", "nha", "di", "oi", "e", "xin", "lam", "on", "giup", "dum", "gium", "voi", "cai", "da",
 }
 
 

@@ -122,6 +122,20 @@ CASES = [
     ("tân điện trần hai mươi phần trăm", "light-main", None, None, "unknown_command"),
     ("tăng đèn trận thế mười phần trăm", "light-main", None, None, "unknown_command"),
     ("gãm đèn trần mười phần trăm", "light-main", None, None, "unknown_command"),
+    # Từ đệm lịch sự được bỏ qua, nhưng phủ định vẫn phải bị từ chối.
+    ("hãy bật tivi", "tv", "on", None, OK),
+    ("bật tivi nhé", "tv", "on", None, OK),
+    ("bật điều hòa đi", "ac", "on", None, OK),
+    ("tắt tivi đi", "tv", "off", None, OK),
+    ("xin hãy bật điều hòa", "ac", "on", None, OK),
+    ("làm ơn tắt đèn trần", "light-main", "off", None, OK),
+    ("mở điều hòa nhé", "ac", "on", None, OK),
+    ("bật điều hòa giúp tôi", "ac", "on", None, OK),
+    ("bật tivi ơi", "tv", "on", None, OK),
+    ("ê bật tivi", "tv", "on", None, OK),
+    ("đừng bật tivi", "tv", None, None, "unknown_command"),
+    ("chưa tắt đèn trần", "light-main", None, None, "unknown_command"),
+    ("đặt điều hòa bởi tám độ", "ac", None, None, "unknown_command"),
 ]
 
 
