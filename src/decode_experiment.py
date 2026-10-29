@@ -2,7 +2,7 @@
 """Chạy các cấu hình giải mã PhoWhisper vào một thư mục kết quả ngoài dự án.
 
 Ví dụ:
-  python src/decode_experiment.py --model phowhisper-base --out D:/tmp/decode_eval
+  python src/decode_experiment.py --model phowhisper-small --out D:/tmp/decode_eval
 """
 from __future__ import annotations
 
@@ -19,7 +19,7 @@ import eval_asr as E  # noqa: E402
 
 def main() -> None:
     ap = argparse.ArgumentParser(description=__doc__)
-    ap.add_argument("--model", default="phowhisper-base")
+    ap.add_argument("--model", default="phowhisper-small")
     ap.add_argument("--out", type=Path, required=True)
     ap.add_argument("--limit", type=int, default=0)
     ap.add_argument("--skip-simple", action="store_true")

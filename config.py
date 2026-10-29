@@ -18,8 +18,8 @@ SAMPLE_RATE = 16000
 RECORD_SECONDS = 4
 
 # ---------------------------------------------------------------- mô hình ASR
-# Laptop không GPU: dùng bản base cho demo. Bản small để đo trên Colab.
-PHOWHISPER_DEMO = "vinai/PhoWhisper-base"
+# Mặc định hệ thống dùng bản small; base vẫn có thể chọn làm phương án nhẹ hơn trên CPU.
+PHOWHISPER_DEMO = "vinai/PhoWhisper-small"
 PHOWHISPER_EVAL = "vinai/PhoWhisper-small"
 ASR_MODELS = {          # tên ngắn (dùng ở dòng lệnh và báo cáo) -> id trên Hugging Face
     "phowhisper-base": "vinai/PhoWhisper-base",
@@ -27,7 +27,7 @@ ASR_MODELS = {          # tên ngắn (dùng ở dòng lệnh và báo cáo) -> 
     "whisper-base": "openai/whisper-base",
     "whisper-small": "openai/whisper-small",
 }
-ASR_DEFAULT = "phowhisper-base"
+ASR_DEFAULT = "phowhisper-small"
 
 # ---------------------------------------------------------------- ngưỡng
 COMMAND_THRESHOLD = 0.75   # điểm khớp mờ tối thiểu (0..1) để chấp nhận một lệnh

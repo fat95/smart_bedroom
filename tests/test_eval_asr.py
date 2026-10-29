@@ -144,6 +144,7 @@ class TestLoadAudio(unittest.TestCase):
     def test_resolve_model(self):
         self.assertEqual(asr.resolve_model("phowhisper-small"), "vinai/PhoWhisper-small")
         self.assertEqual(asr.resolve_model("vinai/PhoWhisper-base"), "vinai/PhoWhisper-base")
+        self.assertEqual(asr.config.ASR_DEFAULT, "phowhisper-small")
 
 
 if __name__ == "__main__":
