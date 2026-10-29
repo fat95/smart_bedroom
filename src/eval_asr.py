@@ -236,7 +236,8 @@ def eval_baseline(items: list[dict], model_path: Path) -> dict | None:
         pred = str(bundle["classes"][int(np.argmax(bundle["model"].predict_proba(r["stat"][None, :])[0]))])
         lat.append((time.perf_counter() - t0) * 1000)
         ok.append(pred == it["sid"])
-    return {"n": len(ok), "acc": round(sum(ok) / len(ok), 4), "latency_ms_mean": round(statistics.mean(lat), 1)}
+    return {"name": str(bundle.get("name") or "baseline MFCC"), "n": len(ok),
+            "acc": round(sum(ok) / len(ok), 4), "latency_ms_mean": round(statistics.mean(lat), 1)}
 
 
 # ------------------------------------------------------------------ ghi kết quả
@@ -274,7 +275,7 @@ def write_summary(reports: dict, out: Path, simple: bool, baseline: dict | None)
         ["model", "n", "wer", "cer", "acc_device", "acc_action", "acc_value", "acc_exact", "wrong_exec", "latency_ms_mean"]
     rows = [{"model": m, **{c: r.get(c) for c in cols[1:]}} for m, r in reports.items()]
     if simple and baseline:
-        rows.append({"model": "baseline MFCC+SVM/RF", "n": baseline["n"], "acc_exact": baseline["acc"],
+        rows.append({"model": baseline.get("name", "baseline MFCC"), "n": baseline["n"], "acc_exact": baseline["acc"],
                      "latency_ms_mean": baseline["latency_ms_mean"]})
     with open(out / "summary.csv", "w", encoding="utf-8-sig", newline="") as f:
         w = csv.DictWriter(f, fieldnames=cols); w.writeheader(); w.writerows(rows)
@@ -282,7 +283,7 @@ def write_summary(reports: dict, out: Path, simple: bool, baseline: dict | None)
             "acc_value": "Đúng giá trị", "acc_exact": "Đúng cả lệnh" if not simple else "Đúng lệnh", "wrong_exec": "Thực thi sai", "latency_ms_mean": "Độ trễ TB (ms)"}
     lines = ["| " + " | ".join(head[c] for c in cols) + " |", "|" + "---|" * len(cols)]
     for r in rows:
-        cells = [str(r[c]) if c in ("model", "n") else (f"{r[c]:.1f}" if c == "latency_ms_mean" and r[c] is not None else pct(r[c]))
+        cells = [str(r.get(c)) if c in ("model", "n") else (f"{r.get(c):.1f}" if c == "latency_ms_mean" and r.get(c) is not None else pct(r.get(c)))
                  for c in cols]
         lines.append("| " + " | ".join(cells) + " |")
     (out / "summary.md").write_text("\n".join(lines) + "\n", encoding="utf-8")

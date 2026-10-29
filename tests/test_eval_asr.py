@@ -45,7 +45,7 @@ class TestMetrics(unittest.TestCase):
 
 class TestPipeline(unittest.TestCase):
     def setUp(self):
-        self.tmp = tempfile.TemporaryDirectory()
+        self.tmp = tempfile.TemporaryDirectory(dir=ROOT)
         t = Path(self.tmp.name)
         (t / "audio").mkdir()
         (t / "sentences.csv").write_text(SENTENCES, encoding="utf-8")
@@ -112,6 +112,15 @@ class TestPipeline(unittest.TestCase):
         out = self.t / "o2"
         E.write_outputs("fake", rows, rep, out, simple=True)
         self.assertTrue((out / "confusion_fake_simple.png").exists())
+
+    def test_write_summary_simple_baseline_without_wrong_exec(self):
+        out = Path(self.tmp.name) / "summary_baseline"
+        out.mkdir()
+        E.write_summary({}, out, simple=True,
+                        baseline={"n": 42, "acc": 0.857, "latency_ms_mean": 49.0})
+        summary = (out / "summary.md").read_text(encoding="utf-8")
+        self.assertIn("baseline MFCC", summary)
+        self.assertIn("–", summary)
 
 
 class TestLoadAudio(unittest.TestCase):
