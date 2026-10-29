@@ -1,0 +1,5 @@
+﻿model,n,wer,cer,acc_device,acc_action,acc_value,acc_exact,wrong_exec,latency_ms_mean
+phowhisper-small,181,0.2145,0.0882,0.9227,0.768,0.7244,0.7569,0.0,346.3
+phowhisper-base,181,0.2818,0.1291,0.8674,0.663,0.6142,0.6354,0.0,183.2
+whisper-small,181,0.4539,0.2508,0.6519,0.4144,0.4173,0.4033,0.011,240.7
+whisper-base,181,1.2743,1.038,0.3978,0.1492,0.1654,0.1492,0.0,220.1

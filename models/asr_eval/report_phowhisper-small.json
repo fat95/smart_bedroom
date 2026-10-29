@@ -1,0 +1,40 @@
+{
+  "n": 181,
+  "wer": 0.2145,
+  "cer": 0.0882,
+  "acc_device": 0.9227,
+  "acc_action": 0.768,
+  "acc_value": 0.7244,
+  "n_value": 127,
+  "acc_exact": 0.7569,
+  "wrong_exec": 0.0,
+  "rejected_cmd": 0.2431,
+  "n_noise": 0,
+  "noise_rejected": null,
+  "latency_ms_mean": 346.3,
+  "latency_ms_median": 340.8,
+  "latency_ms_p95": 444.7,
+  "reject_reasons": {
+    "unknown_command": 29,
+    "missing_value": 4,
+    "ambiguous_device": 11
+  },
+  "by_speaker": {
+    "phat": {
+      "n": 60,
+      "wer": 0.282,
+      "acc_exact": 0.6833
+    },
+    "vi": {
+      "n": 61,
+      "wer": 0.237,
+      "acc_exact": 0.7377
+    },
+    "vinh": {
+      "n": 60,
+      "wer": 0.1241,
+      "acc_exact": 0.85
+    }
+  },
+  "model": "phowhisper-small"
+}

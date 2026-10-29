@@ -1,0 +1,9 @@
+﻿thực tế \ dự đoán,bat_den_tran,bat_dieu_hoa,bat_tivi,khác,noise,tat_den_tran,tat_dieu_hoa,tat_tivi
+bat_den_tran,6,0,0,0,0,0,0,0
+bat_dieu_hoa,0,6,0,0,0,0,0,0
+bat_tivi,0,0,5,0,1,0,0,0
+khác,0,0,0,0,0,0,0,0
+noise,0,0,0,0,6,0,0,0
+tat_den_tran,0,0,0,3,0,3,0,0
+tat_dieu_hoa,0,0,0,0,0,0,6,0
+tat_tivi,0,0,0,0,0,0,0,6

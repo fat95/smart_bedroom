@@ -1,0 +1,43 @@
+﻿path,speaker,sid,rep,ref_text,hyp_text,device,action,value,pred_device,pred_action,pred_value,reason,score,ok_device,ok_action,ok_value,ok_exact,latency_ms
+/content/proj/smart_bedroom-develop/dataset/bat_den_tran/phat_bat_den_tran_003.wav,phat,bat_den_tran,,bật đèn trần,Bạc điên chăng,light-main,on,,,,,ambiguous_device,0.0,False,False,,False,282.4
+/content/proj/smart_bedroom-develop/dataset/bat_den_tran/phat_bat_den_tran_009.wav,phat,bat_den_tran,,bật đèn trần,Bật đi chân.,light-main,on,,,,,ambiguous_device,0.0,False,False,,False,179.3
+/content/proj/smart_bedroom-develop/dataset/bat_den_tran/vi_bat_den_tran_003.wav,vi,bat_den_tran,,bật đèn trần,Mặc đen trăng.,light-main,on,,light-main,,,unknown_command,0.5,True,False,,False,190.8
+/content/proj/smart_bedroom-develop/dataset/bat_den_tran/vi_bat_den_tran_010.wav,vi,bat_den_tran,,bật đèn trần,Bật đen trăng.,light-main,on,,light-main,on,,,1.0,True,True,,True,206.4
+/content/proj/smart_bedroom-develop/dataset/bat_den_tran/vinh_bat_den_tran_003.wav,vinh,bat_den_tran,,bật đèn trần,bắt đen chân,light-main,on,,light-main,on,,,1.0,True,True,,True,193.2
+/content/proj/smart_bedroom-develop/dataset/bat_den_tran/vinh_bat_den_tran_006.wav,vinh,bat_den_tran,,bật đèn trần,bắt đen chân,light-main,on,,light-main,on,,,1.0,True,True,,True,187.2
+/content/proj/smart_bedroom-develop/dataset/bat_dieu_hoa/phat_bat_dieu_hoa_005.wav,phat,bat_dieu_hoa,,bật điều hòa,Bạc đi hòa.,ac,on,,ac,on,,,0.929,True,True,,True,210.5
+/content/proj/smart_bedroom-develop/dataset/bat_dieu_hoa/phat_bat_dieu_hoa_008.wav,phat,bat_dieu_hoa,,bật điều hòa,Bọc đi vô hoa.,ac,on,,,,,ambiguous_device,0.0,False,False,,False,237.0
+/content/proj/smart_bedroom-develop/dataset/bat_dieu_hoa/vi_bat_dieu_hoa_003.wav,vi,bat_dieu_hoa,,bật điều hòa,Bác đều hoa,ac,on,,ac,on,,,0.967,True,True,,True,180.4
+/content/proj/smart_bedroom-develop/dataset/bat_dieu_hoa/vi_bat_dieu_hoa_004.wav,vi,bat_dieu_hoa,,bật điều hòa,bật đeo hoa,ac,on,,,,,ambiguous_device,0.0,False,False,,False,192.4
+/content/proj/smart_bedroom-develop/dataset/bat_dieu_hoa/vinh_bat_dieu_hoa_006.wav,vinh,bat_dieu_hoa,,bật điều hòa,bắt điều hoa,ac,on,,ac,on,,,1.0,True,True,,True,171.1
+/content/proj/smart_bedroom-develop/dataset/bat_dieu_hoa/vinh_bat_dieu_hoa_009.wav,vinh,bat_dieu_hoa,,bật điều hòa,bắt điều hoa,ac,on,,ac,on,,,1.0,True,True,,True,192.4
+/content/proj/smart_bedroom-develop/dataset/bat_tivi/phat_bat_tivi_001.wav,phat,bat_tivi,,bật tivi,Bạc bay bay!,tv,on,,,,,ambiguous_device,0.0,False,False,,False,192.0
+/content/proj/smart_bedroom-develop/dataset/bat_tivi/phat_bat_tivi_005.wav,phat,bat_tivi,,bật tivi,Bạc tây tây!,tv,on,,,,,ambiguous_device,0.0,False,False,,False,270.7
+/content/proj/smart_bedroom-develop/dataset/bat_tivi/vi_bat_tivi_002.wav,vi,bat_tivi,,bật tivi,Bắc Tây Vây,tv,on,,,,,ambiguous_device,0.0,False,False,,False,204.5
+/content/proj/smart_bedroom-develop/dataset/bat_tivi/vi_bat_tivi_012.wav,vi,bat_tivi,,bật tivi,Bạc tây bay,tv,on,,,,,ambiguous_device,0.0,False,False,,False,209.4
+/content/proj/smart_bedroom-develop/dataset/bat_tivi/vinh_bat_tivi_008.wav,vinh,bat_tivi,,bật tivi,Bạc TV,tv,on,,tv,on,,,1.0,True,True,,True,158.8
+/content/proj/smart_bedroom-develop/dataset/bat_tivi/vinh_bat_tivi_009.wav,vinh,bat_tivi,,bật tivi,Bạc T.V.,tv,on,,,,,ambiguous_device,0.0,False,False,,False,189.0
+/content/proj/smart_bedroom-develop/dataset/noise/phat_noise_004.wav,phat,noise,,,Hãy subscribe cho kênh Ghiền Mì Gõ Để không bỏ lỡ những video hấp dẫn,,,,,,,ambiguous_device,0.0,True,True,,True,584.9
+/content/proj/smart_bedroom-develop/dataset/noise/phat_noise_009.wav,phat,noise,,,Hãy subscribe cho kênh Ghiền Mì Gõ Để không bỏ lỡ những video hấp dẫn,,,,,,,ambiguous_device,0.0,True,True,,True,563.7
+/content/proj/smart_bedroom-develop/dataset/noise/vi_noise_011.wav,vi,noise,,,Hãy subscribe cho kênh Ghiền Mì Gõ Để không bỏ lỡ những video hấp dẫn,,,,,,,ambiguous_device,0.0,True,True,,True,578.2
+/content/proj/smart_bedroom-develop/dataset/noise/vi_noise_012.wav,vi,noise,,,Hãy subscribe cho kênh Ghiền Mì Gõ Để không bỏ lỡ những video hấp dẫn,,,,,,,ambiguous_device,0.0,True,True,,True,590.8
+/content/proj/smart_bedroom-develop/dataset/noise/vinh_noise_006.wav,vinh,noise,,,Hãy subscribe cho kênh Ghiền Mì Gõ Để không bỏ lỡ những video hấp dẫn,,,,,,,ambiguous_device,0.0,True,True,,True,565.2
+/content/proj/smart_bedroom-develop/dataset/noise/vinh_noise_012.wav,vinh,noise,,,Hãy subscribe cho kênh Ghiền Mì Gõ Để không bỏ lỡ những video hấp dẫn,,,,,,,ambiguous_device,0.0,True,True,,True,593.7
+/content/proj/smart_bedroom-develop/dataset/tat_den_tran/phat_tat_den_tran_010.wav,phat,tat_den_tran,,tắt đèn trần,Tóc lệ trơn.,light-main,off,,,,,unknown_command,0.0,False,False,,False,197.8
+/content/proj/smart_bedroom-develop/dataset/tat_den_tran/phat_tat_den_tran_012.wav,phat,tat_den_tran,,tắt đèn trần,Tắt về trơn.,light-main,off,,,,,ambiguous_device,0.0,False,False,,False,174.9
+/content/proj/smart_bedroom-develop/dataset/tat_den_tran/vi_tat_den_tran_001.wav,vi,tat_den_tran,,tắt đèn trần,Tắt đen trông.,light-main,off,,light-main,,,unknown_command,0.5,True,False,,False,188.9
+/content/proj/smart_bedroom-develop/dataset/tat_den_tran/vi_tat_den_tran_008.wav,vi,tat_den_tran,,tắt đèn trần,Tắt đèn cân.,light-main,off,,light-main,,,unknown_command,0.5,True,False,,False,198.4
+/content/proj/smart_bedroom-develop/dataset/tat_den_tran/vinh_tat_den_tran_002.wav,vinh,tat_den_tran,,tắt đèn trần,Tắt đàn trường.,light-main,off,,,,,ambiguous_device,0.0,False,False,,False,196.0
+/content/proj/smart_bedroom-develop/dataset/tat_den_tran/vinh_tat_den_tran_012.wav,vinh,tat_den_tran,,tắt đèn trần,Tắt đèn trường,light-main,off,,light-main,,,unknown_command,0.5,True,False,,False,188.2
+/content/proj/smart_bedroom-develop/dataset/tat_dieu_hoa/phat_tat_dieu_hoa_005.wav,phat,tat_dieu_hoa,,tắt điều hòa,Tắt đi hoa,ac,off,,ac,off,,,0.929,True,True,,True,172.5
+/content/proj/smart_bedroom-develop/dataset/tat_dieu_hoa/phat_tat_dieu_hoa_008.wav,phat,tat_dieu_hoa,,tắt điều hòa,Tắt đi hoa,ac,off,,ac,off,,,0.929,True,True,,True,171.4
+/content/proj/smart_bedroom-develop/dataset/tat_dieu_hoa/vi_tat_dieu_hoa_006.wav,vi,tat_dieu_hoa,,tắt điều hòa,Tắt đều hoa,ac,off,,ac,off,,,0.967,True,True,,True,239.5
+/content/proj/smart_bedroom-develop/dataset/tat_dieu_hoa/vi_tat_dieu_hoa_011.wav,vi,tat_dieu_hoa,,tắt điều hòa,Tắt đều hoàng,ac,off,,ac,off,,,0.912,True,True,,True,184.2
+/content/proj/smart_bedroom-develop/dataset/tat_dieu_hoa/vinh_tat_dieu_hoa_005.wav,vinh,tat_dieu_hoa,,tắt điều hòa,Tắt điều hòa,ac,off,,ac,off,,,1.0,True,True,,True,174.6
+/content/proj/smart_bedroom-develop/dataset/tat_dieu_hoa/vinh_tat_dieu_hoa_006.wav,vinh,tat_dieu_hoa,,tắt điều hòa,Tắt điều hòa.,ac,off,,ac,off,,,1.0,True,True,,True,188.3
+/content/proj/smart_bedroom-develop/dataset/tat_tivi/phat_tat_tivi_03.wav,phat,tat_tivi,,tắt tivi,Tắt tề vây.,tv,off,,,,,ambiguous_device,0.0,False,False,,False,190.5
+/content/proj/smart_bedroom-develop/dataset/tat_tivi/phat_tat_tivi_05.wav,phat,tat_tivi,,tắt tivi,Tạc đề vệ.,tv,off,,,,,ambiguous_device,0.0,False,False,,False,208.5
+/content/proj/smart_bedroom-develop/dataset/tat_tivi/vi_tat_tivi_01.wav,vi,tat_tivi,,tắt tivi,Tạch bây bây.,tv,off,,,,,ambiguous_device,0.0,False,False,,False,206.9
+/content/proj/smart_bedroom-develop/dataset/tat_tivi/vi_tat_tivi_09.wav,vi,tat_tivi,,tắt tivi,Tạc thầy bình.,tv,off,,,,,ambiguous_device,0.0,False,False,,False,228.6
+/content/proj/smart_bedroom-develop/dataset/tat_tivi/vinh_tat_tivi_05.wav,vinh,tat_tivi,,tắt tivi,Tắc TV,tv,off,,tv,off,,,1.0,True,True,,True,137.6
+/content/proj/smart_bedroom-develop/dataset/tat_tivi/vinh_tat_tivi_08.wav,vinh,tat_tivi,,tắt tivi,Tạc P.V.,tv,off,,,,,ambiguous_device,0.0,False,False,,False,207.8

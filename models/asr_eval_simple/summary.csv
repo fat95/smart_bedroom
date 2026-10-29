@@ -1,0 +1,6 @@
+﻿model,n,acc_exact,wrong_exec,latency_ms_mean
+phowhisper-small,42,0.9048,0.0,301.5
+phowhisper-base,42,0.8095,0.0,177.2
+whisper-small,42,0.5,0.0,251.1
+whisper-base,42,0.3095,0.0,1025.5
+baseline MFCC+SVM/RF,42,0.9048,,53.8

@@ -8,6 +8,9 @@ Chạy app.py ở terminal khác trước.
 
 File: testset/audio/<người>_<mã câu>_<số lần>.wav, đáp án: testset/sentences.csv (id,text,device,action,value).
 Người lạ = tên la, la1, la2, ... (hoặc trong strangers.txt). Đáp án so với JSON của app (tiếng Việt).
+
+Với mỗi mẫu của người đăng ký bị sai, in ra: đáp án mong đợi, transcript ASR thô và toàn bộ JSON app trả về.
+Cuối mỗi lượt chạy in thống kê lý do thất bại và độ chính xác theo từng loại lệnh.
 """
 import argparse
 import csv
@@ -16,6 +19,7 @@ import re
 import statistics
 import sys
 import time
+from collections import Counter
 from pathlib import Path
 
 import numpy as np
@@ -69,6 +73,8 @@ def run(snr=None, gain=None):
     sents, strangers = load_sentences(), stranger_names()
     rng = np.random.default_rng(0)
     enr, stg, lat, skipped = [], [], [], 0
+    reasons = Counter()      # lý do thất bại của người đăng ký
+    by_cmd = {}              # device/action/target -> list[bool]
     for p in sorted(AUDIO_DIR.glob("*.wav")):
         parts = p.stem.split("_")
         if len(parts) < 3 or "_".join(parts[1:-1]) not in sents:
@@ -88,13 +94,24 @@ def run(snr=None, gain=None):
             stg.append(not ok)                               # đúng = bị chặn
         else:
             enr.append(ok and all(r.get(k) == exp.get(k) for k in ("device", "action", "target", "value")))
+            key = f"{exp.get('device')}/{exp.get('action')}/{exp.get('target')}"
+            by_cmd.setdefault(key, []).append(enr[-1])
             if not enr[-1]:
-                print(f"  sai: {p.name}: mong đợi {exp} | nhận {r.get('status')} {r.get('reason')} "
-                      f"'{r.get('text')}' {r.get('device')}/{r.get('action')}/{r.get('target')}/{r.get('value')}")
+                reasons[f"{r.get('status')}:{r.get('reason')}"] += 1
+                print(f"  sai: {p.name}\n"
+                      f"       mong đợi: {exp}\n"
+                      f"       ASR text: '{r.get('text')}'\n"
+                      f"       app trả : {r}")
     pct = lambda x: "-" if not x else f"{100 * sum(x) / len(x):.1f}% ({sum(x)}/{len(x)})"
     tag = "sạch" if snr is None and gain is None else (f"SNR {snr} dB" if snr is not None else f"gain {gain} dB")
     print(f"[{tag}] người đăng ký thực thi đúng: {pct(enr)} | người lạ bị chặn: {pct(stg)} | "
           f"trễ TB: {statistics.mean(lat):.0f} ms" if lat else f"[{tag}] không có mẫu nào")
+    if reasons:
+        print("  Lý do thất bại:", dict(reasons.most_common()))
+    if by_cmd:
+        print("  Độ chính xác theo lệnh (thấp -> cao):")
+        for k, v in sorted(by_cmd.items(), key=lambda kv: sum(kv[1]) / len(kv[1])):
+            print(f"    {k:35s} {sum(v)}/{len(v)}")
     if skipped:
         print(f"  (bỏ qua {skipped} file không khớp mã câu)")
 

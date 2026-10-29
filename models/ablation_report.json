@@ -1,0 +1,29 @@
+{
+  "asr_assumed_perfect": false,
+  "n_enrolled": 125,
+  "n_stranger": 72,
+  "configs": {
+    "A (chỉ ASR)": {
+      "enrolled_executed": 0.712,
+      "stranger_executed": 0.8472222222222222
+    },
+    "B (proba, chỉ xác thực)": {
+      "enrolled_executed": 0.616,
+      "stranger_executed": 0.0
+    },
+    "A+B (proba)": {
+      "enrolled_executed": 0.48,
+      "stranger_executed": 0.0,
+      "enrolled_blocked_by_speaker": 0.232
+    },
+    "B (margin, chỉ xác thực)": {
+      "enrolled_executed": 0.56,
+      "stranger_executed": 0.0
+    },
+    "A+B (margin)": {
+      "enrolled_executed": 0.44,
+      "stranger_executed": 0.0,
+      "enrolled_blocked_by_speaker": 0.272
+    }
+  }
+}
