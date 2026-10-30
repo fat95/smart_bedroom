@@ -1,2 +1,2 @@
 # Mỗi dòng một tên người lạ (không dùng để huấn luyện). Người lạ đặt tên la1, la2... thì không cần ghi ở đây.
-vinh
+han

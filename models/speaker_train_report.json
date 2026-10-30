@@ -1,17 +1,21 @@
 {
   "feature_set": "plus",
   "speakers": [
+    "giabao",
     "phat",
-    "vi"
+    "vi",
+    "vinh"
   ],
   "samples_per_speaker": {
+    "giabao": 72,
     "phat": 72,
-    "vi": 72
+    "vi": 72,
+    "vinh": 72
   },
   "split_sizes": {
-    "train": 100,
-    "val": 22,
-    "test": 22
+    "train": 200,
+    "val": 44,
+    "test": 44
   },
   "grid": [
     {
@@ -121,13 +125,13 @@
     "val_acc": 1.0
   },
   "loso_eer": {
-    "proba": null,
-    "margin": null
+    "proba": 0.08885732323232323,
+    "margin": 0.06881313131313131
   },
   "thresholds": {
-    "proba": 0.9295809489357915,
-    "margin": 0.5159349931476394
+    "proba": 0.8608932648704035,
+    "margin": 0.4772316701879028
   },
   "chosen_method": "margin",
-  "seconds": 2.3
+  "seconds": 0.6
 }
