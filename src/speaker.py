@@ -307,10 +307,16 @@ def far_frr_curve(gen: np.ndarray, imp: np.ndarray):
 
 
 def compute_eer(gen: np.ndarray, imp: np.ndarray):
-    """Trả về (EER, ngưỡng tại EER)."""
+    """Trả về (EER, ngưỡng tại EER).
+
+    Mọi ngưỡng t trong khoảng (thr[i-1], thr[i]] cho cùng FAR/FRR. Trả về điểm GIỮA khoảng đó
+    thay vì mép thr[i]. Khi gen và imp tách hoàn toàn, mép chính là điểm đúng-người thấp nhất,
+    còn điểm giữa là giữa khe giữa người đúng và người lạ (bền hơn với dữ liệu mới).
+    """
     thr, far, frr = far_frr_curve(gen, imp)
     i = int(np.argmin(np.abs(far - frr)))
-    return float((far[i] + frr[i]) / 2), float(thr[i])
+    t = float((thr[i - 1] + thr[i]) / 2) if i > 0 else float(thr[i])
+    return float((far[i] + frr[i]) / 2), t
 
 
 def bootstrap_ci(gen, imp, fn, n: int = 1000, seed: int = 0):
