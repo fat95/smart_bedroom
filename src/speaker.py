@@ -22,6 +22,7 @@ from __future__ import annotations
 import io
 import os
 import re
+from collections import Counter
 from pathlib import Path
 
 import joblib
@@ -51,6 +52,11 @@ MIN_SPEECH_S = 0.3                             # ngắn hơn -> không đủ đ�
 FEATURE_VERSION = 1                            # đổi khi sửa extract_features (xóa cache cũ)
 UNKNOWN = "__unknown__"                        # nhãn lớp "người lạ" (nếu dùng)
 METHODS = ("proba", "margin", "unknown")
+# Phiên thu: thư mục câu dài đăng ký có dạng <mã câu>_<phiên> (vd cd05_p2) -> phiên "p2".
+# Mọi thư mục khác trong dataset/ (lệnh đơn giản) thuộc phiên gốc "p0".
+ENROLL_DIR_RE = re.compile(r"^[a-z0-9]+_(p\d+)$")
+BASE_SESSION = "p0"
+MIN_SESSION_SAMPLES = 6                        # phiên làm val cần >= ngần này mẫu cho MỖI người đăng ký
 
 
 # ----------------------------------------------------------------------------
@@ -59,6 +65,12 @@ METHODS = ("proba", "margin", "unknown")
 def speaker_of(path) -> str:
     """vinh_bat_dieu_hoa_03.wav -> 'vinh'; la1_c05_01.wav -> 'la1'."""
     return Path(path).stem.split("_", 1)[0].lower()
+
+
+def session_of(path) -> str:
+    """dataset/cd05_p2/vinh_cd05_p2_01.wav -> 'p2'; dataset/bat_tivi/vinh_bat_tivi_01.wav -> 'p0'."""
+    m = ENROLL_DIR_RE.match(Path(path).parent.name.lower())
+    return m.group(1) if m else BASE_SESSION
 
 
 def load_strangers(path: Path = STRANGERS_FILE) -> set[str]:
@@ -91,7 +103,8 @@ def _rel(path) -> str:
 def make_rec(path, group: str, speaker: str | None = None) -> dict:
     name = speaker or speaker_of(path)
     return {"path": str(path), "rel": _rel(path), "speaker": name,
-            "group": group, "stranger": is_stranger(name)}
+            "group": group, "stranger": is_stranger(name),
+            "session": session_of(path) if group == "dataset" else ""}
 
 
 def collect_files(dataset_dir: Path = DATASET_DIR, testset_dir: Path = TESTSET_DIR) -> list[dict]:
@@ -208,21 +221,49 @@ def build_matrix(recs: list[dict], feature_set: str = "plus", use_cache: bool = 
     return (np.vstack(X) if X else np.zeros((0, 0), dtype=np.float32)), kept
 
 
-def split_indices(recs: list[dict], seed: int = 42, ratios=(0.70, 0.15, 0.15)) -> dict:
-    """Chia train/val/test theo từng người đăng ký (cố định theo seed)."""
+def split_indices(recs: list[dict], seed: int = 42, ratios=(0.70, 0.15, 0.15),
+                  val_session: str | None = None) -> dict:
+    """Chia train/val/test theo từng người đăng ký (cố định theo seed).
+
+    val_session=None : chia ngẫu nhiên 70/15/15 như cũ (val cùng phiên với train nên lạc quan).
+    val_session="p2" : val = TOÀN BỘ mẫu phiên p2 của mỗi người (phiên mô hình chưa thấy).
+                       Các phiên còn lại (kể cả p0 = lệnh ngắn gốc) chia ngẫu nhiên thành train và test
+                       theo tỉ lệ ratios[0] : ratios[2]; test này là test CÙNG điều kiện với train
+                       (giữ để so với val theo phiên và với testset/ ngoài dataset).
+    """
     rng = np.random.default_rng(seed)
     out = {"train": [], "val": [], "test": []}
     for spk in sorted({r["speaker"] for r in recs}):
         idx = np.array([i for i, r in enumerate(recs) if r["speaker"] == spk])
-        rng.shuffle(idx)
-        n = len(idx)
-        n_va = max(1, int(round(n * ratios[1]))) if n >= 6 else 0
-        n_te = max(1, int(round(n * ratios[2]))) if n >= 6 else 0
-        n_tr = n - n_va - n_te
-        out["train"] += idx[:n_tr].tolist()
-        out["val"] += idx[n_tr:n_tr + n_va].tolist()
-        out["test"] += idx[n_tr + n_va:].tolist()
+        if val_session is None:
+            rng.shuffle(idx)
+            n = len(idx)
+            n_va = max(1, int(round(n * ratios[1]))) if n >= 6 else 0
+            n_te = max(1, int(round(n * ratios[2]))) if n >= 6 else 0
+            n_tr = n - n_va - n_te
+            out["train"] += idx[:n_tr].tolist()
+            out["val"] += idx[n_tr:n_tr + n_va].tolist()
+            out["test"] += idx[n_tr + n_va:].tolist()
+        else:
+            va = [i for i in idx if recs[i].get("session") == val_session]
+            va_set = set(va)
+            rest = np.array([i for i in idx if i not in va_set])
+            rng.shuffle(rest)
+            n = len(rest)
+            share = ratios[2] / (ratios[0] + ratios[2])
+            n_te = max(1, int(round(n * share))) if n >= 6 else 0
+            out["val"] += [int(i) for i in va]
+            out["test"] += rest[:n_te].tolist()
+            out["train"] += rest[n_te:].tolist()
     return out
+
+
+def candidate_val_sessions(recs: list[dict], min_per_speaker: int = MIN_SESSION_SAMPLES) -> list[str]:
+    """Các phiên câu dài (p1, p2, ...) mà MỌI người đăng ký đều có >= min_per_speaker mẫu, xếp theo số phiên."""
+    spks = sorted({r["speaker"] for r in recs})
+    cnt = Counter((r["speaker"], r.get("session", "")) for r in recs)
+    sessions = sorted({r.get("session", "") for r in recs} - {"", BASE_SESSION}, key=lambda x: int(x[1:]))
+    return [ss for ss in sessions if all(cnt[(sp, ss)] >= min_per_speaker for sp in spks)]
 
 
 # ----------------------------------------------------------------------------

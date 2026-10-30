@@ -2,8 +2,10 @@
 """
 record_routes.py - Trang thu âm dữ liệu (blueprint record_bp).
 
-Hai chế độ thu:
+Ba chế độ thu:
   cmd      lệnh đơn giản   -> dataset/<lệnh>/<người>_<lệnh>_<số>.wav     (huấn luyện)
+  enroll   câu dài đăng ký -> dataset/<câu>_<phiên>/<người>_<câu>_<phiên>_<số>.wav  (huấn luyện xác thực người nói)
+                              ví dụ dataset/cd05_p2/vinh_cd05_p2_01.wav (đặt tên giống lệnh đơn giản: <người>_<nhãn>_<số>)
   sentence câu có tham số  -> testset/audio/<người>_<mã câu>_<số>.wav    (chỉ để kiểm thử)
 
 Quy ước tên người: chữ thường không dấu và số, KHÔNG chứa "_" (vinh, phat, la1).
@@ -31,6 +33,7 @@ ROOT = Path(__file__).resolve().parent
 DATASET_DIR = ROOT / "dataset"
 TESTSET_DIR = ROOT / "testset" / "audio"
 SENTENCES_CSV = ROOT / "testset" / "sentences.csv"
+ENROLL_CSV = ROOT / "enroll_sentences.csv"   # câu dài để ĐĂNG KÝ (không được trùng câu kiểm thử)
 
 SR = 16000
 SECONDS = 4                 # độ dài mỗi bản thu
@@ -131,6 +134,37 @@ def upgrade_legacy(rows: list[dict]) -> tuple[list[dict], bool]:
     return rows, changed
 
 
+# ----------------------------------------------------------------------------
+# Câu dài để ĐĂNG KÝ (huấn luyện xác thực người nói)
+# ----------------------------------------------------------------------------
+# Nhãn lưu = <mã câu>_<phiên>, ví dụ cd05_p2 -> dataset/cd05_p2/<người>_cd05_p2_01.wav
+# Câu nào trùng nội dung với testset/sentences.csv sẽ bị bỏ (tránh rò rỉ sang tập kiểm thử).
+DEFAULT_ENROLL = [
+    ("cd01", "bật điều hòa và đặt hai mươi sáu độ"),
+    ("cd02", "giảm nhiệt độ điều hòa xuống hai mươi hai độ"),
+    ("cd03", "tăng nhiệt độ điều hòa lên hai mươi tám độ"),
+    ("cd04", "bật đèn trần sáng tám mươi phần trăm"),
+    ("cd05", "giảm độ sáng đèn trần xuống ba mươi phần trăm"),
+    ("cd06", "tắt đèn trần giúp tôi nhé"),
+    ("cd07", "bật tivi và chuyển sang kênh bảy"),
+    ("cd08", "tăng âm lượng tivi lên hai mươi lăm"),
+    ("cd09", "chuyển sang kênh chín rồi giảm âm lượng xuống mười lăm"),
+    ("cd10", "tắt tivi đi"),
+    ("cd11", "nâng đầu giường lên bốn mươi lăm độ"),
+    ("cd12", "hạ đầu giường xuống mức thấp nhất"),
+    ("cd13", "tắt đèn trần bật điều hòa mười chín độ để đi ngủ"),
+    ("cd14", "bật tivi kênh ba và đặt điều hòa hai mươi bảy độ"),
+    ("cd15", "hạ đầu giường xuống rồi tắt hết đèn trần"),
+    ("cd16", "giảm điều hòa còn hai mươi mốt độ và nâng đầu giường ba mươi độ"),
+]
+# phiên -> các mã câu nên đọc (None = tất cả). Phiên 1 và 2 trùng 8 câu để so cùng nội dung khác phiên.
+ENROLL_PLAN = {
+    "p1": [f"cd{n:02d}" for n in range(1, 13)],
+    "p2": [f"cd{n:02d}" for n in range(5, 17)],
+    "p3": None,
+}
+ENROLL_DIR_RE = re.compile(r"^[a-z0-9]+_p\d+$")     # tên thư mục kiểu cd05_p2
+
 _LOCK = threading.Lock()
 
 
@@ -164,14 +198,50 @@ def load_sentences() -> list[dict]:
     return out
 
 
+def _norm_text(t: str) -> str:
+    return " ".join(t.lower().split())
+
+
+def load_enroll_sentences() -> list[dict]:
+    """Câu dài đăng ký (enroll_sentences.csv: id,text). Bỏ câu trùng nội dung với câu kiểm thử."""
+    if not ENROLL_CSV.exists():
+        with open(ENROLL_CSV, "w", encoding="utf-8-sig", newline="") as f:
+            w = csv.writer(f)
+            w.writerow(["id", "text"])
+            w.writerows(DEFAULT_ENROLL)
+    banned = {_norm_text(s["text"]) for s in load_sentences()}
+    out, dup = [], []
+    with open(ENROLL_CSV, encoding="utf-8-sig", newline="") as f:
+        for row in csv.DictReader(f):
+            sid = (row.get("id") or "").strip()
+            text = (row.get("text") or "").strip()
+            if not (sid and text and LABEL_RE.fullmatch(sid) and "_" not in sid):
+                continue
+            if _norm_text(text) in banned:
+                dup.append(sid)
+                continue
+            out.append({"id": sid, "text": text})
+    if dup:
+        print("[record] bỏ các câu đăng ký trùng câu kiểm thử: " + ", ".join(dup))
+    return out
+
+
+def enroll_sessions() -> list[dict]:
+    ids = [s["id"] for s in load_enroll_sentences()]
+    return [{"id": ses, "ids": ids if plan is None else [i for i in ids if i in plan]}
+            for ses, plan in ENROLL_PLAN.items()]
+
+
 def valid_labels(mode: str) -> set[str]:
     if mode == "cmd":
         return {c for c, _ in COMMANDS}
+    if mode == "enroll":
+        return {f"{sid}_{ses['id']}" for ses in enroll_sessions() for sid in ses["ids"]}
     return {s["id"] for s in load_sentences()}
 
 
 def folder_for(mode: str, label: str) -> Path:
-    return DATASET_DIR / label if mode == "cmd" else TESTSET_DIR
+    return DATASET_DIR / label if mode in ("cmd", "enroll") else TESTSET_DIR
 
 
 def index_of(stem: str, speaker: str, label: str):
@@ -216,14 +286,15 @@ def record_config():
     return jsonify(seconds=SECONDS, sr=SR, minRms=MIN_RMS, maxTailZero=MAX_TAIL_ZERO_S,
                    strangers=sorted(stranger_names()),
                    commands=[{"id": c, "text": t} for c, t in COMMANDS],
-                   sentences=load_sentences())
+                   sentences=load_sentences(),
+                   enrollSentences=load_enroll_sentences(), enrollSessions=enroll_sessions())
 
 
 @record_bp.route("/sample-counts")
 def sample_counts():
     mode = request.args.get("mode", "cmd")
     speaker = request.args.get("speaker", "").strip().lower()
-    if mode not in ("cmd", "sentence") or not NAME_RE.fullmatch(speaker):
+    if mode not in ("cmd", "sentence", "enroll") or not NAME_RE.fullmatch(speaker):
         return jsonify(counts={})
     return jsonify(counts=counts_for(mode, speaker))
 
@@ -235,7 +306,7 @@ def record_summary():
 
     def add(path: Path, key: str):
         sp = path.stem.split("_", 1)[0]
-        t = tot.setdefault(sp, {"speaker": sp, "dataset": 0, "testset": 0,
+        t = tot.setdefault(sp, {"speaker": sp, "dataset": 0, "enroll": 0, "testset": 0,
                                 "stranger": is_stranger(sp)})
         t[key] += 1
 
@@ -243,7 +314,7 @@ def record_summary():
         for d in DATASET_DIR.iterdir():
             if d.is_dir() and d.name != "noise":
                 for p in d.glob("*.wav"):
-                    add(p, "dataset")
+                    add(p, "enroll" if ENROLL_DIR_RE.fullmatch(d.name) else "dataset")
     if TESTSET_DIR.exists():
         for p in TESTSET_DIR.glob("*.wav"):
             add(p, "testset")
@@ -255,7 +326,7 @@ def save_sample():
     mode = request.args.get("mode", "cmd")
     speaker = request.args.get("speaker", "").strip().lower()
     label = request.args.get("label", "")
-    if mode not in ("cmd", "sentence"):
+    if mode not in ("cmd", "sentence", "enroll"):
         return err("Chế độ không hợp lệ.")
     if not NAME_RE.fullmatch(speaker):
         return err("Tên người chỉ gồm chữ thường không dấu và số (2-16 ký tự), không có dấu gạch dưới.")

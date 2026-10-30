@@ -18,6 +18,8 @@ h1{font-size:20px;margin:0 0 4px}
 .card h2{font-size:13px;letter-spacing:.04em;text-transform:uppercase;color:var(--muted);margin:0 0 10px}
 label{display:block;font-size:13px;color:var(--muted);margin:10px 0 4px}
 input[type=text],input[type=number]{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--ink);font:inherit}
+select{width:100%;padding:9px 10px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--ink);font:inherit}
+select option{background:var(--card);color:var(--ink)}
 .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 .tabs{display:flex;gap:6px;margin-bottom:10px}
 .tab{flex:1;padding:8px;border:1px solid var(--line);border-radius:8px;background:transparent;color:var(--ink);cursor:pointer;font:inherit}
@@ -75,9 +77,15 @@ th{color:var(--muted);font-weight:600}
         <h2>Chế độ thu</h2>
         <div class="tabs">
           <button class="tab on" data-mode="cmd">Lệnh đơn giản</button>
+          <button class="tab" data-mode="enroll">Câu dài (đăng ký)</button>
           <button class="tab" data-mode="sentence">Câu có tham số</button>
         </div>
         <div class="hint" id="modeHint"></div>
+        <div id="sessionBox" hidden>
+          <label for="session">Phiên thu</label>
+          <select id="session"></select>
+          <div class="hint" style="margin-top:4px">Mỗi lần ngồi thu khác ngày hoặc khác chỗ là một phiên mới. Danh sách bên dưới là các câu của phiên đang chọn.</div>
+        </div>
         <label for="target">Mục tiêu số mẫu cho mỗi mục</label>
         <input id="target" type="number" min="1" max="60" value="12">
         <div class="row" style="margin-top:10px">
@@ -118,7 +126,7 @@ th{color:var(--muted);font-weight:600}
       <div class="card" style="margin-top:16px">
         <h2>Tiến độ theo người</h2>
         <table>
-          <thead><tr><th>Người</th><th>Lệnh đơn giản</th><th>Câu có tham số</th><th></th></tr></thead>
+          <thead><tr><th>Người</th><th>Lệnh đơn giản</th><th>Câu dài (đăng ký)</th><th>Câu có tham số</th><th></th></tr></thead>
           <tbody id="summary"></tbody>
         </table>
       </div>
@@ -163,13 +171,19 @@ $('#asStranger').addEventListener('change', async ()=>{
 });
 function applyDefaultTarget(){
   const st = isStranger(speaker());
-  $('#target').value = mode==='cmd' ? (st ? 4 : 12) : 2;
+  $('#target').value = mode==='cmd' ? (st ? 4 : 12) : mode==='enroll' ? (st ? 2 : 3) : 2;
   renderItems();
 }
 $('#target').addEventListener('input', renderItems);
 
 /* ---------- danh sách mục ---------- */
-const items = () => mode==='cmd' ? CFG.commands : CFG.sentences;
+const items = () => {
+  if(mode==='cmd') return CFG.commands;
+  if(mode==='sentence') return CFG.sentences;
+  const ses = $('#session').value;                      // câu dài: nhãn lưu = <mã câu>_<phiên>
+  const plan = (CFG.enrollSessions.find(s=>s.id===ses) || {ids:[]}).ids;
+  return CFG.enrollSentences.filter(s=>plan.includes(s.id)).map(s=>({id: s.id+'_'+ses, text: s.text}));
+};
 function label(it){ return mode==='cmd' ? it.text : it.text; }
 function renderItems(){
   if(!CFG) return;
@@ -208,19 +222,27 @@ async function loadSummary(){
   const tb = $('#summary'); tb.innerHTML = '';
   r.speakers.forEach(s=>{
     const tr = document.createElement('tr');
-    tr.innerHTML = '<td><b>'+s.speaker+'</b></td><td>'+s.dataset+'</td><td>'+s.testset+'</td><td>'+(s.stranger?'<span class="chip stranger">người lạ</span>':'')+'</td>';
+    tr.innerHTML = '<td><b>'+s.speaker+'</b></td><td>'+s.dataset+'</td><td>'+s.enroll+'</td><td>'+s.testset+'</td><td>'+(s.stranger?'<span class="chip stranger">người lạ</span>':'')+'</td>';
     tb.appendChild(tr);
   });
-  if(!r.speakers.length) tb.innerHTML = '<tr><td colspan="4" class="hint">Chưa có dữ liệu.</td></tr>';
+  if(!r.speakers.length) tb.innerHTML = '<tr><td colspan="5" class="hint">Chưa có dữ liệu.</td></tr>';
 }
+const HINTS = {
+  cmd: 'Lệnh ngắn dùng để huấn luyện (thư mục dataset/<lệnh>/). Lớp "noise" là tiếng ồn nền.',
+  enroll: 'Câu dài dùng để huấn luyện xác thực người nói. Lưu vào dataset/<câu>_<phiên>/ với tên <người>_<câu>_<phiên>_<số>.wav (cùng quy ước với lệnh đơn giản). Các câu này không trùng câu kiểm thử. Người lạ cũng đọc ở đây, chỉ cần 1 phiên.',
+  sentence: 'Câu có tham số, chỉ dùng để kiểm thử (testset/audio/). Người lạ đọc cùng bộ câu với người đăng ký.'
+};
 document.querySelectorAll('.tab').forEach(t=>t.addEventListener('click', ()=>{
   document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on')); t.classList.add('on');
   mode = t.dataset.mode; current = null;
-  $('#modeHint').textContent = mode==='cmd'
-    ? 'Lệnh ngắn dùng để huấn luyện (thư mục dataset/<lệnh>/). Lớp "noise" là tiếng ồn nền.'
-    : 'Câu có tham số, chỉ dùng để kiểm thử (testset/audio/). Người lạ đọc cùng bộ câu với người đăng ký.';
+  $('#modeHint').textContent = HINTS[mode];
+  $('#sessionBox').hidden = (mode !== 'enroll');
   applyDefaultTarget(); loadCounts(); select(null);
 }));
+$('#session').addEventListener('change', ()=>{
+  localStorage.setItem('rec_session', $('#session').value);
+  current = null; loadCounts(); select(null);
+});
 
 /* ---------- micro ---------- */
 async function ensureMic(){
@@ -378,6 +400,12 @@ document.addEventListener('keydown', e=>{
 (async function init(){
   CFG = await (await fetch('/record/config')).json();
   $('#secs').textContent = CFG.seconds;
+  const sel = $('#session');
+  CFG.enrollSessions.forEach(s=>{
+    const o = document.createElement('option'); o.value = s.id;
+    o.textContent = 'Phiên '+s.id.replace('p','')+' ('+s.ids.length+' câu)'; sel.appendChild(o);
+  });
+  sel.value = localStorage.getItem('rec_session') || ''; if(!sel.value) sel.selectedIndex = 0;
   $('#modeHint').textContent = 'Lệnh ngắn dùng để huấn luyện (thư mục dataset/<lệnh>/). Lớp "noise" là tiếng ồn nền.';
   const saved = localStorage.getItem('rec_speaker') || '';
   $('#spk').value = saved; $('#asStranger').checked = isStranger(saved);
