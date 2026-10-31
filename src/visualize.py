@@ -59,7 +59,7 @@ def fig_pipeline(path, out):
         a.set_xlim(0, t[-1])
     ax[0].set_xlabel("Thời gian (s)"); ax[2].set_xlabel("Thời gian (s)")
     ax[3].plot(np.arange(len(r["signal"])) / pp.SR, r["signal"], lw=.6, color="tab:purple")
-    ax[3].set_title("4. Sau cắt đoạn tiếng nói, chuẩn hóa biên độ, pad/cắt về 1,5 s"); ax[3].set_xlabel("Thời gian (s)")
+    ax[3].set_title(f"4. Sau cắt đoạn tiếng nói, chuẩn hóa biên độ, pad/cắt về {pp.FIX_SEC:g} s"); ax[3].set_xlabel("Thời gian (s)")
     fig.tight_layout(); fig.savefig(out, dpi=150); plt.close(fig)
 
 
@@ -73,8 +73,8 @@ def fig_commands(data, speaker, out):
         spec = 10 * np.log10(pp.power_spectrogram(pp.pre_emphasis(sig)).T + 1e-10)
         m = pp.mfcc(sig)
         ax[i, 0].plot(np.arange(len(sig)) / pp.SR, sig, lw=.5); ax[i, 0].set_ylabel(name(c), rotation=0, ha="right", va="center")
-        ax[i, 1].imshow(spec, origin="lower", aspect="auto", extent=[0, 1.5, 0, 8000], cmap="magma", vmin=spec.max() - 80)
-        show_cep(ax[i, 2], m, [0, 1.5, 1, pp.N_MFCC])
+        ax[i, 1].imshow(spec, origin="lower", aspect="auto", extent=[0, pp.FIX_SEC, 0, 8000], cmap="magma", vmin=spec.max() - 80)
+        show_cep(ax[i, 2], m, [0, pp.FIX_SEC, 1, pp.N_MFCC])
     for j, t in enumerate(["Waveform", "Spectrogram (Hz)", "MFCC c1–c12 (đã trừ trung bình)"]):
         ax[0, j].set_title(t)
     for j in range(3):
@@ -87,7 +87,7 @@ def fig_deltas(path, out):
     y, _ = pp.load_wav(path); seq = pp.process_signal(y)["seq"]
     fig, ax = plt.subplots(3, 1, figsize=(9, 8), sharex=True)
     for k, (title, sl) in enumerate([("MFCC", slice(0, 13)), ("Delta", slice(13, 26)), ("Delta-delta", slice(26, 39))]):
-        im = show_cep(ax[k], seq[:, sl], [0, 1.5, 1, 13])
+        im = show_cep(ax[k], seq[:, sl], [0, pp.FIX_SEC, 1, 13])
         ax[k].set_title(f"{title} – {path.name}"); ax[k].set_ylabel("Hệ số"); fig.colorbar(im, ax=ax[k])
     ax[-1].set_xlabel("Thời gian (s)")
     fig.tight_layout(); fig.savefig(out, dpi=150); plt.close(fig)

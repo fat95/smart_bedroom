@@ -1,13 +1,13 @@
 {
-  "model": "SVM-RBF C=100 gamma=0.003",
+  "model": "Random Forest 300 cây",
   "n_test": 42,
-  "test_acc": 0.8809523809523809,
+  "test_acc": 0.8571428571428571,
   "by_speaker": {
-    "phat": 0.9285714285714286,
+    "phat": 0.8571428571428571,
     "vi": 0.8571428571428571,
     "vinh": 0.8571428571428571
   },
-  "mean_conf_correct": 0.7235097042755861,
-  "mean_conf_wrong": 0.5037397717085588,
-  "latency_ms": 2.9095233573267856
+  "mean_conf_correct": 0.576111111111111,
+  "mean_conf_wrong": 0.3011111111111111,
+  "latency_ms": 49.04091000401725
 }

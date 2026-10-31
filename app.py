@@ -1,11 +1,16 @@
-"""Smart Bedroom – Flask backend.
+"""
+File: app.py
+Smart Bedroom - Flask backend.
 
-Luồng: trình duyệt thu 2 s (WAV 16 kHz) -> POST /process-audio -> tiền xử lý + MFCC (src/preprocess.py)
-       -> mô hình nhận dạng lệnh (models/command_model.joblib) -> JSON {command, action, confidence}
-       -> index.html cập nhật thiết bị mô phỏng.
+Luồng: trình duyệt thu 4 s (WAV 16 kHz mono) -> POST /process-audio
+  1. đọc WAV, VAD: không có tiếng nói -> no_speech
+  2. xác thực người nói (B): người lạ -> unauthorized_speaker NGAY, không chạy ASR,
+     không trả transcript/lệnh (người lạ không biết lệnh có hợp lệ hay không)
+  3. PhoWhisper + commands.py (A) -> {device, action, value}
+  4. adapter -> decide() (C) -> JSON cho index.html
 
 Chạy:  python app.py   rồi mở http://localhost:5000
-Trang thu thập dữ liệu: http://localhost:5000/record
+Biến môi trường: ASR_MODEL (mặc định config.ASR_DEFAULT), FLASK_DEBUG=1
 """
 import io
 import os
@@ -13,33 +18,49 @@ import sys
 import time
 from pathlib import Path
 
-import joblib
 import numpy as np
 import soundfile as sf
 from flask import Flask, jsonify, render_template, request
 
 BASE = Path(__file__).resolve().parent
 sys.path.insert(0, str(BASE / "src"))
+sys.path.insert(0, str(BASE))
+
+import config  # noqa: E402
 import preprocess as pp  # noqa: E402
+from adapter import to_decision_input  # noqa: E402
+from decision import decide  # noqa: E402
 from record_routes import record_bp  # noqa: E402
+from speaker import load_bundle as load_speaker_bundle  # noqa: E402
+from speaker import verify_speaker  # noqa: E402
 
-MODEL_PATH = BASE / "models" / "command_model.joblib"
-CONF_THRESHOLD = float(os.environ.get("CONF_THRESHOLD", 0.5))  # dưới ngưỡng này -> "không hiểu lệnh"
-
-# nhãn lệnh -> hành động trên giao diện (device khớp id trong index.html)
-COMMANDS = {
-    "bat_dieu_hoa": ("Bật điều hòa", {"device": "ac", "action": "on"}),
-    "tat_dieu_hoa": ("Tắt điều hòa", {"device": "ac", "action": "off"}),
-    "bat_den_tran": ("Bật đèn trần", {"device": "light-main", "action": "on", "value": 80}),
-    "tat_den_tran": ("Tắt đèn trần", {"device": "light-main", "action": "off", "value": 0}),
-    "mo_rem": ("Mở rèm", {"device": "curtain", "action": "open", "value": 100}),
-    "bat_tivi": ("Bật tivi", {"device": "tv", "action": "on"}),
-}
+ASR_MODEL = os.environ.get("ASR_MODEL", config.ASR_DEFAULT)
 
 app = Flask(__name__)
+app.config["MAX_CONTENT_LENGTH"] = 2 * 1024 * 1024  # 4 s WAV chỉ khoảng 128 KB
 app.register_blueprint(record_bp)
-bundle = joblib.load(MODEL_PATH) if MODEL_PATH.exists() else None
-print("Mô hình:", bundle["name"] if bundle else f"CHƯA CÓ ({MODEL_PATH}) – hãy chạy src/train.py")
+
+# ---- nạp mô hình MỘT lần khi khởi động ----
+spk_bundle = None
+try:
+    bundle = load_speaker_bundle()
+    print("Mô hình người nói:", ", ".join(bundle["speakers"]),
+          f"| điểm: {bundle['method']} | ngưỡng: {bundle['thresholds'][bundle['method']]:.3f}")
+    verify_speaker(np.random.default_rng(0).standard_normal(pp.SR).astype("float32") * 0.1, sr=pp.SR)
+    spk_bundle = bundle
+except FileNotFoundError:
+    print("Mô hình người nói: CHƯA CÓ - hãy chạy src/train_speaker.py")
+except Exception as e:
+    spk_bundle = None
+    print("Cảnh báo khi khởi động mô hình người nói:", e)
+
+asr_ready = False
+try:
+    import asr
+    asr.warmup(ASR_MODEL)
+    asr_ready = True
+except Exception as e:  # thiếu torch/transformers, không tải được mô hình...
+    print("ASR chưa sẵn sàng:", e)
 
 
 @app.route("/")
@@ -49,13 +70,19 @@ def index():
 
 @app.route("/process-audio", methods=["POST"])
 def process_audio():
-    if bundle is None:
-        return jsonify({"error": "Chưa có mô hình. Chạy src/preprocess.py rồi src/train.py trước."}), 503
+    if spk_bundle is None:
+        return jsonify({"error": "Chưa có mô hình người nói. Chạy src/train_speaker.py trước."}), 503
+    if not asr_ready:
+        return jsonify({"error": "Mô hình nhận dạng lệnh (PhoWhisper) chưa sẵn sàng. Xem log khi khởi động."}), 503
+
     f = request.files.get("audio_data")
     if f is None:
         return jsonify({"error": "Không nhận được file âm thanh"}), 400
 
     t0 = time.perf_counter()
+    elapsed = lambda: round((time.perf_counter() - t0) * 1000, 1)
+
+    # --- 1. đọc và chuẩn hóa âm thanh ---
     try:
         y, sr = sf.read(io.BytesIO(f.read()), dtype="float32", always_2d=True)
     except Exception:
@@ -65,22 +92,28 @@ def process_audio():
         import librosa
         y = librosa.resample(y, orig_sr=sr, target_sr=pp.SR)
 
-    r = pp.process_signal(y)
-    proba = bundle["model"].predict_proba(r["stat"][None, :])[0]
-    i = int(np.argmax(proba))
-    label, conf = str(bundle["classes"][i]), float(proba[i])
-    latency = round((time.perf_counter() - t0) * 1000, 1)
-    print(f"[voice] {label} conf={conf:.2f} speech={r['vad']['found']} {latency} ms")
+    if not pp.detect_speech(y)["found"]:
+        return jsonify({"status": "rejected", "reason": "no_speech", "latency_ms": elapsed()})
 
-    base = {"command": label, "confidence": round(conf, 3), "latency_ms": latency}
-    if not r["vad"]["found"]:
-        return jsonify({**base, "status": "rejected", "reason": "no_speech"})
-    if label not in COMMANDS:  # lớp noise hoặc nhãn lạ
-        return jsonify({**base, "status": "rejected", "reason": "noise"})
-    if conf < CONF_THRESHOLD:
-        return jsonify({**base, "status": "rejected", "reason": "low_confidence"})
-    text, action = COMMANDS[label]
-    return jsonify({**base, "status": "ok", "text": text, "action": action})
+    # --- 2. người nói TRƯỚC ---
+    spk = verify_speaker(y, sr=pp.SR)
+    speaker_data = {"speaker_id": spk["speaker"], "score": spk["score"], "is_enrolled": spk["is_enrolled"]}
+    print(f"[speaker] {spk['best_guess']} score={spk['score']:.3f} enrolled={spk['is_enrolled']}")
+    base = {"speaker_score": round(spk["score"], 3)}
+
+    if not spk["is_enrolled"]:
+        final = decide(None, speaker_data)           # luôn là unauthorized_speaker
+        return jsonify({**final, **base, "latency_ms": elapsed()})
+
+    # --- 3. nhận dạng lệnh ---
+    cmd = asr.recognize_command(y, ASR_MODEL)
+    print(f"[asr] '{cmd['text']}' -> {cmd['device']}/{cmd['action']}/{cmd['value']} "
+          f"score={cmd['score']} reason={cmd['reason']}")
+
+    # --- 4. quyết định ---
+    final = decide(to_decision_input(cmd), speaker_data)
+    return jsonify({**final, **base, "text": cmd["text"], "command_score": cmd["score"],
+                    "latency_ms": elapsed()})
 
 
 if __name__ == "__main__":

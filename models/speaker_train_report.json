@@ -1,0 +1,137 @@
+{
+  "feature_set": "plus",
+  "speakers": [
+    "giabao",
+    "phat",
+    "vi",
+    "vinh"
+  ],
+  "samples_per_speaker": {
+    "giabao": 72,
+    "phat": 72,
+    "vi": 72,
+    "vinh": 72
+  },
+  "split_sizes": {
+    "train": 200,
+    "val": 44,
+    "test": 44
+  },
+  "grid": [
+    {
+      "C": 0.5,
+      "gamma": "scale",
+      "val_acc": 1.0
+    },
+    {
+      "C": 0.5,
+      "gamma": 0.003,
+      "val_acc": 1.0
+    },
+    {
+      "C": 0.5,
+      "gamma": 0.01,
+      "val_acc": 1.0
+    },
+    {
+      "C": 0.5,
+      "gamma": 0.03,
+      "val_acc": 1.0
+    },
+    {
+      "C": 1,
+      "gamma": "scale",
+      "val_acc": 1.0
+    },
+    {
+      "C": 1,
+      "gamma": 0.003,
+      "val_acc": 1.0
+    },
+    {
+      "C": 1,
+      "gamma": 0.01,
+      "val_acc": 1.0
+    },
+    {
+      "C": 1,
+      "gamma": 0.03,
+      "val_acc": 1.0
+    },
+    {
+      "C": 5,
+      "gamma": "scale",
+      "val_acc": 1.0
+    },
+    {
+      "C": 5,
+      "gamma": 0.003,
+      "val_acc": 1.0
+    },
+    {
+      "C": 5,
+      "gamma": 0.01,
+      "val_acc": 1.0
+    },
+    {
+      "C": 5,
+      "gamma": 0.03,
+      "val_acc": 1.0
+    },
+    {
+      "C": 20,
+      "gamma": "scale",
+      "val_acc": 1.0
+    },
+    {
+      "C": 20,
+      "gamma": 0.003,
+      "val_acc": 1.0
+    },
+    {
+      "C": 20,
+      "gamma": 0.01,
+      "val_acc": 1.0
+    },
+    {
+      "C": 20,
+      "gamma": 0.03,
+      "val_acc": 1.0
+    },
+    {
+      "C": 100,
+      "gamma": "scale",
+      "val_acc": 1.0
+    },
+    {
+      "C": 100,
+      "gamma": 0.003,
+      "val_acc": 1.0
+    },
+    {
+      "C": 100,
+      "gamma": 0.01,
+      "val_acc": 1.0
+    },
+    {
+      "C": 100,
+      "gamma": 0.03,
+      "val_acc": 1.0
+    }
+  ],
+  "best": {
+    "C": 0.5,
+    "gamma": "scale",
+    "val_acc": 1.0
+  },
+  "loso_eer": {
+    "proba": 0.08885732323232323,
+    "margin": 0.06881313131313131
+  },
+  "thresholds": {
+    "proba": 0.8608932648704035,
+    "margin": 0.4772316701879028
+  },
+  "chosen_method": "margin",
+  "seconds": 0.6
+}
