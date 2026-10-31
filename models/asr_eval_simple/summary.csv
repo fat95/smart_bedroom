@@ -1,6 +1,6 @@
 ﻿model,n,acc_exact,wrong_exec,latency_ms_mean
-phowhisper-small,42,0.9048,0.0,301.5
-phowhisper-base,42,0.8095,0.0,177.2
-whisper-small,42,0.5,0.0,251.1
-whisper-base,42,0.3095,0.0,1025.5
-baseline MFCC+SVM/RF,42,0.9048,,53.8
+phowhisper-small,49,0.8776,0.0,328.8
+phowhisper-base,49,0.6531,0.0,176.6
+whisper-small,49,0.2245,0.0,258.6
+whisper-base,49,0.3265,0.0,833.7
+SVM-RBF C=100 gamma=0.003,49,0.8776,,6.4

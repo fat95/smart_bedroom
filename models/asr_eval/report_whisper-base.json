@@ -1,25 +1,35 @@
 {
-  "n": 181,
-  "wer": 1.2743,
-  "cer": 1.038,
-  "acc_device": 0.3978,
-  "acc_action": 0.1492,
-  "acc_value": 0.1654,
-  "n_value": 127,
-  "acc_exact": 0.1492,
+  "n": 302,
+  "wer": 1.7265,
+  "cer": 1.4788,
+  "acc_device": 0.4868,
+  "acc_action": 0.1887,
+  "acc_value": 0.2075,
+  "n_value": 212,
+  "acc_exact": 0.1887,
   "wrong_exec": 0.0,
-  "rejected_cmd": 0.8508,
+  "rejected_cmd": 0.8113,
   "n_noise": 0,
   "noise_rejected": null,
-  "latency_ms_mean": 220.1,
-  "latency_ms_median": 151.5,
-  "latency_ms_p95": 200.7,
+  "latency_ms_mean": 252.7,
+  "latency_ms_median": 149.6,
+  "latency_ms_p95": 236.4,
   "reject_reasons": {
-    "ambiguous_device": 93,
-    "missing_value": 1,
-    "unknown_command": 60
+    "unknown_command": 122,
+    "ambiguous_device": 122,
+    "missing_value": 1
   },
   "by_speaker": {
+    "giabao": {
+      "n": 60,
+      "wer": 4.1241,
+      "acc_exact": 0.25
+    },
+    "la1": {
+      "n": 61,
+      "wer": 0.7074,
+      "acc_exact": 0.2131
+    },
     "phat": {
       "n": 60,
       "wer": 2.4436,
@@ -33,7 +43,7 @@
     "vinh": {
       "n": 60,
       "wer": 0.5414,
-      "acc_exact": 0.3333
+      "acc_exact": 0.3667
     }
   },
   "model": "whisper-base"

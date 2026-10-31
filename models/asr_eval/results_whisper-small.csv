@@ -1,182 +1,303 @@
 ﻿path,speaker,sid,rep,ref_text,hyp_text,device,action,value,pred_device,pred_action,pred_value,reason,score,ok_device,ok_action,ok_value,ok_exact,latency_ms
-testset/audio/phat_s01_01.wav,phat,s01,01,bật điều hòa,bọc điêu hoa,ac,on,,ac,down,,missing_value,1.0,True,False,,False,293.7
-testset/audio/phat_s01_02.wav,phat,s01,02,bật điều hòa,Bọc lưu hoa.,ac,on,,,,,ambiguous_device,0.0,False,False,,False,247.8
-testset/audio/phat_s02_01.wav,phat,s02,01,tắt điều hòa,tắc liệu hoa,ac,off,,ac,off,,,0.938,True,True,,True,186.4
-testset/audio/phat_s02_02.wav,phat,s02,02,tắt điều hòa,Tất nhiên là...,ac,off,,,,,ambiguous_device,0.0,False,False,,False,222.6
-testset/audio/phat_s03_01.wav,phat,s03,01,bật đèn trần,Bọc lệ trọng,light-main,on,,,,,ambiguous_device,0.0,False,False,,False,208.7
-testset/audio/phat_s03_02.wav,phat,s03,02,bật đèn trần,Bọc lệnh trắng,light-main,on,,,,,ambiguous_device,0.0,False,False,,False,242.9
-testset/audio/phat_s04_01.wav,phat,s04,01,tắt đèn trần,Tắt để chân.,light-main,off,,,,,ambiguous_device,0.0,False,False,,False,175.8
-testset/audio/phat_s04_02.wav,phat,s04,02,tắt đèn trần,Tắt lấy chóng.,light-main,off,,,,,ambiguous_device,0.0,False,False,,False,204.3
-testset/audio/phat_s05_01.wav,phat,s05,01,bật tivi,Bạc TV!,tv,on,,tv,on,,,1.0,True,True,,True,157.4
-testset/audio/phat_s05_02.wav,phat,s05,02,bật tivi,Bạc TV!,tv,on,,tv,on,,,1.0,True,True,,True,173.3
-testset/audio/phat_s06_01.wav,phat,s06,01,tắt tivi,Tắc bây bây,tv,off,,,,,ambiguous_device,0.0,False,False,,False,204.5
-testset/audio/phat_s06_02.wav,phat,s06,02,tắt tivi,Tắc Tý Vy,tv,off,,,,,ambiguous_device,0.0,False,False,,False,179.8
-testset/audio/phat_s07_01.wav,phat,s07,01,giảm điều hòa hai độ,Giảm điều hòa 2 độ.,ac,down,2,ac,down,2,,1.0,True,True,True,True,241.6
-testset/audio/phat_s07_02.wav,phat,s07,02,giảm điều hòa hai độ,giảm điều hò 2 độ,ac,down,2,ac,down,2,,0.967,True,True,True,True,223.9
-testset/audio/phat_s08_01.wav,phat,s08,01,tăng điều hòa ba độ,Tăng biểu hòa 3 độ,ac,up,3,ac,up,3,,0.938,True,True,True,True,246.8
-testset/audio/phat_s08_02.wav,phat,s08,02,tăng điều hòa ba độ,Tăng điều hòa 3 đó.,ac,up,3,ac,up,3,,1.0,True,True,True,True,261.1
-testset/audio/phat_s09_01.wav,phat,s09,01,đặt điều hòa hai mươi sáu độ,Điều hòa 26 độ,ac,set,26,ac,set,26,,0.9,True,True,True,True,228.5
-testset/audio/phat_s09_02.wav,phat,s09,02,đặt điều hòa hai mươi sáu độ,đặt điều hòa 26 độ,ac,set,26,ac,set,26,,1.0,True,True,True,True,222.2
-testset/audio/phat_s10_01.wav,phat,s10,01,đặt điều hòa mười tám độ,Đặt điều hòa 18 độ,ac,set,18,ac,set,18,,1.0,True,True,True,True,226.1
-testset/audio/phat_s10_02.wav,phat,s10,02,đặt điều hòa mười tám độ,Đặt điều hòa 18 độ,ac,set,18,ac,set,18,,1.0,True,True,True,True,241.3
-testset/audio/phat_s11_01.wav,phat,s11,01,đặt điều hòa hai mươi hai độ,Đã đi ô 22 đồ,ac,set,22,,,,ambiguous_device,0.0,False,False,False,False,194.2
-testset/audio/phat_s11_02.wav,phat,s11,02,đặt điều hòa hai mươi hai độ,đặt đi hòa 22 độ,ac,set,22,ac,set,22,,0.929,True,True,True,True,223.7
-testset/audio/phat_s12_01.wav,phat,s12,01,đặt điều hòa ba mươi độ,Tạm biểu hòa 30 đồ,ac,set,30,ac,,,unknown_command,0.438,True,False,False,False,280.5
-testset/audio/phat_s12_02.wav,phat,s12,02,đặt điều hòa ba mươi độ,Đã điệu hòa 30 đồ,ac,set,30,ac,set,30,,0.9,True,True,True,True,245.8
-testset/audio/phat_s13_01.wav,phat,s13,01,tăng đèn trần hai mươi phần trăm,Tăng đi chẳng 20%,light-main,up,20,,,,ambiguous_device,0.0,False,False,False,False,304.6
-testset/audio/phat_s13_02.wav,phat,s13,02,tăng đèn trần hai mươi phần trăm,Tăng điện chẳng 20%,light-main,up,20,,,,ambiguous_device,0.0,False,False,False,False,241.8
-testset/audio/phat_s14_01.wav,phat,s14,01,giảm đèn trần mười phần trăm,giảm đi cho 10%,light-main,down,10,,,,ambiguous_device,0.0,False,False,False,False,191.9
-testset/audio/phat_s14_02.wav,phat,s14,02,giảm đèn trần mười phần trăm,Giám điên chân 10%,light-main,down,10,,,,ambiguous_device,0.0,False,False,False,False,322.8
-testset/audio/phat_s15_01.wav,phat,s15,01,đặt đèn trần năm mươi phần trăm,Đã đề chẳng 50%,light-main,set,50,,,,ambiguous_device,0.0,False,False,False,False,275.6
-testset/audio/phat_s15_02.wav,phat,s15,02,đặt đèn trần năm mươi phần trăm,Đặt đi chẳng 50%,light-main,set,50,,,,ambiguous_device,0.0,False,False,False,False,224.5
-testset/audio/phat_s16_01.wav,phat,s16,01,đặt đèn trần tám mươi phần trăm,Đã đi chàng 80%,light-main,set,80,,,,ambiguous_device,0.0,False,False,False,False,231.9
-testset/audio/phat_s16_02.wav,phat,s16,02,đặt đèn trần tám mươi phần trăm,Đã điên trang 80%,light-main,set,80,light-main,set,80,,0.844,True,True,True,True,213.4
-testset/audio/phat_s17_01.wav,phat,s17,01,đặt đèn trần một trăm phần trăm,Đã đi chăng 100%,light-main,set,100,,,,ambiguous_device,0.0,False,False,False,False,206.5
-testset/audio/phat_s17_02.wav,phat,s17,02,đặt đèn trần một trăm phần trăm,Tạm biệt cho 100%,light-main,set,100,,,,ambiguous_device,0.0,False,False,False,False,297.6
-testset/audio/phat_s18_01.wav,phat,s18,01,chuyển tivi kênh hai,Chuyện DVD cân 2,tv,channel,2,,,,ambiguous_device,0.0,False,False,False,False,195.3
-testset/audio/phat_s18_02.wav,phat,s18,02,chuyển tivi kênh hai,Chuyện tý bây cần hài.,tv,channel,2,,,,ambiguous_device,0.0,False,False,False,False,259.7
-testset/audio/phat_s19_01.wav,phat,s19,01,chuyển tivi kênh năm,Quyến TV Cần Năm,tv,channel,5,tv,,,unknown_command,0.5,True,False,False,False,250.2
-testset/audio/phat_s19_02.wav,phat,s19,02,chuyển tivi kênh năm,Chuyện TV Kênh Năm,tv,channel,5,tv,channel,5,,1.0,True,True,True,True,223.3
-testset/audio/phat_s20_01.wav,phat,s20,01,chuyển tivi kênh chín,Great TV Cần Trinh!,tv,channel,9,tv,,,unknown_command,0.5,True,False,False,False,189.3
-testset/audio/phat_s20_02.wav,phat,s20,02,chuyển tivi kênh chín,Chuyện TV Kênh Chính,tv,channel,9,tv,channel,,missing_value,1.0,True,True,False,False,243.4
-testset/audio/phat_s21_01.wav,phat,s21,01,tăng âm lượng tivi mười,Căng âm lưỡng TV 10,tv,up,10,tv,,,unknown_command,0.5,True,False,False,False,281.7
-testset/audio/phat_s21_02.wav,phat,s21,02,tăng âm lượng tivi mười,Tăng âm lưỡng TV 10,tv,up,10,tv,up,10,,1.0,True,True,True,True,250.8
-testset/audio/phat_s22_01.wav,phat,s22,01,giảm âm lượng tivi hai mươi,Giám ăn Lượng TV 20,tv,down,20,tv,,,unknown_command,0.5,True,False,False,False,188.4
-testset/audio/phat_s22_02.wav,phat,s22,02,giảm âm lượng tivi hai mươi,Giảm áp lượng tb20,tv,down,20,,,,ambiguous_device,0.0,False,False,False,False,276.8
-testset/audio/phat_s23_01.wav,phat,s23,01,đặt âm lượng tivi năm mươi,Đặc âm lưỡng TV 50,tv,set,50,tv,set,50,,1.0,True,True,True,True,280.0
-testset/audio/phat_s23_02.wav,phat,s23,02,đặt âm lượng tivi năm mươi,Đặt âm lưỡng tib 50,tv,set,50,,,,ambiguous_device,0.0,False,False,False,False,317.4
-testset/audio/phat_s24_01.wav,phat,s24,01,điều hòa chế độ làm lạnh,Điều hòa chế độ lập lạnh,ac,mode_cool,,ac,,,unknown_command,0.5,True,False,,False,328.9
-testset/audio/phat_s24_02.wav,phat,s24,02,điều hòa chế độ làm lạnh,Điều hòa chế độ làm lạnh.,ac,mode_cool,,ac,mode_cool,,,1.0,True,True,,True,310.0
-testset/audio/phat_s25_01.wav,phat,s25,01,điều hòa chế độ quạt,Yêu hòa trái đồ quen,ac,mode_fan,,,,,unknown_command,0.0,False,False,,False,297.1
-testset/audio/phat_s25_02.wav,phat,s25,02,điều hòa chế độ quạt,Đi hòa chết đồ hoạch.,ac,mode_fan,,ac,,,unknown_command,0.429,True,False,,False,294.4
-testset/audio/phat_s26_01.wav,phat,s26,01,điều hòa chế độ hút ẩm,Điều hòa chế độ phục âm.,ac,mode_dry,,ac,,,unknown_command,0.5,True,False,,False,326.3
-testset/audio/phat_s26_02.wav,phat,s26,02,điều hòa chế độ hút ẩm,Đi hoa chế độ hút ấm.,ac,mode_dry,,ac,mode_dry,,,0.929,True,True,,True,316.0
-testset/audio/phat_s27_01.wav,phat,s27,01,nâng đầu giường mười độ,Năng đầu dưa 10 độ,bed,up,10,,,,ambiguous_device,0.0,False,False,False,False,207.3
-testset/audio/phat_s27_02.wav,phat,s27,02,nâng đầu giường mười độ,năng đầu dưa 10 độ,bed,up,10,,,,ambiguous_device,0.0,False,False,False,False,213.8
-testset/audio/phat_s28_01.wav,phat,s28,01,hạ đầu giường mười lăm độ,Hả đầu dương 15 độ,bed,down,15,bed,down,15,,0.921,True,True,True,True,227.0
-testset/audio/phat_s28_02.wav,phat,s28,02,hạ đầu giường mười lăm độ,Đâu dương 15 độ,bed,down,15,bed,set,15,,0.821,True,False,True,False,211.4
-testset/audio/phat_s29_01.wav,phat,s29,01,hạ giường nằm phẳng,Hả vô nồng phẩm.,bed,set,0,,,,ambiguous_device,0.0,False,False,False,False,252.1
-testset/audio/phat_s29_02.wav,phat,s29,02,hạ giường nằm phẳng,Hả vua nằm phẳng.,bed,set,0,,,,ambiguous_device,0.0,False,False,False,False,280.6
-testset/audio/phat_s30_01.wav,phat,s30,01,đặt giường ba mươi độ,Đã dường 30 độ,bed,set,30,,,,ambiguous_device,0.0,False,False,False,False,196.8
-testset/audio/phat_s30_02.wav,phat,s30,02,đặt giường ba mươi độ,Đã dường 30 độ,bed,set,30,,,,ambiguous_device,0.0,False,False,False,False,200.2
-testset/audio/vi_s01_01.wav,vi,s01,01,bật điều hòa,bọc view và...,ac,on,,,,,ambiguous_device,0.0,False,False,,False,175.4
-testset/audio/vi_s01_02.wav,vi,s01,02,bật điều hòa,bọc bì lũ khỏe,ac,on,,,,,ambiguous_device,0.0,False,False,,False,266.5
-testset/audio/vi_s02_01.wav,vi,s02,01,tắt điều hòa,Cắt đều và...,ac,off,,,,,unknown_command,0.0,False,False,,False,178.4
-testset/audio/vi_s02_02.wav,vi,s02,02,tắt điều hòa,Điều hoài.,ac,off,,ac,,,unknown_command,0.471,True,False,,False,171.8
-testset/audio/vi_s03_01.wav,vi,s03,01,bật đèn trần,Bập nền trăng.,light-main,on,,light-main,,,unknown_command,0.412,True,False,,False,201.5
-testset/audio/vi_s03_02.wav,vi,s03,02,bật đèn trần,Mặc đầy chân.,light-main,on,,,,,unknown_command,0.0,False,False,,False,209.7
-testset/audio/vi_s04_01.wav,vi,s04,01,tắt đèn trần,Tắt bềng trường.,light-main,off,,,,,ambiguous_device,0.0,False,False,,False,218.5
-testset/audio/vi_s04_02.wav,vi,s04,02,tắt đèn trần,Tắt đèn chân.,light-main,off,,light-main,off,,,1.0,True,True,,True,211.8
-testset/audio/vi_s05_01.wav,vi,s05,01,bật tivi,Bạc tây với.,tv,on,,,,,ambiguous_device,0.0,False,False,,False,194.3
-testset/audio/vi_s05_02.wav,vi,s05,02,bật tivi,Bạc TV!,tv,on,,tv,on,,,1.0,True,True,,True,163.5
-testset/audio/vi_s06_01.wav,vi,s06,01,tắt tivi,Tạc đầy vai.,tv,off,,,,,ambiguous_device,0.0,False,False,,False,235.8
-testset/audio/vi_s06_02.wav,vi,s06,02,tắt tivi,Tạch đề vệ.,tv,off,,,,,ambiguous_device,0.0,False,False,,False,218.6
-testset/audio/vi_s07_01.wav,vi,s07,01,giảm điều hòa hai độ,Giám điều hòa 2 độ.,ac,down,2,ac,down,2,,1.0,True,True,True,True,228.6
-testset/audio/vi_s07_02.wav,vi,s07,02,giảm điều hòa hai độ,Giám điều và hai đậu.,ac,down,2,,,,ambiguous_device,0.0,False,False,False,False,269.4
-testset/audio/vi_s08_01.wav,vi,s08,01,tăng điều hòa ba độ,Tăng điều và ba đấu.,ac,up,3,,,,ambiguous_device,0.0,False,False,False,False,210.5
-testset/audio/vi_s08_02.wav,vi,s08,02,tăng điều hòa ba độ,Tăng điều hòa 3 đấu.,ac,up,3,ac,,,unknown_command,0.5,True,False,False,False,256.5
-testset/audio/vi_s09_01.wav,vi,s09,01,đặt điều hòa hai mươi sáu độ,đặt điều 26 độ,ac,set,26,,,,ambiguous_device,0.0,False,False,False,False,173.9
-testset/audio/vi_s09_02.wav,vi,s09,02,đặt điều hòa hai mươi sáu độ,Đặt điều và 26 độ.,ac,set,26,,,,ambiguous_device,0.0,False,False,False,False,208.1
-testset/audio/vi_s10_01.wav,vi,s10,01,đặt điều hòa mười tám độ,Đặt đều hoài 18 độ.,ac,set,18,ac,set,18,,0.938,True,True,True,True,266.9
-testset/audio/vi_s10_02.wav,vi,s10,02,đặt điều hòa mười tám độ,Đặt đều vào 18 độ.,ac,set,18,,,,ambiguous_device,0.0,False,False,False,False,207.7
-testset/audio/vi_s11_01.wav,vi,s11,01,đặt điều hòa hai mươi hai độ,"Đặt biểu hòa 20, 2 đổ.",ac,set,22,ac,set,202,,0.938,True,True,False,False,312.8
-testset/audio/vi_s11_02.wav,vi,s11,02,đặt điều hòa hai mươi hai độ,Đặt điều khoảng 22 độ,ac,set,22,ac,set,22,,0.921,True,True,True,True,248.0
-testset/audio/vi_s12_01.wav,vi,s12,01,đặt điều hòa ba mươi độ,Đặt biểu khoảng 30 đậu,ac,set,30,,,,ambiguous_device,0.0,False,False,False,False,263.9
-testset/audio/vi_s12_02.wav,vi,s12,02,đặt điều hòa ba mươi độ,đặt đều hòa 30 đấu,ac,set,30,ac,,,unknown_command,0.467,True,False,False,False,242.1
-testset/audio/vi_s13_01.wav,vi,s13,01,tăng đèn trần hai mươi phần trăm,Tăng đèn chọn 20%,light-main,up,20,light-main,,,unknown_command,0.5,True,False,False,False,236.3
-testset/audio/vi_s13_02.wav,vi,s13,02,tăng đèn trần hai mươi phần trăm,Tăng đèn chọn 20%,light-main,up,20,light-main,,,unknown_command,0.5,True,False,False,False,356.0
-testset/audio/vi_s14_01.wav,vi,s14,01,giảm đèn trần mười phần trăm,Giám nền cần 10%.,light-main,down,10,,,,ambiguous_device,0.0,False,False,False,False,188.7
-testset/audio/vi_s14_02.wav,vi,s14,02,giảm đèn trần mười phần trăm,Rãm đề trần 10%,light-main,down,10,light-main,,,unknown_command,0.467,True,False,False,False,238.9
-testset/audio/vi_s15_01.wav,vi,s15,01,đặt đèn trần năm mươi phần trăm,Đặt bền trận 50%,light-main,set,50,light-main,set,50,,0.938,True,True,True,True,250.1
-testset/audio/vi_s15_02.wav,vi,s15,02,đặt đèn trần năm mươi phần trăm,Đặt bệnh chẳng 50%,light-main,set,50,,,,ambiguous_device,0.0,False,False,False,False,256.9
-testset/audio/vi_s16_01.wav,vi,s16,01,đặt đèn trần tám mươi phần trăm,Đặt đèn trần 80%,light-main,set,80,light-main,set,80,,1.0,True,True,True,True,207.3
-testset/audio/vi_s16_02.wav,vi,s16,02,đặt đèn trần tám mươi phần trăm,Đặt miền trận 80%,light-main,set,80,light-main,set,80,,0.912,True,True,True,True,223.2
-testset/audio/vi_s17_01.wav,vi,s17,01,đặt đèn trần một trăm phần trăm,Đạt nền trần 100%,light-main,set,100,light-main,set,100,,0.938,True,True,True,True,235.2
-testset/audio/vi_s17_02.wav,vi,s17,02,đặt đèn trần một trăm phần trăm,Đặt nền trần 100%,light-main,set,100,light-main,set,100,,0.938,True,True,True,True,212.4
-testset/audio/vi_s18_01.wav,vi,s18,01,chuyển tivi kênh hai,Chỉnh TV cân hay.,tv,channel,2,tv,,,unknown_command,0.5,True,False,False,False,217.1
-testset/audio/vi_s18_02.wav,vi,s18,02,chuyển tivi kênh hai,Chuyện TV gần 2.,tv,channel,2,tv,,,unknown_command,0.5,True,False,False,False,209.8
-testset/audio/vi_s19_01.wav,vi,s19,01,chuyển tivi kênh năm,Chuyển TV Cân Năm,tv,channel,5,tv,,,unknown_command,0.5,True,False,False,False,227.0
-testset/audio/vi_s19_02.wav,vi,s19,02,chuyển tivi kênh năm,Chuyện TV Cần Năm,tv,channel,5,tv,,,unknown_command,0.5,True,False,False,False,238.8
-testset/audio/vi_s20_01.wav,vi,s20,01,chuyển tivi kênh chín,Chuyện TV cân chính.,tv,channel,9,tv,,,unknown_command,0.5,True,False,False,False,210.7
-testset/audio/vi_s20_02.wav,vi,s20,02,chuyển tivi kênh chín,Chuyện TV cơn chín.,tv,channel,9,tv,,,unknown_command,0.5,True,False,False,False,234.8
-testset/audio/vi_s21_01.wav,vi,s21,01,tăng âm lượng tivi mười,Tăng ấm lưỡng TV 10,tv,up,10,tv,up,10,,1.0,True,True,True,True,274.3
-testset/audio/vi_s21_02.wav,vi,s21,02,tăng âm lượng tivi mười,Tăng âm lỗng TV mồi.,tv,up,10,tv,,,unknown_command,0.5,True,False,False,False,326.6
-testset/audio/vi_s22_01.wav,vi,s22,01,giảm âm lượng tivi hai mươi,Giám âm lộng TV 20,tv,down,20,tv,,,unknown_command,0.5,True,False,False,False,251.9
-testset/audio/vi_s22_02.wav,vi,s22,02,giảm âm lượng tivi hai mươi,Giám âm lượng TV 20,tv,down,20,tv,down,20,,1.0,True,True,True,True,232.6
-testset/audio/vi_s23_01.wav,vi,s23,01,đặt âm lượng tivi năm mươi,Đã căm lỗng TV năm môi.,tv,set,50,tv,,,unknown_command,0.5,True,False,False,False,278.0
-testset/audio/vi_s23_02.wav,vi,s23,02,đặt âm lượng tivi năm mươi,Đặt âm lỗng tý vơi năm môi.,tv,set,50,,,,ambiguous_device,0.0,False,False,False,False,350.1
-testset/audio/vi_s24_01.wav,vi,s24,01,điều hòa chế độ làm lạnh,Điều hoa chế độ làm lạnh.,ac,mode_cool,,ac,mode_cool,,,1.0,True,True,,True,286.0
-testset/audio/vi_s24_02.wav,vi,s24,02,điều hòa chế độ làm lạnh,Điều hoa chế độ làm lạnh.,ac,mode_cool,,ac,mode_cool,,,1.0,True,True,,True,276.6
-testset/audio/vi_s25_01.wav,vi,s25,01,điều hòa chế độ quạt,Điều hòa chế độ hoạt,ac,mode_fan,,ac,,,unknown_command,0.5,True,False,,False,300.5
-testset/audio/vi_s25_02.wav,vi,s25,02,điều hòa chế độ quạt,Điều và chế độ hoạch.,ac,mode_fan,,,,,unknown_command,0.0,False,False,,False,270.5
-testset/audio/vi_s26_01.wav,vi,s26,01,điều hòa chế độ hút ẩm,Điều mà chế độ hút ẩm.,ac,mode_dry,,,,,unknown_command,0.0,False,False,,False,372.0
-testset/audio/vi_s26_02.wav,vi,s26,02,điều hòa chế độ hút ẩm,Đi hoa chế đỏ hút ấm.,ac,mode_dry,,ac,mode_dry,,,0.929,True,True,,True,350.4
-testset/audio/vi_s27_01.wav,vi,s27,01,nâng đầu giường mười độ,"Nâng, Đầu, Dương, Mơi, Đấu.",bed,up,10,bed,,,unknown_command,0.421,True,False,False,False,365.2
-testset/audio/vi_s27_02.wav,vi,s27,02,nâng đầu giường mười độ,Năng Đầu Dường mời đó.,bed,up,10,bed,,,unknown_command,0.421,True,False,False,False,275.3
-testset/audio/vi_s28_01.wav,vi,s28,01,hạ đầu giường mười lăm độ,Hẽ ở đâu giờ 15 độ?,bed,down,15,bed,,,unknown_command,0.412,True,False,False,False,222.2
-testset/audio/vi_s28_02.wav,vi,s28,02,hạ đầu giường mười lăm độ,Hãi Đầu Dường 15 đậu.,bed,down,15,bed,,,unknown_command,0.421,True,False,False,False,289.2
-testset/audio/vi_s29_01.wav,vi,s29,01,hạ giường nằm phẳng,Hẹ dường nằm phẳng.,bed,set,0,,,,ambiguous_device,0.0,False,False,False,False,282.4
-testset/audio/vi_s29_02.wav,vi,s29,02,hạ giường nằm phẳng,Hẹn dừng nằm phẳng.,bed,set,0,,,,ambiguous_device,0.0,False,False,False,False,317.9
-testset/audio/vi_s30_01.wav,vi,s30,01,đặt giường ba mươi độ,đặc giường 30 độ.,bed,set,30,bed,set,30,,1.0,True,True,True,True,197.0
-testset/audio/vi_s30_02.wav,vi,s30,02,đặt giường ba mươi độ,Đặt gường 30 đậu.,bed,set,30,bed,,,unknown_command,0.455,True,False,False,False,240.8
-testset/audio/vi_s30_03.wav,vi,s30,03,đặt giường ba mươi độ,đặc giường 30 đậu,bed,set,30,bed,,,unknown_command,0.5,True,False,False,False,209.2
-testset/audio/vinh_s01_01.wav,vinh,s01,01,bật điều hòa,Bật điều hòa.,ac,on,,ac,on,,,1.0,True,True,,True,191.4
-testset/audio/vinh_s01_02.wav,vinh,s01,02,bật điều hòa,Bắt đều hoa.,ac,on,,ac,on,,,0.967,True,True,,True,188.2
-testset/audio/vinh_s02_01.wav,vinh,s02,01,tắt điều hòa,Tắt đều hoa.,ac,off,,ac,off,,,0.967,True,True,,True,192.7
-testset/audio/vinh_s02_02.wav,vinh,s02,02,tắt điều hòa,Tắt điều hòa.,ac,off,,ac,off,,,1.0,True,True,,True,203.7
-testset/audio/vinh_s03_01.wav,vinh,s03,01,bật đèn trần,Bật đen chân.,light-main,on,,light-main,on,,,1.0,True,True,,True,195.3
-testset/audio/vinh_s03_02.wav,vinh,s03,02,bật đèn trần,Bật đèn chân.,light-main,on,,light-main,on,,,1.0,True,True,,True,192.1
-testset/audio/vinh_s04_01.wav,vinh,s04,01,tắt đèn trần,Tắt bàn chân.,light-main,off,,,,,ambiguous_device,0.0,False,False,,False,191.2
-testset/audio/vinh_s04_02.wav,vinh,s04,02,tắt đèn trần,Tắt đèn chân.,light-main,off,,light-main,off,,,1.0,True,True,,True,194.0
-testset/audio/vinh_s05_01.wav,vinh,s05,01,bật tivi,Bạc Tây Vê!,tv,on,,,,,ambiguous_device,0.0,False,False,,False,222.7
-testset/audio/vinh_s05_02.wav,vinh,s05,02,bật tivi,Bắc Tây Vê!,tv,on,,,,,ambiguous_device,0.0,False,False,,False,197.7
-testset/audio/vinh_s06_01.wav,vinh,s06,01,tắt tivi,Tắt T.V.,tv,off,,,,,ambiguous_device,0.0,False,False,,False,181.8
-testset/audio/vinh_s06_02.wav,vinh,s06,02,tắt tivi,Tắc T.V.,tv,off,,,,,ambiguous_device,0.0,False,False,,False,171.2
-testset/audio/vinh_s07_01.wav,vinh,s07,01,giảm điều hòa hai độ,Giám điều hòa 2 độ,ac,down,2,ac,down,2,,1.0,True,True,True,True,227.9
-testset/audio/vinh_s07_02.wav,vinh,s07,02,giảm điều hòa hai độ,Giám điều hòa 2 độ,ac,down,2,ac,down,2,,1.0,True,True,True,True,234.3
-testset/audio/vinh_s08_01.wav,vinh,s08,01,tăng điều hòa ba độ,Tăng điều hòa ba đó.,ac,up,3,ac,up,3,,1.0,True,True,True,True,256.7
-testset/audio/vinh_s08_02.wav,vinh,s08,02,tăng điều hòa ba độ,Tăng điều hòa ba đỏ.,ac,up,3,ac,up,3,,1.0,True,True,True,True,243.1
-testset/audio/vinh_s09_01.wav,vinh,s09,01,đặt điều hòa hai mươi sáu độ,Đặt điều hòa 26 độ,ac,set,26,ac,set,26,,1.0,True,True,True,True,227.1
-testset/audio/vinh_s09_02.wav,vinh,s09,02,đặt điều hòa hai mươi sáu độ,Đặt điều hòa 26 độ,ac,set,26,ac,set,26,,1.0,True,True,True,True,230.1
-testset/audio/vinh_s10_01.wav,vinh,s10,01,đặt điều hòa mười tám độ,Đặt điều hòa 18 độ,ac,set,18,ac,set,18,,1.0,True,True,True,True,241.7
-testset/audio/vinh_s10_02.wav,vinh,s10,02,đặt điều hòa mười tám độ,Đặt điều hòa 18 độ,ac,set,18,ac,set,18,,1.0,True,True,True,True,227.2
-testset/audio/vinh_s11_01.wav,vinh,s11,01,đặt điều hòa hai mươi hai độ,Đặt điều hòa 22 độ,ac,set,22,ac,set,22,,1.0,True,True,True,True,228.1
-testset/audio/vinh_s11_02.wav,vinh,s11,02,đặt điều hòa hai mươi hai độ,Đặt điều hòa 22 độ.,ac,set,22,ac,set,22,,1.0,True,True,True,True,241.6
-testset/audio/vinh_s12_01.wav,vinh,s12,01,đặt điều hòa ba mươi độ,Đặt điều hòa 30 độ,ac,set,30,ac,set,30,,1.0,True,True,True,True,242.8
-testset/audio/vinh_s12_02.wav,vinh,s12,02,đặt điều hòa ba mươi độ,Đặt điều hòa 30 độ,ac,set,30,ac,set,30,,1.0,True,True,True,True,231.6
-testset/audio/vinh_s13_01.wav,vinh,s13,01,tăng đèn trần hai mươi phần trăm,Tăng đề trần 20%,light-main,up,20,light-main,up,20,,0.967,True,True,True,True,219.9
-testset/audio/vinh_s13_02.wav,vinh,s13,02,tăng đèn trần hai mươi phần trăm,Tăng đèn trần 20%,light-main,up,20,light-main,up,20,,1.0,True,True,True,True,215.3
-testset/audio/vinh_s14_01.wav,vinh,s14,01,giảm đèn trần mười phần trăm,Giảm đèn trần 10%,light-main,down,10,light-main,down,10,,1.0,True,True,True,True,230.2
-testset/audio/vinh_s14_02.wav,vinh,s14,02,giảm đèn trần mười phần trăm,Giảm đèn trần 10%,light-main,down,10,light-main,down,10,,1.0,True,True,True,True,236.1
-testset/audio/vinh_s15_01.wav,vinh,s15,01,đặt đèn trần năm mươi phần trăm,Đặt đèn trần 50%,light-main,set,50,light-main,set,50,,1.0,True,True,True,True,210.7
-testset/audio/vinh_s15_02.wav,vinh,s15,02,đặt đèn trần năm mươi phần trăm,Đặt đèn chân 50%,light-main,set,50,light-main,set,50,,1.0,True,True,True,True,208.5
-testset/audio/vinh_s16_01.wav,vinh,s16,01,đặt đèn trần tám mươi phần trăm,Đặt đàn trần 80%,light-main,set,80,light-main,set,80,,0.938,True,True,True,True,212.8
-testset/audio/vinh_s16_02.wav,vinh,s16,02,đặt đèn trần tám mươi phần trăm,Đặt đèn trần 80%,light-main,set,80,light-main,set,80,,1.0,True,True,True,True,219.0
-testset/audio/vinh_s17_01.wav,vinh,s17,01,đặt đèn trần một trăm phần trăm,Đặt đèn chân 100%,light-main,set,100,light-main,set,100,,1.0,True,True,True,True,218.1
-testset/audio/vinh_s17_02.wav,vinh,s17,02,đặt đèn trần một trăm phần trăm,Đặt đèn chân 100%,light-main,set,100,light-main,set,100,,1.0,True,True,True,True,241.3
-testset/audio/vinh_s18_01.wav,vinh,s18,01,chuyển tivi kênh hai,Chuyển TV cân 2.,tv,channel,2,tv,,,unknown_command,0.5,True,False,False,False,213.7
-testset/audio/vinh_s18_02.wav,vinh,s18,02,chuyển tivi kênh hai,Chuyện TV cân 2,tv,channel,2,tv,,,unknown_command,0.5,True,False,False,False,210.1
-testset/audio/vinh_s19_01.wav,vinh,s19,01,chuyển tivi kênh năm,Chuyện PVK5,tv,channel,5,,,,ambiguous_device,0.0,False,False,False,False,209.5
-testset/audio/vinh_s19_02.wav,vinh,s19,02,chuyển tivi kênh năm,Chuyện TV K5,tv,channel,5,tv,,,unknown_command,0.5,True,False,False,False,175.1
-testset/audio/vinh_s20_01.wav,vinh,s20,01,chuyển tivi kênh chín,Chuyện TV Kênh 9,tv,channel,9,tv,channel,9,,1.0,True,True,True,True,236.7
-testset/audio/vinh_s20_02.wav,vinh,s20,02,chuyển tivi kênh chín,Chuyển TV Cần Chín,tv,channel,9,tv,,,unknown_command,0.5,True,False,False,False,229.2
-testset/audio/vinh_s21_01.wav,vinh,s21,01,tăng âm lượng tivi mười,Tăng âm lưỡng TV mời.,tv,up,10,tv,,,unknown_command,0.5,True,False,False,False,294.7
-testset/audio/vinh_s21_02.wav,vinh,s21,02,tăng âm lượng tivi mười,Tăng ngắm lưỡng TV mời.,tv,up,10,tv,,,unknown_command,0.5,True,False,False,False,290.6
-testset/audio/vinh_s22_01.wav,vinh,s22,01,giảm âm lượng tivi hai mươi,Giảm âm lượng TV 20,tv,down,20,tv,down,20,,1.0,True,True,True,True,228.6
-testset/audio/vinh_s22_02.wav,vinh,s22,02,giảm âm lượng tivi hai mươi,Giảm âm lượng TV 20,tv,down,20,tv,down,20,,1.0,True,True,True,True,248.1
-testset/audio/vinh_s23_01.wav,vinh,s23,01,đặt âm lượng tivi năm mươi,Đặt âm lớn TV 50,tv,set,50,tv,,,unknown_command,0.5,True,False,False,False,253.7
-testset/audio/vinh_s23_02.wav,vinh,s23,02,đặt âm lượng tivi năm mươi,Đặt âm lưỡng TV 50,tv,set,50,tv,set,50,,1.0,True,True,True,True,288.6
-testset/audio/vinh_s24_01.wav,vinh,s24,01,điều hòa chế độ làm lạnh,Điều hoài chế độ lầm lạnh.,ac,mode_cool,,ac,mode_cool,,,0.971,True,True,,True,321.4
-testset/audio/vinh_s24_02.wav,vinh,s24,02,điều hòa chế độ làm lạnh,Điều hòa chế độ làm lạnh,ac,mode_cool,,ac,mode_cool,,,1.0,True,True,,True,307.8
-testset/audio/vinh_s25_01.wav,vinh,s25,01,điều hòa chế độ quạt,Điều hòa chế độ hoạt,ac,mode_fan,,ac,,,unknown_command,0.5,True,False,,False,296.4
-testset/audio/vinh_s25_02.wav,vinh,s25,02,điều hòa chế độ quạt,Điều hoa chế độ hoạt,ac,mode_fan,,ac,,,unknown_command,0.5,True,False,,False,243.2
-testset/audio/vinh_s26_01.wav,vinh,s26,01,điều hòa chế độ hút ẩm,Điều hòa chế độ hút ẩm.,ac,mode_dry,,ac,mode_dry,,,1.0,True,True,,True,334.5
-testset/audio/vinh_s26_02.wav,vinh,s26,02,điều hòa chế độ hút ẩm,Điều hòa chế độ hút ấm.,ac,mode_dry,,ac,mode_dry,,,1.0,True,True,,True,343.5
-testset/audio/vinh_s27_01.wav,vinh,s27,01,nâng đầu giường mười độ,Nân đầu dư mươi đổ,bed,up,10,,,,ambiguous_device,0.0,False,False,False,False,268.2
-testset/audio/vinh_s27_02.wav,vinh,s27,02,nâng đầu giường mười độ,Nân đầu dương mươi đổ.,bed,up,10,bed,,,unknown_command,0.421,True,False,False,False,284.8
-testset/audio/vinh_s28_01.wav,vinh,s28,01,hạ đầu giường mười lăm độ,Hạ đồ dương 15 độ.,bed,down,15,,,,ambiguous_device,0.0,False,False,False,False,236.6
-testset/audio/vinh_s28_02.wav,vinh,s28,02,hạ đầu giường mười lăm độ,Hạ đồ dư 15 độ.,bed,down,15,,,,ambiguous_device,0.0,False,False,False,False,228.4
-testset/audio/vinh_s29_01.wav,vinh,s29,01,hạ giường nằm phẳng,Hã dương nằm phẳng.,bed,set,0,,,,ambiguous_device,0.0,False,False,False,False,293.2
-testset/audio/vinh_s29_02.wav,vinh,s29,02,hạ giường nằm phẳng,Hãi dương nằm phẳng.,bed,set,0,,,,ambiguous_device,0.0,False,False,False,False,306.8
-testset/audio/vinh_s30_01.wav,vinh,s30,01,đặt giường ba mươi độ,Đặt dường 30 độ.,bed,set,30,,,,ambiguous_device,0.0,False,False,False,False,197.8
-testset/audio/vinh_s30_02.wav,vinh,s30,02,đặt giường ba mươi độ,Đặt dường 30 độ.,bed,set,30,,,,ambiguous_device,0.0,False,False,False,False,197.6
+testset/audio/giabao_s01_01.wav,giabao,s01,01,bật điều hòa,Bọc đều hòa.,ac,on,,ac,on,,,0.877,True,True,,True,294.4
+testset/audio/giabao_s01_02.wav,giabao,s01,02,bật điều hòa,Bọc đều hoài.,ac,on,,ac,on,,,0.847,True,True,,True,217.3
+testset/audio/giabao_s02_01.wav,giabao,s02,01,tắt điều hòa,Tắt điều hoa.,ac,off,,ac,off,,,1.0,True,True,,True,185.4
+testset/audio/giabao_s02_02.wav,giabao,s02,02,tắt điều hòa,Tắt điều hòa.,ac,off,,ac,off,,,1.0,True,True,,True,186.2
+testset/audio/giabao_s03_01.wav,giabao,s03,01,bật đèn trần,Bạc đen trang.,light-main,on,,light-main,on,,,1.0,True,True,,True,203.8
+testset/audio/giabao_s03_02.wav,giabao,s03,02,bật đèn trần,bọc đen trắng,light-main,on,,light-main,,,unknown_command,0.5,True,False,,False,190.8
+testset/audio/giabao_s04_01.wav,giabao,s04,01,tắt đèn trần,Tắt đèn chân.,light-main,off,,light-main,off,,,1.0,True,True,,True,191.6
+testset/audio/giabao_s04_02.wav,giabao,s04,02,tắt đèn trần,Tắt đèn chẳng.,light-main,off,,light-main,,,unknown_command,0.5,True,False,,False,226.2
+testset/audio/giabao_s05_01.wav,giabao,s05,01,bật tivi,Bạc TV!,tv,on,,tv,on,,,1.0,True,True,,True,160.0
+testset/audio/giabao_s05_02.wav,giabao,s05,02,bật tivi,Bạc kỳ vi!,tv,on,,,,,ambiguous_device,0.0,False,False,,False,208.2
+testset/audio/giabao_s06_01.wav,giabao,s06,01,tắt tivi,tắc thị bây,tv,off,,,,,ambiguous_device,0.0,False,False,,False,224.8
+testset/audio/giabao_s06_02.wav,giabao,s06,02,tắt tivi,Tạp đề vợi.,tv,off,,,,,ambiguous_device,0.0,False,False,,False,293.6
+testset/audio/giabao_s07_01.wav,giabao,s07,01,giảm điều hòa hai độ,Giám điều hòa 2 đổ.,ac,down,2,ac,down,2,,1.0,True,True,True,True,288.4
+testset/audio/giabao_s07_02.wav,giabao,s07,02,giảm điều hòa hai độ,Giảm điều hòa 2 độ,ac,down,2,ac,down,2,,1.0,True,True,True,True,270.5
+testset/audio/giabao_s08_01.wav,giabao,s08,01,tăng điều hòa ba độ,Tăng điều hòa 3 đỏ,ac,up,3,ac,up,3,,1.0,True,True,True,True,295.4
+testset/audio/giabao_s08_02.wav,giabao,s08,02,tăng điều hòa ba độ,Tăng điều hòa ba đỏ.,ac,up,3,ac,up,3,,1.0,True,True,True,True,277.9
+testset/audio/giabao_s09_01.wav,giabao,s09,01,đặt điều hòa hai mươi sáu độ,Đặt điều hòa 26 đổ.,ac,set,26,ac,set,26,,1.0,True,True,True,True,286.5
+testset/audio/giabao_s09_02.wav,giabao,s09,02,đặt điều hòa hai mươi sáu độ,đặt điều hòa 26 đỏ,ac,set,26,ac,set,26,,1.0,True,True,True,True,317.8
+testset/audio/giabao_s10_01.wav,giabao,s10,01,đặt điều hòa mười tám độ,Đặt điều hòa 18 độ,ac,set,18,ac,set,18,,1.0,True,True,True,True,288.4
+testset/audio/giabao_s10_02.wav,giabao,s10,02,đặt điều hòa mười tám độ,Đặc tiêu hòa 18 độ,ac,set,18,ac,set,18,,0.847,True,True,True,True,338.2
+testset/audio/giabao_s11_01.wav,giabao,s11,01,đặt điều hòa hai mươi hai độ,đặc biệt hòa em với anh đỏ,ac,set,22,,,,ambiguous_device,0.0,False,False,False,False,273.5
+testset/audio/giabao_s11_02.wav,giabao,s11,02,đặt điều hòa hai mươi hai độ,Dạc điều hòa 22 đó.,ac,set,22,ac,set,22,,0.91,True,True,True,True,253.5
+testset/audio/giabao_s12_01.wav,giabao,s12,01,đặt điều hòa ba mươi độ,đặt đều 30 đỏ,ac,set,30,,,,ambiguous_device,0.0,False,False,False,False,205.2
+testset/audio/giabao_s12_02.wav,giabao,s12,02,đặt điều hòa ba mươi độ,đặc điêu hòa 30 đỏ,ac,set,30,ac,set,30,,0.91,True,True,True,True,258.2
+testset/audio/giabao_s13_01.wav,giabao,s13,01,tăng đèn trần hai mươi phần trăm,Tăng đèn trần 20 phần trám.,light-main,up,20,light-main,up,20,,1.0,True,True,True,True,275.7
+testset/audio/giabao_s13_02.wav,giabao,s13,02,tăng đèn trần hai mươi phần trăm,Tăng đành chọn 20 phần trăm.,light-main,up,20,,,,ambiguous_device,0.0,False,False,False,False,306.4
+testset/audio/giabao_s14_01.wav,giabao,s14,01,giảm đèn trần mười phần trăm,Giám đèn trần môi phần trăm.,light-main,down,10,light-main,down,10,,1.0,True,True,True,True,293.5
+testset/audio/giabao_s14_02.wav,giabao,s14,02,giảm đèn trần mười phần trăm,giám đèn trần môi phần trăm,light-main,down,10,light-main,down,10,,1.0,True,True,True,True,317.8
+testset/audio/giabao_s15_01.wav,giabao,s15,01,đặt đèn trần năm mươi phần trăm,Đặt đèn trần 50%,light-main,set,50,light-main,set,50,,1.0,True,True,True,True,206.9
+testset/audio/giabao_s15_02.wav,giabao,s15,02,đặt đèn trần năm mươi phần trăm,Đặt đèn trần 50%,light-main,set,50,light-main,set,50,,1.0,True,True,True,True,216.8
+testset/audio/giabao_s16_01.wav,giabao,s16,01,đặt đèn trần tám mươi phần trăm,Đặt đèn trầm 80%,light-main,set,80,light-main,set,100,,1.0,True,True,False,False,273.3
+testset/audio/giabao_s16_02.wav,giabao,s16,02,đặt đèn trần tám mươi phần trăm,Đặt đèn tròn 80%,light-main,set,80,light-main,set,80,,1.0,True,True,True,True,203.7
+testset/audio/giabao_s17_01.wav,giabao,s17,01,đặt đèn trần một trăm phần trăm,Đặt đen cho 100%,light-main,set,100,light-main,set,100,,1.0,True,True,True,True,205.0
+testset/audio/giabao_s17_02.wav,giabao,s17,02,đặt đèn trần một trăm phần trăm,đặt đèn trần 100%,light-main,set,100,light-main,set,100,,1.0,True,True,True,True,271.7
+testset/audio/giabao_s18_01.wav,giabao,s18,01,chuyển tivi kênh hai,Chuyện DVD kênh high.,tv,channel,2,tv,,,unknown_command,0.44,True,False,False,False,222.4
+testset/audio/giabao_s18_02.wav,giabao,s18,02,chuyển tivi kênh hai,Chuyện DV Con 2.,tv,channel,2,,,,ambiguous_device,0.0,False,False,False,False,188.5
+testset/audio/giabao_s19_01.wav,giabao,s19,01,chuyển tivi kênh năm,20 VNM,tv,channel,5,,,,ambiguous_device,0.0,False,False,False,False,154.8
+testset/audio/giabao_s19_02.wav,giabao,s19,02,chuyển tivi kênh năm,Chuyện TV Kênh Nam,tv,channel,5,tv,channel,5,,1.0,True,True,True,True,220.5
+testset/audio/giabao_s20_01.wav,giabao,s20,01,chuyển tivi kênh chín,"Diễn đề vệ, diễn chín.",tv,channel,9,,,,ambiguous_device,0.0,False,False,False,False,328.6
+testset/audio/giabao_s20_02.wav,giabao,s20,02,chuyển tivi kênh chín,Chuyện tây giây kênh chánh.,tv,channel,9,tv,,,unknown_command,0.44,True,False,False,False,290.3
+testset/audio/giabao_s21_01.wav,giabao,s21,01,tăng âm lượng tivi mười,tàn âm lợi sinh viên bởi.,tv,up,10,,,,unknown_command,0.0,False,False,False,False,343.2
+testset/audio/giabao_s21_02.wav,giabao,s21,02,tăng âm lượng tivi mười,Tán âm lỡn thế giới mời.,tv,up,10,,,,unknown_command,0.0,False,False,False,False,330.9
+testset/audio/giabao_s22_01.wav,giabao,s22,01,giảm âm lượng tivi hai mươi,Dã mong lợn TV 20,tv,down,20,tv,,,unknown_command,0.5,True,False,False,False,213.1
+testset/audio/giabao_s22_02.wav,giabao,s22,02,giảm âm lượng tivi hai mươi,dã mâm lộn tv 20,tv,down,20,tv,,,unknown_command,0.5,True,False,False,False,236.9
+testset/audio/giabao_s23_01.wav,giabao,s23,01,đặt âm lượng tivi năm mươi,Đạt âm lỡ on TV năm môi.,tv,set,50,tv,,,unknown_command,0.5,True,False,False,False,290.3
+testset/audio/giabao_s23_02.wav,giabao,s23,02,đặt âm lượng tivi năm mươi,Đạc âm lộn TV 50,tv,set,50,tv,,,unknown_command,0.5,True,False,False,False,244.4
+testset/audio/giabao_s24_01.wav,giabao,s24,01,điều hòa chế độ làm lạnh,Điều mà chế độ làm lạnh,ac,mode_cool,,ac,mode_cool,,,0.94,True,True,,True,273.7
+testset/audio/giabao_s24_02.wav,giabao,s24,02,điều hòa chế độ làm lạnh,Điều hòa chế độ làm lãnh,ac,mode_cool,,ac,mode_cool,,,1.0,True,True,,True,309.5
+testset/audio/giabao_s25_01.wav,giabao,s25,01,điều hòa chế độ quạt,Điều hoài chết đồ gọi,ac,mode_fan,,ac,,,unknown_command,0.471,True,False,,False,278.5
+testset/audio/giabao_s25_02.wav,giabao,s25,02,điều hòa chế độ quạt,Điều hoài chứ đổ hoài,ac,mode_fan,,ac,,,unknown_command,0.471,True,False,,False,263.1
+testset/audio/giabao_s26_01.wav,giabao,s26,01,điều hòa chế độ hút ẩm,Điều hòa chế độ hút ảm,ac,mode_dry,,ac,mode_dry,,,1.0,True,True,,True,304.1
+testset/audio/giabao_s26_02.wav,giabao,s26,02,điều hòa chế độ hút ẩm,Điều hòa chế độ khúc ám,ac,mode_dry,,ac,,,unknown_command,0.5,True,False,,False,319.6
+testset/audio/giabao_s27_01.wav,giabao,s27,01,nâng đầu giường mười độ,Nâng đầu giường mời đáu,bed,up,10,bed,,,unknown_command,0.5,True,False,False,False,275.3
+testset/audio/giabao_s27_02.wav,giabao,s27,02,nâng đầu giường mười độ,Nâng đầu chưa ăn mới đó,bed,up,10,,,,ambiguous_device,0.0,False,False,False,False,277.0
+testset/audio/giabao_s28_01.wav,giabao,s28,01,hạ đầu giường mười lăm độ,"Há, đầu dương, mai lắm đó.",bed,down,15,bed,,,unknown_command,0.421,True,False,False,False,273.2
+testset/audio/giabao_s28_02.wav,giabao,s28,02,hạ đầu giường mười lăm độ,Đầu trường mấy lắm đó.,bed,down,15,,,,unknown_command,0.0,False,False,False,False,240.8
+testset/audio/giabao_s29_01.wav,giabao,s29,01,hạ giường nằm phẳng,Hả vô nằm phẳng.,bed,set,0,bed,,,unknown_command,0.44,True,False,False,False,275.8
+testset/audio/giabao_s29_02.wav,giabao,s29,02,hạ giường nằm phẳng,Hẹn gặp lại và hẹn gặp lại.,bed,set,0,,,,unknown_command,0.0,False,False,False,False,447.9
+testset/audio/giabao_s30_01.wav,giabao,s30,01,đặt giường ba mươi độ,đặt dồn 30 đỏ,bed,set,30,,,,ambiguous_device,0.0,False,False,False,False,257.3
+testset/audio/giabao_s30_02.wav,giabao,s30,02,đặt giường ba mươi độ,Đặt dường 30 độ,bed,set,30,,,,ambiguous_device,0.0,False,False,False,False,200.4
+testset/audio/la1_s01_01.wav,la1,s01,01,bật điều hòa,Bất đều hoàn.,ac,on,,ac,on,,,0.938,True,True,,True,233.1
+testset/audio/la1_s01_02.wav,la1,s01,02,bật điều hòa,bất đều hoài,ac,on,,ac,on,,,0.938,True,True,,True,208.3
+testset/audio/la1_s02_01.wav,la1,s02,01,tắt điều hòa,"That's new, huh?",ac,off,,,,,unknown_command,0.0,False,False,,False,225.6
+testset/audio/la1_s02_02.wav,la1,s02,02,tắt điều hòa,Tắt điều 2.,ac,off,,,,,ambiguous_device,0.0,False,False,,False,183.3
+testset/audio/la1_s03_01.wav,la1,s03,01,bật đèn trần,Mặc đầy nhanh.,light-main,on,,,,,unknown_command,0.0,False,False,,False,258.0
+testset/audio/la1_s03_02.wav,la1,s03,02,bật đèn trần,Mục đềnh chân,light-main,on,,,,,unknown_command,0.0,False,False,,False,256.5
+testset/audio/la1_s04_01.wav,la1,s04,01,tắt đèn trần,Tất cả đềnh trường.,light-main,off,,,,,ambiguous_device,0.0,False,False,,False,269.7
+testset/audio/la1_s04_02.wav,la1,s04,02,tắt đèn trần,Tắt đến chẳng.,light-main,off,,light-main,,,unknown_command,0.5,True,False,,False,284.9
+testset/audio/la1_s05_01.wav,la1,s05,01,bật tivi,Hẹn gặp lại video này!,tv,on,,,,,unknown_command,0.0,False,False,,False,282.7
+testset/audio/la1_s05_02.wav,la1,s05,02,bật tivi,"Bạc, đê y vê!",tv,on,,,,,ambiguous_device,0.0,False,False,,False,247.4
+testset/audio/la1_s06_01.wav,la1,s06,01,tắt tivi,Tạch TV!,tv,off,,tv,,,unknown_command,0.5,True,False,,False,154.3
+testset/audio/la1_s06_02.wav,la1,s06,02,tắt tivi,Tạc TV!,tv,off,,tv,off,,,1.0,True,True,,True,212.5
+testset/audio/la1_s07_01.wav,la1,s07,01,giảm điều hòa hai độ,giảm điều hòa 2 độ,ac,down,2,ac,down,2,,1.0,True,True,True,True,221.4
+testset/audio/la1_s07_02.wav,la1,s07,02,giảm điều hòa hai độ,Giám điều hòa 2 độ,ac,down,2,ac,down,2,,1.0,True,True,True,True,226.4
+testset/audio/la1_s08_01.wav,la1,s08,01,tăng điều hòa ba độ,Tăng điều hòa 3 đỏ,ac,up,3,ac,up,3,,1.0,True,True,True,True,247.5
+testset/audio/la1_s08_02.wav,la1,s08,02,tăng điều hòa ba độ,Tăng điều hòa ba đậu.,ac,up,3,ac,,,unknown_command,0.5,True,False,False,False,258.5
+testset/audio/la1_s09_01.wav,la1,s09,01,đặt điều hòa hai mươi sáu độ,Điều hòa hên như sao đâu?,ac,set,26,ac,,,unknown_command,0.5,True,False,False,False,278.0
+testset/audio/la1_s09_02.wav,la1,s09,02,đặt điều hòa hai mươi sáu độ,Đặt điều hòa 26 đậu.,ac,set,26,ac,,,unknown_command,0.5,True,False,False,False,258.7
+testset/audio/la1_s10_01.wav,la1,s10,01,đặt điều hòa mười tám độ,Đặt điều hòa 18 đậu.,ac,set,18,ac,,,unknown_command,0.5,True,False,False,False,263.7
+testset/audio/la1_s10_02.wav,la1,s10,02,đặt điều hòa mười tám độ,đặt điều 28 độ,ac,set,18,,,,ambiguous_device,0.0,False,False,False,False,188.1
+testset/audio/la1_s11_01.wav,la1,s11,01,đặt điều hòa hai mươi hai độ,Đặt điều hòa 22 độ.,ac,set,22,ac,set,22,,1.0,True,True,True,True,243.1
+testset/audio/la1_s11_02.wav,la1,s11,02,đặt điều hòa hai mươi hai độ,đặt điều hà 22 độ,ac,set,22,ac,set,22,,0.967,True,True,True,True,202.5
+testset/audio/la1_s12_01.wav,la1,s12,01,đặt điều hòa ba mươi độ,đặt điều hà 30 độ,ac,set,30,ac,set,30,,0.967,True,True,True,True,218.2
+testset/audio/la1_s12_02.wav,la1,s12,02,đặt điều hòa ba mươi độ,đặt điều hòa 30 đỏ,ac,set,30,ac,set,30,,1.0,True,True,True,True,221.6
+testset/audio/la1_s13_01.wav,la1,s13,01,tăng đèn trần hai mươi phần trăm,Tăng đàn trận 20%,light-main,up,20,light-main,up,20,,0.938,True,True,True,True,210.6
+testset/audio/la1_s13_02.wav,la1,s13,02,tăng đèn trần hai mươi phần trăm,Tăng đền trận 20%,light-main,up,20,light-main,up,20,,1.0,True,True,True,True,219.9
+testset/audio/la1_s14_01.wav,la1,s14,01,giảm đèn trần mười phần trăm,Giám đèn trần 10%,light-main,down,10,light-main,down,10,,1.0,True,True,True,True,205.6
+testset/audio/la1_s14_02.wav,la1,s14,02,giảm đèn trần mười phần trăm,Giám đành trần 10%,light-main,down,10,light-main,down,10,,0.912,True,True,True,True,232.2
+testset/audio/la1_s15_01.wav,la1,s15,01,đặt đèn trần năm mươi phần trăm,Đặt đèn trần 50%,light-main,set,50,light-main,set,50,,1.0,True,True,True,True,207.7
+testset/audio/la1_s15_02.wav,la1,s15,02,đặt đèn trần năm mươi phần trăm,đặt đền trần 50%,light-main,set,50,light-main,set,50,,1.0,True,True,True,True,210.1
+testset/audio/la1_s16_01.wav,la1,s16,01,đặt đèn trần tám mươi phần trăm,đặt đèn trần 80%,light-main,set,80,light-main,set,80,,1.0,True,True,True,True,273.5
+testset/audio/la1_s16_02.wav,la1,s16,02,đặt đèn trần tám mươi phần trăm,Đặt đỉnh trần 80%,light-main,set,80,light-main,set,80,,0.912,True,True,True,True,234.6
+testset/audio/la1_s17_01.wav,la1,s17,01,đặt đèn trần một trăm phần trăm,Đặt nền trần 100 phần trăm.,light-main,set,100,light-main,set,100,,0.938,True,True,True,True,274.8
+testset/audio/la1_s17_02.wav,la1,s17,02,đặt đèn trần một trăm phần trăm,đặt đầy trần 100%,light-main,set,100,,,,ambiguous_device,0.0,False,False,False,False,240.0
+testset/audio/la1_s18_01.wav,la1,s18,01,chuyển tivi kênh hai,Chuyện TV kênh 2,tv,channel,2,tv,channel,2,,1.0,True,True,True,True,219.1
+testset/audio/la1_s18_02.wav,la1,s18,02,chuyển tivi kênh hai,Chuyện TV gần 2.,tv,channel,2,tv,,,unknown_command,0.5,True,False,False,False,203.7
+testset/audio/la1_s19_01.wav,la1,s19,01,chuyển tivi kênh năm,Chuyện TV C5,tv,channel,5,tv,channel,5,,1.0,True,True,True,True,197.9
+testset/audio/la1_s19_02.wav,la1,s19,02,chuyển tivi kênh năm,truyền TV cơ năm,tv,channel,5,tv,,,unknown_command,0.5,True,False,False,False,189.0
+testset/audio/la1_s20_01.wav,la1,s20,01,chuyển tivi kênh chín,Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạm biệt. Cảm ơn các bạn đã chào tạ,tv,channel,9,,,,ambiguous_device,0.0,False,False,False,False,8458.8
+testset/audio/la1_s20_02.wav,la1,s20,02,chuyển tivi kênh chín,Chuyện tây viên kín.,tv,channel,9,,,,ambiguous_device,0.0,False,False,False,False,239.5
+testset/audio/la1_s21_01.wav,la1,s21,01,tăng âm lượng tivi mười,Tăng ngam nữ on TV mời.,tv,up,10,tv,,,unknown_command,0.5,True,False,False,False,254.1
+testset/audio/la1_s21_02.wav,la1,s21,02,tăng âm lượng tivi mười,Tăng âm lộn TV mời.,tv,up,10,tv,,,unknown_command,0.5,True,False,False,False,272.4
+testset/audio/la1_s22_01.wav,la1,s22,01,giảm âm lượng tivi hai mươi,giảm âm lượng TV 20,tv,down,20,tv,down,20,,1.0,True,True,True,True,240.2
+testset/audio/la1_s22_02.wav,la1,s22,02,giảm âm lượng tivi hai mươi,Giảm âm lộn TV 20,tv,down,20,tv,,,unknown_command,0.5,True,False,False,False,240.8
+testset/audio/la1_s23_01.wav,la1,s23,01,đặt âm lượng tivi năm mươi,Đã âm lưỡng TV 50.,tv,set,50,tv,,,unknown_command,0.5,True,False,False,False,257.9
+testset/audio/la1_s23_02.wav,la1,s23,02,đặt âm lượng tivi năm mươi,Đã âm lưỡng TV 50,tv,set,50,tv,,,unknown_command,0.5,True,False,False,False,289.9
+testset/audio/la1_s24_01.wav,la1,s24,01,điều hòa chế độ làm lạnh,"Điều hòa, chế độ làm lạnh.",ac,mode_cool,,ac,mode_cool,,,1.0,True,True,,True,310.0
+testset/audio/la1_s24_02.wav,la1,s24,02,điều hòa chế độ làm lạnh,Điều Hoa chế độ làm lạnh.,ac,mode_cool,,ac,mode_cool,,,1.0,True,True,,True,291.4
+testset/audio/la1_s25_01.wav,la1,s25,01,điều hòa chế độ quạt,Lưu hoàng chết đấu quái.,ac,mode_fan,,,,,unknown_command,0.0,False,False,,False,295.5
+testset/audio/la1_s25_02.wav,la1,s25,02,điều hòa chế độ quạt,Điều Hoa chế độ Hoạch.,ac,mode_fan,,ac,,,unknown_command,0.5,True,False,,False,290.2
+testset/audio/la1_s26_01.wav,la1,s26,01,điều hòa chế độ hút ẩm,Điều hòa chế độ hút ẩm.,ac,mode_dry,,ac,mode_dry,,,1.0,True,True,,True,361.8
+testset/audio/la1_s26_02.wav,la1,s26,02,điều hòa chế độ hút ẩm,Điều hoài chế độ khúc ảm.,ac,mode_dry,,ac,,,unknown_command,0.471,True,False,,False,323.3
+testset/audio/la1_s27_01.wav,la1,s27,01,nâng đầu giường mười độ,Nân đầu dương 10 độ,bed,up,10,bed,,,unknown_command,0.421,True,False,False,False,219.2
+testset/audio/la1_s27_02.wav,la1,s27,02,nâng đầu giường mười độ,Nâng đào dương mươi đó.,bed,up,10,,,,ambiguous_device,0.0,False,False,False,False,279.8
+testset/audio/la1_s28_01.wav,la1,s28,01,hạ đầu giường mười lăm độ,Hẹn đầu giờ mời lắm đậu.,bed,down,15,bed,,,unknown_command,0.412,True,False,False,False,377.3
+testset/audio/la1_s28_02.wav,la1,s28,02,hạ đầu giường mười lăm độ,Hả? Đầu Dương 15 đậu.,bed,down,15,bed,,,unknown_command,0.421,True,False,False,False,283.5
+testset/audio/la1_s29_01.wav,la1,s29,01,hạ giường nằm phẳng,Hãy dù nằm phản.,bed,set,0,,,,ambiguous_device,0.0,False,False,False,False,276.1
+testset/audio/la1_s29_02.wav,la1,s29,02,hạ giường nằm phẳng,Hãy vô nằm phán.,bed,set,0,,,,ambiguous_device,0.0,False,False,False,False,242.2
+testset/audio/la1_s30_01.wav,la1,s30,01,đặt giường ba mươi độ,đặc giường 30 độ,bed,set,30,bed,set,30,,0.91,True,True,True,True,169.8
+testset/audio/la1_s30_02.wav,la1,s30,02,đặt giường ba mươi độ,đặt dường 30 độ,bed,set,30,,,,ambiguous_device,0.0,False,False,False,False,190.6
+testset/audio/la1_s30_03.wav,la1,s30,03,đặt giường ba mươi độ,đặt dường 30 đỏ,bed,set,30,,,,ambiguous_device,0.0,False,False,False,False,198.7
+testset/audio/phat_s01_01.wav,phat,s01,01,bật điều hòa,bọc điêu hoa,ac,on,,ac,on,,,0.91,True,True,,True,208.5
+testset/audio/phat_s01_02.wav,phat,s01,02,bật điều hòa,Bọc lưu hoa.,ac,on,,,,,unknown_command,0.0,False,False,,False,225.9
+testset/audio/phat_s02_01.wav,phat,s02,01,tắt điều hòa,tắc liệu hoa,ac,off,,ac,off,,,0.938,True,True,,True,189.6
+testset/audio/phat_s02_02.wav,phat,s02,02,tắt điều hòa,Tất nhiên là...,ac,off,,,,,ambiguous_device,0.0,False,False,,False,220.7
+testset/audio/phat_s03_01.wav,phat,s03,01,bật đèn trần,Bọc lệ trọng,light-main,on,,,,,unknown_command,0.0,False,False,,False,217.8
+testset/audio/phat_s03_02.wav,phat,s03,02,bật đèn trần,Bọc lệnh trắng,light-main,on,,,,,ambiguous_device,0.0,False,False,,False,226.7
+testset/audio/phat_s04_01.wav,phat,s04,01,tắt đèn trần,Tắt để chân.,light-main,off,,,,,ambiguous_device,0.0,False,False,,False,171.1
+testset/audio/phat_s04_02.wav,phat,s04,02,tắt đèn trần,Tắt lấy chóng.,light-main,off,,,,,ambiguous_device,0.0,False,False,,False,266.2
+testset/audio/phat_s05_01.wav,phat,s05,01,bật tivi,Bạc TV!,tv,on,,tv,on,,,1.0,True,True,,True,184.7
+testset/audio/phat_s05_02.wav,phat,s05,02,bật tivi,Bạc TV!,tv,on,,tv,on,,,1.0,True,True,,True,213.2
+testset/audio/phat_s06_01.wav,phat,s06,01,tắt tivi,Tắc bây bây,tv,off,,,,,ambiguous_device,0.0,False,False,,False,228.8
+testset/audio/phat_s06_02.wav,phat,s06,02,tắt tivi,Tắc Tý Vy,tv,off,,,,,ambiguous_device,0.0,False,False,,False,205.6
+testset/audio/phat_s07_01.wav,phat,s07,01,giảm điều hòa hai độ,Giảm điều hòa 2 độ.,ac,down,2,ac,down,2,,1.0,True,True,True,True,281.4
+testset/audio/phat_s07_02.wav,phat,s07,02,giảm điều hòa hai độ,giảm điều hò 2 độ,ac,down,2,ac,down,2,,0.967,True,True,True,True,277.0
+testset/audio/phat_s08_01.wav,phat,s08,01,tăng điều hòa ba độ,Tăng biểu hòa 3 độ,ac,up,3,ac,up,3,,0.938,True,True,True,True,304.6
+testset/audio/phat_s08_02.wav,phat,s08,02,tăng điều hòa ba độ,Tăng điều hòa 3 đó.,ac,up,3,ac,up,3,,1.0,True,True,True,True,270.7
+testset/audio/phat_s09_01.wav,phat,s09,01,đặt điều hòa hai mươi sáu độ,Điều hòa 26 độ,ac,set,26,ac,set,26,,0.9,True,True,True,True,295.1
+testset/audio/phat_s09_02.wav,phat,s09,02,đặt điều hòa hai mươi sáu độ,đặt điều hòa 26 độ,ac,set,26,ac,set,26,,1.0,True,True,True,True,301.7
+testset/audio/phat_s10_01.wav,phat,s10,01,đặt điều hòa mười tám độ,Đặt điều hòa 18 độ,ac,set,18,ac,set,18,,1.0,True,True,True,True,223.6
+testset/audio/phat_s10_02.wav,phat,s10,02,đặt điều hòa mười tám độ,Đặt điều hòa 18 độ,ac,set,18,ac,set,18,,1.0,True,True,True,True,228.6
+testset/audio/phat_s11_01.wav,phat,s11,01,đặt điều hòa hai mươi hai độ,Đã đi ô 22 đồ,ac,set,22,,,,ambiguous_device,0.0,False,False,False,False,186.8
+testset/audio/phat_s11_02.wav,phat,s11,02,đặt điều hòa hai mươi hai độ,đặt đi hòa 22 độ,ac,set,22,ac,set,22,,0.929,True,True,True,True,224.3
+testset/audio/phat_s12_01.wav,phat,s12,01,đặt điều hòa ba mươi độ,Tạm biểu hòa 30 đồ,ac,set,30,ac,,,unknown_command,0.438,True,False,False,False,284.9
+testset/audio/phat_s12_02.wav,phat,s12,02,đặt điều hòa ba mươi độ,Đã điệu hòa 30 đồ,ac,set,30,ac,set,30,,0.9,True,True,True,True,241.6
+testset/audio/phat_s13_01.wav,phat,s13,01,tăng đèn trần hai mươi phần trăm,Tăng đi chẳng 20%,light-main,up,20,,,,ambiguous_device,0.0,False,False,False,False,287.9
+testset/audio/phat_s13_02.wav,phat,s13,02,tăng đèn trần hai mươi phần trăm,Tăng điện chẳng 20%,light-main,up,20,,,,ambiguous_device,0.0,False,False,False,False,248.3
+testset/audio/phat_s14_01.wav,phat,s14,01,giảm đèn trần mười phần trăm,giảm đi cho 10%,light-main,down,10,,,,ambiguous_device,0.0,False,False,False,False,192.1
+testset/audio/phat_s14_02.wav,phat,s14,02,giảm đèn trần mười phần trăm,Giám điên chân 10%,light-main,down,10,,,,ambiguous_device,0.0,False,False,False,False,292.2
+testset/audio/phat_s15_01.wav,phat,s15,01,đặt đèn trần năm mươi phần trăm,Đã đề chẳng 50%,light-main,set,50,,,,ambiguous_device,0.0,False,False,False,False,235.9
+testset/audio/phat_s15_02.wav,phat,s15,02,đặt đèn trần năm mươi phần trăm,Đặt đi chẳng 50%,light-main,set,50,,,,ambiguous_device,0.0,False,False,False,False,236.3
+testset/audio/phat_s16_01.wav,phat,s16,01,đặt đèn trần tám mươi phần trăm,Đã đi chàng 80%,light-main,set,80,,,,ambiguous_device,0.0,False,False,False,False,247.8
+testset/audio/phat_s16_02.wav,phat,s16,02,đặt đèn trần tám mươi phần trăm,Đã điên trang 80%,light-main,set,80,light-main,set,80,,0.844,True,True,True,True,206.4
+testset/audio/phat_s17_01.wav,phat,s17,01,đặt đèn trần một trăm phần trăm,Đã đi chăng 100%,light-main,set,100,,,,ambiguous_device,0.0,False,False,False,False,184.1
+testset/audio/phat_s17_02.wav,phat,s17,02,đặt đèn trần một trăm phần trăm,Tạm biệt cho 100%,light-main,set,100,,,,ambiguous_device,0.0,False,False,False,False,284.4
+testset/audio/phat_s18_01.wav,phat,s18,01,chuyển tivi kênh hai,Chuyện DVD cân 2,tv,channel,2,,,,ambiguous_device,0.0,False,False,False,False,196.3
+testset/audio/phat_s18_02.wav,phat,s18,02,chuyển tivi kênh hai,Chuyện tý bây cần hài.,tv,channel,2,,,,ambiguous_device,0.0,False,False,False,False,252.4
+testset/audio/phat_s19_01.wav,phat,s19,01,chuyển tivi kênh năm,Quyến TV Cần Năm,tv,channel,5,tv,,,unknown_command,0.5,True,False,False,False,219.5
+testset/audio/phat_s19_02.wav,phat,s19,02,chuyển tivi kênh năm,Chuyện TV Kênh Năm,tv,channel,5,tv,channel,5,,1.0,True,True,True,True,217.5
+testset/audio/phat_s20_01.wav,phat,s20,01,chuyển tivi kênh chín,Great TV Cần Trinh!,tv,channel,9,tv,,,unknown_command,0.5,True,False,False,False,185.8
+testset/audio/phat_s20_02.wav,phat,s20,02,chuyển tivi kênh chín,Chuyện TV Kênh Chính,tv,channel,9,tv,channel,9,,1.0,True,True,True,True,245.0
+testset/audio/phat_s21_01.wav,phat,s21,01,tăng âm lượng tivi mười,Căng âm lưỡng TV 10,tv,up,10,tv,,,unknown_command,0.5,True,False,False,False,256.5
+testset/audio/phat_s21_02.wav,phat,s21,02,tăng âm lượng tivi mười,Tăng âm lưỡng TV 10,tv,up,10,tv,up,10,,1.0,True,True,True,True,232.6
+testset/audio/phat_s22_01.wav,phat,s22,01,giảm âm lượng tivi hai mươi,Giám ăn Lượng TV 20,tv,down,20,tv,,,unknown_command,0.5,True,False,False,False,186.5
+testset/audio/phat_s22_02.wav,phat,s22,02,giảm âm lượng tivi hai mươi,Giảm áp lượng tb20,tv,down,20,,,,ambiguous_device,0.0,False,False,False,False,265.5
+testset/audio/phat_s23_01.wav,phat,s23,01,đặt âm lượng tivi năm mươi,Đặc âm lưỡng TV 50,tv,set,50,tv,set,50,,1.0,True,True,True,True,259.4
+testset/audio/phat_s23_02.wav,phat,s23,02,đặt âm lượng tivi năm mươi,Đặt âm lưỡng tib 50,tv,set,50,tv,,,unknown_command,0.44,True,False,False,False,284.0
+testset/audio/phat_s24_01.wav,phat,s24,01,điều hòa chế độ làm lạnh,Điều hòa chế độ lập lạnh,ac,mode_cool,,ac,,,unknown_command,0.5,True,False,,False,314.8
+testset/audio/phat_s24_02.wav,phat,s24,02,điều hòa chế độ làm lạnh,Điều hòa chế độ làm lạnh.,ac,mode_cool,,ac,mode_cool,,,1.0,True,True,,True,316.3
+testset/audio/phat_s25_01.wav,phat,s25,01,điều hòa chế độ quạt,Yêu hòa trái đồ quen,ac,mode_fan,,,,,unknown_command,0.0,False,False,,False,271.8
+testset/audio/phat_s25_02.wav,phat,s25,02,điều hòa chế độ quạt,Đi hòa chết đồ hoạch.,ac,mode_fan,,ac,,,unknown_command,0.429,True,False,,False,284.8
+testset/audio/phat_s26_01.wav,phat,s26,01,điều hòa chế độ hút ẩm,Điều hòa chế độ phục âm.,ac,mode_dry,,ac,,,unknown_command,0.5,True,False,,False,307.6
+testset/audio/phat_s26_02.wav,phat,s26,02,điều hòa chế độ hút ẩm,Đi hoa chế độ hút ấm.,ac,mode_dry,,ac,mode_dry,,,0.929,True,True,,True,296.8
+testset/audio/phat_s27_01.wav,phat,s27,01,nâng đầu giường mười độ,Năng đầu dưa 10 độ,bed,up,10,,,,ambiguous_device,0.0,False,False,False,False,203.1
+testset/audio/phat_s27_02.wav,phat,s27,02,nâng đầu giường mười độ,năng đầu dưa 10 độ,bed,up,10,,,,ambiguous_device,0.0,False,False,False,False,201.5
+testset/audio/phat_s28_01.wav,phat,s28,01,hạ đầu giường mười lăm độ,Hả đầu dương 15 độ,bed,down,15,bed,down,15,,0.921,True,True,True,True,218.9
+testset/audio/phat_s28_02.wav,phat,s28,02,hạ đầu giường mười lăm độ,Đâu dương 15 độ,bed,down,15,bed,set,15,,0.821,True,False,True,False,195.1
+testset/audio/phat_s29_01.wav,phat,s29,01,hạ giường nằm phẳng,Hả vô nồng phẩm.,bed,set,0,,,,ambiguous_device,0.0,False,False,False,False,239.5
+testset/audio/phat_s29_02.wav,phat,s29,02,hạ giường nằm phẳng,Hả vua nằm phẳng.,bed,set,0,bed,,,unknown_command,0.44,True,False,False,False,267.8
+testset/audio/phat_s30_01.wav,phat,s30,01,đặt giường ba mươi độ,Đã dường 30 độ,bed,set,30,,,,ambiguous_device,0.0,False,False,False,False,187.3
+testset/audio/phat_s30_02.wav,phat,s30,02,đặt giường ba mươi độ,Đã dường 30 độ,bed,set,30,,,,ambiguous_device,0.0,False,False,False,False,249.0
+testset/audio/vi_s01_01.wav,vi,s01,01,bật điều hòa,bọc view và...,ac,on,,,,,unknown_command,0.0,False,False,,False,216.9
+testset/audio/vi_s01_02.wav,vi,s01,02,bật điều hòa,bọc bì lũ khỏe,ac,on,,,,,unknown_command,0.0,False,False,,False,296.9
+testset/audio/vi_s02_01.wav,vi,s02,01,tắt điều hòa,Cắt đều và...,ac,off,,,,,unknown_command,0.0,False,False,,False,196.7
+testset/audio/vi_s02_02.wav,vi,s02,02,tắt điều hòa,Điều hoài.,ac,off,,ac,,,unknown_command,0.471,True,False,,False,199.6
+testset/audio/vi_s03_01.wav,vi,s03,01,bật đèn trần,Bập nền trăng.,light-main,on,,light-main,,,unknown_command,0.412,True,False,,False,227.7
+testset/audio/vi_s03_02.wav,vi,s03,02,bật đèn trần,Mặc đầy chân.,light-main,on,,,,,unknown_command,0.0,False,False,,False,236.3
+testset/audio/vi_s04_01.wav,vi,s04,01,tắt đèn trần,Tắt bềng trường.,light-main,off,,,,,ambiguous_device,0.0,False,False,,False,249.2
+testset/audio/vi_s04_02.wav,vi,s04,02,tắt đèn trần,Tắt đèn chân.,light-main,off,,light-main,off,,,1.0,True,True,,True,251.3
+testset/audio/vi_s05_01.wav,vi,s05,01,bật tivi,Bạc tây với.,tv,on,,,,,ambiguous_device,0.0,False,False,,False,237.0
+testset/audio/vi_s05_02.wav,vi,s05,02,bật tivi,Bạc TV!,tv,on,,tv,on,,,1.0,True,True,,True,216.4
+testset/audio/vi_s06_01.wav,vi,s06,01,tắt tivi,Tạc đầy vai.,tv,off,,,,,ambiguous_device,0.0,False,False,,False,222.2
+testset/audio/vi_s06_02.wav,vi,s06,02,tắt tivi,Tạch đề vệ.,tv,off,,,,,ambiguous_device,0.0,False,False,,False,201.1
+testset/audio/vi_s07_01.wav,vi,s07,01,giảm điều hòa hai độ,Giám điều hòa 2 độ.,ac,down,2,ac,down,2,,1.0,True,True,True,True,228.5
+testset/audio/vi_s07_02.wav,vi,s07,02,giảm điều hòa hai độ,Giám điều và hai đậu.,ac,down,2,,,,ambiguous_device,0.0,False,False,False,False,274.0
+testset/audio/vi_s08_01.wav,vi,s08,01,tăng điều hòa ba độ,Tăng điều và ba đấu.,ac,up,3,,,,ambiguous_device,0.0,False,False,False,False,201.3
+testset/audio/vi_s08_02.wav,vi,s08,02,tăng điều hòa ba độ,Tăng điều hòa 3 đấu.,ac,up,3,ac,,,unknown_command,0.5,True,False,False,False,232.2
+testset/audio/vi_s09_01.wav,vi,s09,01,đặt điều hòa hai mươi sáu độ,đặt điều 26 độ,ac,set,26,,,,ambiguous_device,0.0,False,False,False,False,170.9
+testset/audio/vi_s09_02.wav,vi,s09,02,đặt điều hòa hai mươi sáu độ,Đặt điều và 26 độ.,ac,set,26,,,,ambiguous_device,0.0,False,False,False,False,202.8
+testset/audio/vi_s10_01.wav,vi,s10,01,đặt điều hòa mười tám độ,Đặt đều hoài 18 độ.,ac,set,18,ac,set,18,,0.938,True,True,True,True,272.1
+testset/audio/vi_s10_02.wav,vi,s10,02,đặt điều hòa mười tám độ,Đặt đều vào 18 độ.,ac,set,18,,,,ambiguous_device,0.0,False,False,False,False,201.6
+testset/audio/vi_s11_01.wav,vi,s11,01,đặt điều hòa hai mươi hai độ,"Đặt biểu hòa 20, 2 đổ.",ac,set,22,ac,set,202,,0.938,True,True,False,False,295.1
+testset/audio/vi_s11_02.wav,vi,s11,02,đặt điều hòa hai mươi hai độ,Đặt điều khoảng 22 độ,ac,set,22,ac,set,22,,0.921,True,True,True,True,238.1
+testset/audio/vi_s12_01.wav,vi,s12,01,đặt điều hòa ba mươi độ,Đặt biểu khoảng 30 đậu,ac,set,30,,,,ambiguous_device,0.0,False,False,False,False,266.6
+testset/audio/vi_s12_02.wav,vi,s12,02,đặt điều hòa ba mươi độ,đặt đều hòa 30 đấu,ac,set,30,ac,,,unknown_command,0.467,True,False,False,False,237.1
+testset/audio/vi_s13_01.wav,vi,s13,01,tăng đèn trần hai mươi phần trăm,Tăng đèn chọn 20%,light-main,up,20,light-main,up,20,,1.0,True,True,True,True,221.3
+testset/audio/vi_s13_02.wav,vi,s13,02,tăng đèn trần hai mươi phần trăm,Tăng đèn chọn 20%,light-main,up,20,light-main,up,20,,1.0,True,True,True,True,342.1
+testset/audio/vi_s14_01.wav,vi,s14,01,giảm đèn trần mười phần trăm,Giám nền cần 10%.,light-main,down,10,,,,ambiguous_device,0.0,False,False,False,False,200.9
+testset/audio/vi_s14_02.wav,vi,s14,02,giảm đèn trần mười phần trăm,Rãm đề trần 10%,light-main,down,10,light-main,,,unknown_command,0.467,True,False,False,False,238.0
+testset/audio/vi_s15_01.wav,vi,s15,01,đặt đèn trần năm mươi phần trăm,Đặt bền trận 50%,light-main,set,50,light-main,set,50,,0.938,True,True,True,True,234.5
+testset/audio/vi_s15_02.wav,vi,s15,02,đặt đèn trần năm mươi phần trăm,Đặt bệnh chẳng 50%,light-main,set,50,,,,ambiguous_device,0.0,False,False,False,False,254.1
+testset/audio/vi_s16_01.wav,vi,s16,01,đặt đèn trần tám mươi phần trăm,Đặt đèn trần 80%,light-main,set,80,light-main,set,80,,1.0,True,True,True,True,208.2
+testset/audio/vi_s16_02.wav,vi,s16,02,đặt đèn trần tám mươi phần trăm,Đặt miền trận 80%,light-main,set,80,light-main,set,80,,0.912,True,True,True,True,230.5
+testset/audio/vi_s17_01.wav,vi,s17,01,đặt đèn trần một trăm phần trăm,Đạt nền trần 100%,light-main,set,100,light-main,set,100,,0.938,True,True,True,True,218.9
+testset/audio/vi_s17_02.wav,vi,s17,02,đặt đèn trần một trăm phần trăm,Đặt nền trần 100%,light-main,set,100,light-main,set,100,,0.938,True,True,True,True,216.1
+testset/audio/vi_s18_01.wav,vi,s18,01,chuyển tivi kênh hai,Chỉnh TV cân hay.,tv,channel,2,tv,,,unknown_command,0.5,True,False,False,False,212.4
+testset/audio/vi_s18_02.wav,vi,s18,02,chuyển tivi kênh hai,Chuyện TV gần 2.,tv,channel,2,tv,,,unknown_command,0.5,True,False,False,False,205.3
+testset/audio/vi_s19_01.wav,vi,s19,01,chuyển tivi kênh năm,Chuyển TV Cân Năm,tv,channel,5,tv,channel,5,,1.0,True,True,True,True,226.1
+testset/audio/vi_s19_02.wav,vi,s19,02,chuyển tivi kênh năm,Chuyện TV Cần Năm,tv,channel,5,tv,channel,5,,1.0,True,True,True,True,220.2
+testset/audio/vi_s20_01.wav,vi,s20,01,chuyển tivi kênh chín,Chuyện TV cân chính.,tv,channel,9,tv,,,unknown_command,0.5,True,False,False,False,211.2
+testset/audio/vi_s20_02.wav,vi,s20,02,chuyển tivi kênh chín,Chuyện TV cơn chín.,tv,channel,9,tv,,,unknown_command,0.5,True,False,False,False,225.8
+testset/audio/vi_s21_01.wav,vi,s21,01,tăng âm lượng tivi mười,Tăng ấm lưỡng TV 10,tv,up,10,tv,up,10,,1.0,True,True,True,True,280.1
+testset/audio/vi_s21_02.wav,vi,s21,02,tăng âm lượng tivi mười,Tăng âm lỗng TV mồi.,tv,up,10,tv,,,unknown_command,0.5,True,False,False,False,307.9
+testset/audio/vi_s22_01.wav,vi,s22,01,giảm âm lượng tivi hai mươi,Giám âm lộng TV 20,tv,down,20,tv,,,unknown_command,0.5,True,False,False,False,241.2
+testset/audio/vi_s22_02.wav,vi,s22,02,giảm âm lượng tivi hai mươi,Giám âm lượng TV 20,tv,down,20,tv,down,20,,1.0,True,True,True,True,223.5
+testset/audio/vi_s23_01.wav,vi,s23,01,đặt âm lượng tivi năm mươi,Đã căm lỗng TV năm môi.,tv,set,50,tv,,,unknown_command,0.5,True,False,False,False,282.4
+testset/audio/vi_s23_02.wav,vi,s23,02,đặt âm lượng tivi năm mươi,Đặt âm lỗng tý vơi năm môi.,tv,set,50,,,,ambiguous_device,0.0,False,False,False,False,326.0
+testset/audio/vi_s24_01.wav,vi,s24,01,điều hòa chế độ làm lạnh,Điều hoa chế độ làm lạnh.,ac,mode_cool,,ac,mode_cool,,,1.0,True,True,,True,277.8
+testset/audio/vi_s24_02.wav,vi,s24,02,điều hòa chế độ làm lạnh,Điều hoa chế độ làm lạnh.,ac,mode_cool,,ac,mode_cool,,,1.0,True,True,,True,275.4
+testset/audio/vi_s25_01.wav,vi,s25,01,điều hòa chế độ quạt,Điều hòa chế độ hoạt,ac,mode_fan,,ac,,,unknown_command,0.5,True,False,,False,277.4
+testset/audio/vi_s25_02.wav,vi,s25,02,điều hòa chế độ quạt,Điều và chế độ hoạch.,ac,mode_fan,,,,,unknown_command,0.0,False,False,,False,260.6
+testset/audio/vi_s26_01.wav,vi,s26,01,điều hòa chế độ hút ẩm,Điều mà chế độ hút ẩm.,ac,mode_dry,,ac,mode_dry,,,0.94,True,True,,True,329.4
+testset/audio/vi_s26_02.wav,vi,s26,02,điều hòa chế độ hút ẩm,Đi hoa chế đỏ hút ấm.,ac,mode_dry,,ac,mode_dry,,,0.929,True,True,,True,445.0
+testset/audio/vi_s27_01.wav,vi,s27,01,nâng đầu giường mười độ,"Nâng, Đầu, Dương, Mơi, Đấu.",bed,up,10,bed,,,unknown_command,0.421,True,False,False,False,408.9
+testset/audio/vi_s27_02.wav,vi,s27,02,nâng đầu giường mười độ,Năng Đầu Dường mời đó.,bed,up,10,bed,up,10,,0.921,True,True,True,True,323.3
+testset/audio/vi_s28_01.wav,vi,s28,01,hạ đầu giường mười lăm độ,Hẽ ở đâu giờ 15 độ?,bed,down,15,bed,,,unknown_command,0.412,True,False,False,False,270.7
+testset/audio/vi_s28_02.wav,vi,s28,02,hạ đầu giường mười lăm độ,Hãi Đầu Dường 15 đậu.,bed,down,15,bed,,,unknown_command,0.421,True,False,False,False,327.8
+testset/audio/vi_s29_01.wav,vi,s29,01,hạ giường nằm phẳng,Hẹ dường nằm phẳng.,bed,set,0,bed,,,unknown_command,0.44,True,False,False,False,381.3
+testset/audio/vi_s29_02.wav,vi,s29,02,hạ giường nằm phẳng,Hẹn dừng nằm phẳng.,bed,set,0,bed,,,unknown_command,0.44,True,False,False,False,408.9
+testset/audio/vi_s30_01.wav,vi,s30,01,đặt giường ba mươi độ,đặc giường 30 độ.,bed,set,30,bed,set,30,,0.91,True,True,True,True,254.1
+testset/audio/vi_s30_02.wav,vi,s30,02,đặt giường ba mươi độ,Đặt gường 30 đậu.,bed,set,30,bed,,,unknown_command,0.455,True,False,False,False,221.7
+testset/audio/vi_s30_03.wav,vi,s30,03,đặt giường ba mươi độ,đặc giường 30 đậu,bed,set,30,bed,,,unknown_command,0.5,True,False,False,False,204.0
+testset/audio/vinh_s01_01.wav,vinh,s01,01,bật điều hòa,Bật điều hòa.,ac,on,,ac,on,,,1.0,True,True,,True,196.2
+testset/audio/vinh_s01_02.wav,vinh,s01,02,bật điều hòa,Bắt đều hoa.,ac,on,,ac,on,,,0.967,True,True,,True,190.3
+testset/audio/vinh_s02_01.wav,vinh,s02,01,tắt điều hòa,Tắt đều hoa.,ac,off,,ac,off,,,0.967,True,True,,True,192.0
+testset/audio/vinh_s02_02.wav,vinh,s02,02,tắt điều hòa,Tắt điều hòa.,ac,off,,ac,off,,,1.0,True,True,,True,185.7
+testset/audio/vinh_s03_01.wav,vinh,s03,01,bật đèn trần,Bật đen chân.,light-main,on,,light-main,on,,,1.0,True,True,,True,186.0
+testset/audio/vinh_s03_02.wav,vinh,s03,02,bật đèn trần,Bật đèn chân.,light-main,on,,light-main,on,,,1.0,True,True,,True,187.6
+testset/audio/vinh_s04_01.wav,vinh,s04,01,tắt đèn trần,Tắt bàn chân.,light-main,off,,,,,ambiguous_device,0.0,False,False,,False,196.8
+testset/audio/vinh_s04_02.wav,vinh,s04,02,tắt đèn trần,Tắt đèn chân.,light-main,off,,light-main,off,,,1.0,True,True,,True,186.6
+testset/audio/vinh_s05_01.wav,vinh,s05,01,bật tivi,Bạc Tây Vê!,tv,on,,,,,ambiguous_device,0.0,False,False,,False,207.0
+testset/audio/vinh_s05_02.wav,vinh,s05,02,bật tivi,Bắc Tây Vê!,tv,on,,,,,ambiguous_device,0.0,False,False,,False,187.4
+testset/audio/vinh_s06_01.wav,vinh,s06,01,tắt tivi,Tắt T.V.,tv,off,,,,,ambiguous_device,0.0,False,False,,False,170.0
+testset/audio/vinh_s06_02.wav,vinh,s06,02,tắt tivi,Tắc T.V.,tv,off,,,,,ambiguous_device,0.0,False,False,,False,182.1
+testset/audio/vinh_s07_01.wav,vinh,s07,01,giảm điều hòa hai độ,Giám điều hòa 2 độ,ac,down,2,ac,down,2,,1.0,True,True,True,True,221.3
+testset/audio/vinh_s07_02.wav,vinh,s07,02,giảm điều hòa hai độ,Giám điều hòa 2 độ,ac,down,2,ac,down,2,,1.0,True,True,True,True,224.6
+testset/audio/vinh_s08_01.wav,vinh,s08,01,tăng điều hòa ba độ,Tăng điều hòa ba đó.,ac,up,3,ac,up,3,,1.0,True,True,True,True,238.5
+testset/audio/vinh_s08_02.wav,vinh,s08,02,tăng điều hòa ba độ,Tăng điều hòa ba đỏ.,ac,up,3,ac,up,3,,1.0,True,True,True,True,239.0
+testset/audio/vinh_s09_01.wav,vinh,s09,01,đặt điều hòa hai mươi sáu độ,Đặt điều hòa 26 độ,ac,set,26,ac,set,26,,1.0,True,True,True,True,233.1
+testset/audio/vinh_s09_02.wav,vinh,s09,02,đặt điều hòa hai mươi sáu độ,Đặt điều hòa 26 độ,ac,set,26,ac,set,26,,1.0,True,True,True,True,230.2
+testset/audio/vinh_s10_01.wav,vinh,s10,01,đặt điều hòa mười tám độ,Đặt điều hòa 18 độ,ac,set,18,ac,set,18,,1.0,True,True,True,True,220.7
+testset/audio/vinh_s10_02.wav,vinh,s10,02,đặt điều hòa mười tám độ,Đặt điều hòa 18 độ,ac,set,18,ac,set,18,,1.0,True,True,True,True,220.1
+testset/audio/vinh_s11_01.wav,vinh,s11,01,đặt điều hòa hai mươi hai độ,Đặt điều hòa 22 độ,ac,set,22,ac,set,22,,1.0,True,True,True,True,239.3
+testset/audio/vinh_s11_02.wav,vinh,s11,02,đặt điều hòa hai mươi hai độ,Đặt điều hòa 22 độ.,ac,set,22,ac,set,22,,1.0,True,True,True,True,225.8
+testset/audio/vinh_s12_01.wav,vinh,s12,01,đặt điều hòa ba mươi độ,Đặt điều hòa 30 độ,ac,set,30,ac,set,30,,1.0,True,True,True,True,222.7
+testset/audio/vinh_s12_02.wav,vinh,s12,02,đặt điều hòa ba mươi độ,Đặt điều hòa 30 độ,ac,set,30,ac,set,30,,1.0,True,True,True,True,221.2
+testset/audio/vinh_s13_01.wav,vinh,s13,01,tăng đèn trần hai mươi phần trăm,Tăng đề trần 20%,light-main,up,20,light-main,up,20,,0.967,True,True,True,True,202.0
+testset/audio/vinh_s13_02.wav,vinh,s13,02,tăng đèn trần hai mươi phần trăm,Tăng đèn trần 20%,light-main,up,20,light-main,up,20,,1.0,True,True,True,True,215.4
+testset/audio/vinh_s14_01.wav,vinh,s14,01,giảm đèn trần mười phần trăm,Giảm đèn trần 10%,light-main,down,10,light-main,down,10,,1.0,True,True,True,True,228.2
+testset/audio/vinh_s14_02.wav,vinh,s14,02,giảm đèn trần mười phần trăm,Giảm đèn trần 10%,light-main,down,10,light-main,down,10,,1.0,True,True,True,True,217.9
+testset/audio/vinh_s15_01.wav,vinh,s15,01,đặt đèn trần năm mươi phần trăm,Đặt đèn trần 50%,light-main,set,50,light-main,set,50,,1.0,True,True,True,True,201.0
+testset/audio/vinh_s15_02.wav,vinh,s15,02,đặt đèn trần năm mươi phần trăm,Đặt đèn chân 50%,light-main,set,50,light-main,set,50,,1.0,True,True,True,True,202.7
+testset/audio/vinh_s16_01.wav,vinh,s16,01,đặt đèn trần tám mươi phần trăm,Đặt đàn trần 80%,light-main,set,80,light-main,set,80,,0.938,True,True,True,True,214.0
+testset/audio/vinh_s16_02.wav,vinh,s16,02,đặt đèn trần tám mươi phần trăm,Đặt đèn trần 80%,light-main,set,80,light-main,set,80,,1.0,True,True,True,True,205.4
+testset/audio/vinh_s17_01.wav,vinh,s17,01,đặt đèn trần một trăm phần trăm,Đặt đèn chân 100%,light-main,set,100,light-main,set,100,,1.0,True,True,True,True,201.8
+testset/audio/vinh_s17_02.wav,vinh,s17,02,đặt đèn trần một trăm phần trăm,Đặt đèn chân 100%,light-main,set,100,light-main,set,100,,1.0,True,True,True,True,204.3
+testset/audio/vinh_s18_01.wav,vinh,s18,01,chuyển tivi kênh hai,Chuyển TV cân 2.,tv,channel,2,tv,channel,2,,1.0,True,True,True,True,206.7
+testset/audio/vinh_s18_02.wav,vinh,s18,02,chuyển tivi kênh hai,Chuyện TV cân 2,tv,channel,2,tv,channel,2,,1.0,True,True,True,True,215.4
+testset/audio/vinh_s19_01.wav,vinh,s19,01,chuyển tivi kênh năm,Chuyện PVK5,tv,channel,5,,,,ambiguous_device,0.0,False,False,False,False,189.2
+testset/audio/vinh_s19_02.wav,vinh,s19,02,chuyển tivi kênh năm,Chuyện TV K5,tv,channel,5,tv,,,unknown_command,0.5,True,False,False,False,168.8
+testset/audio/vinh_s20_01.wav,vinh,s20,01,chuyển tivi kênh chín,Chuyện TV Kênh 9,tv,channel,9,tv,channel,9,,1.0,True,True,True,True,219.3
+testset/audio/vinh_s20_02.wav,vinh,s20,02,chuyển tivi kênh chín,Chuyển TV Cần Chín,tv,channel,9,tv,channel,9,,1.0,True,True,True,True,221.5
+testset/audio/vinh_s21_01.wav,vinh,s21,01,tăng âm lượng tivi mười,Tăng âm lưỡng TV mời.,tv,up,10,tv,,,unknown_command,0.5,True,False,False,False,290.6
+testset/audio/vinh_s21_02.wav,vinh,s21,02,tăng âm lượng tivi mười,Tăng ngắm lưỡng TV mời.,tv,up,10,tv,,,unknown_command,0.5,True,False,False,False,271.6
+testset/audio/vinh_s22_01.wav,vinh,s22,01,giảm âm lượng tivi hai mươi,Giảm âm lượng TV 20,tv,down,20,tv,down,20,,1.0,True,True,True,True,220.5
+testset/audio/vinh_s22_02.wav,vinh,s22,02,giảm âm lượng tivi hai mươi,Giảm âm lượng TV 20,tv,down,20,tv,down,20,,1.0,True,True,True,True,237.6
+testset/audio/vinh_s23_01.wav,vinh,s23,01,đặt âm lượng tivi năm mươi,Đặt âm lớn TV 50,tv,set,50,tv,,,unknown_command,0.5,True,False,False,False,289.1
+testset/audio/vinh_s23_02.wav,vinh,s23,02,đặt âm lượng tivi năm mươi,Đặt âm lưỡng TV 50,tv,set,50,tv,set,50,,1.0,True,True,True,True,340.6
+testset/audio/vinh_s24_01.wav,vinh,s24,01,điều hòa chế độ làm lạnh,Điều hoài chế độ lầm lạnh.,ac,mode_cool,,ac,mode_cool,,,0.971,True,True,,True,374.8
+testset/audio/vinh_s24_02.wav,vinh,s24,02,điều hòa chế độ làm lạnh,Điều hòa chế độ làm lạnh,ac,mode_cool,,ac,mode_cool,,,1.0,True,True,,True,358.7
+testset/audio/vinh_s25_01.wav,vinh,s25,01,điều hòa chế độ quạt,Điều hòa chế độ hoạt,ac,mode_fan,,ac,,,unknown_command,0.5,True,False,,False,314.8
+testset/audio/vinh_s25_02.wav,vinh,s25,02,điều hòa chế độ quạt,Điều hoa chế độ hoạt,ac,mode_fan,,ac,,,unknown_command,0.5,True,False,,False,287.8
+testset/audio/vinh_s26_01.wav,vinh,s26,01,điều hòa chế độ hút ẩm,Điều hòa chế độ hút ẩm.,ac,mode_dry,,ac,mode_dry,,,1.0,True,True,,True,418.4
+testset/audio/vinh_s26_02.wav,vinh,s26,02,điều hòa chế độ hút ẩm,Điều hòa chế độ hút ấm.,ac,mode_dry,,ac,mode_dry,,,1.0,True,True,,True,443.2
+testset/audio/vinh_s27_01.wav,vinh,s27,01,nâng đầu giường mười độ,Nân đầu dư mươi đổ,bed,up,10,,,,ambiguous_device,0.0,False,False,False,False,254.9
+testset/audio/vinh_s27_02.wav,vinh,s27,02,nâng đầu giường mười độ,Nân đầu dương mươi đổ.,bed,up,10,bed,,,unknown_command,0.421,True,False,False,False,285.7
+testset/audio/vinh_s28_01.wav,vinh,s28,01,hạ đầu giường mười lăm độ,Hạ đồ dương 15 độ.,bed,down,15,,,,ambiguous_device,0.0,False,False,False,False,220.0
+testset/audio/vinh_s28_02.wav,vinh,s28,02,hạ đầu giường mười lăm độ,Hạ đồ dư 15 độ.,bed,down,15,,,,ambiguous_device,0.0,False,False,False,False,220.5
+testset/audio/vinh_s29_01.wav,vinh,s29,01,hạ giường nằm phẳng,Hã dương nằm phẳng.,bed,set,0,bed,,,unknown_command,0.44,True,False,False,False,271.8
+testset/audio/vinh_s29_02.wav,vinh,s29,02,hạ giường nằm phẳng,Hãi dương nằm phẳng.,bed,set,0,bed,,,unknown_command,0.44,True,False,False,False,303.8
+testset/audio/vinh_s30_01.wav,vinh,s30,01,đặt giường ba mươi độ,Đặt dường 30 độ.,bed,set,30,,,,ambiguous_device,0.0,False,False,False,False,187.6
+testset/audio/vinh_s30_02.wav,vinh,s30,02,đặt giường ba mươi độ,Đặt dường 30 độ.,bed,set,30,,,,ambiguous_device,0.0,False,False,False,False,186.4

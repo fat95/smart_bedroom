@@ -1,28 +1,33 @@
 {
-  "n": 42,
+  "n": 49,
   "wer": null,
   "cer": null,
-  "acc_device": 0.9762,
-  "acc_action": 0.9048,
+  "acc_device": 0.898,
+  "acc_action": 0.898,
   "acc_value": null,
   "n_value": 0,
-  "acc_exact": 0.9048,
+  "acc_exact": 0.8776,
   "wrong_exec": 0.0,
-  "rejected_cmd": 0.1111,
-  "n_noise": 6,
-  "noise_rejected": 1.0,
-  "latency_ms_mean": 301.5,
-  "latency_ms_median": 251.1,
-  "latency_ms_p95": 648.1,
+  "rejected_cmd": 0.119,
+  "n_noise": 7,
+  "noise_rejected": 0.8571,
+  "latency_ms_mean": 328.8,
+  "latency_ms_median": 258.2,
+  "latency_ms_p95": 837.6,
   "reject_reasons": {
-    "ambiguous_device": 5,
-    "unknown_command": 5
+    "ambiguous_device": 8,
+    "unknown_command": 4
   },
   "by_speaker": {
+    "la1": {
+      "n": 7,
+      "wer": null,
+      "acc_exact": 1.0
+    },
     "phat": {
       "n": 14,
       "wer": null,
-      "acc_exact": 0.9286
+      "acc_exact": 0.6429
     },
     "vi": {
       "n": 14,
@@ -32,7 +37,7 @@
     "vinh": {
       "n": 14,
       "wer": null,
-      "acc_exact": 0.8571
+      "acc_exact": 1.0
     }
   },
   "model": "phowhisper-small"

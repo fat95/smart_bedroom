@@ -1,39 +1,48 @@
 {
-  "n": 181,
-  "wer": 0.2145,
-  "cer": 0.0882,
-  "acc_device": 0.9227,
-  "acc_action": 0.768,
-  "acc_value": 0.7244,
-  "n_value": 127,
-  "acc_exact": 0.7569,
+  "n": 302,
+  "wer": 0.2354,
+  "cer": 0.1013,
+  "acc_device": 0.9404,
+  "acc_action": 0.8543,
+  "acc_value": 0.8208,
+  "n_value": 212,
+  "acc_exact": 0.8543,
   "wrong_exec": 0.0,
-  "rejected_cmd": 0.2431,
+  "rejected_cmd": 0.1457,
   "n_noise": 0,
   "noise_rejected": null,
-  "latency_ms_mean": 346.3,
-  "latency_ms_median": 340.8,
-  "latency_ms_p95": 444.7,
+  "latency_ms_mean": 352.8,
+  "latency_ms_median": 352.6,
+  "latency_ms_p95": 473.0,
   "reject_reasons": {
-    "unknown_command": 29,
-    "missing_value": 4,
-    "ambiguous_device": 11
+    "unknown_command": 28,
+    "ambiguous_device": 16
   },
   "by_speaker": {
+    "giabao": {
+      "n": 60,
+      "wer": 0.3308,
+      "acc_exact": 0.6833
+    },
+    "la1": {
+      "n": 61,
+      "wer": 0.2037,
+      "acc_exact": 0.8525
+    },
     "phat": {
       "n": 60,
       "wer": 0.282,
-      "acc_exact": 0.6833
+      "acc_exact": 0.8333
     },
     "vi": {
       "n": 61,
       "wer": 0.237,
-      "acc_exact": 0.7377
+      "acc_exact": 0.918
     },
     "vinh": {
       "n": 60,
       "wer": 0.1241,
-      "acc_exact": 0.85
+      "acc_exact": 0.9833
     }
   },
   "model": "phowhisper-small"
