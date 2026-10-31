@@ -1,29 +1,29 @@
 {
   "asr_assumed_perfect": false,
-  "n_enrolled": 189,
+  "n_enrolled": 188,
   "n_stranger": 0,
   "configs": {
     "A (chỉ ASR)": {
-      "enrolled_executed": 0.7566137566137566,
+      "enrolled_executed": 0.7659574468085106,
       "stranger_executed": null
     },
     "B (proba, chỉ xác thực)": {
-      "enrolled_executed": 0.38095238095238093,
+      "enrolled_executed": 0.9787234042553191,
       "stranger_executed": null
     },
     "A+B (proba)": {
-      "enrolled_executed": 0.2751322751322751,
+      "enrolled_executed": 0.7446808510638298,
       "stranger_executed": null,
-      "enrolled_blocked_by_speaker": 0.48148148148148145
+      "enrolled_blocked_by_speaker": 0.02127659574468085
     },
     "B (margin, chỉ xác thực)": {
-      "enrolled_executed": 0.47619047619047616,
+      "enrolled_executed": 1.0,
       "stranger_executed": null
     },
     "A+B (margin)": {
-      "enrolled_executed": 0.3386243386243386,
+      "enrolled_executed": 0.7659574468085106,
       "stranger_executed": null,
-      "enrolled_blocked_by_speaker": 0.41798941798941797
+      "enrolled_blocked_by_speaker": 0.0
     }
   }
 }
